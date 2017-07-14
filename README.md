@@ -14,7 +14,7 @@ Build options:
 
 ## Deploy (how to install build product)
 
-	nuxeoctl mp-install nuxeo-conceptshare.zip
+	nuxeoctl mp-install conceptshare-package.zip
 
 # Resources (Documentation and other links)
 
