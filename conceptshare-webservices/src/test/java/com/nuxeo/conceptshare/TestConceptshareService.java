@@ -1,5 +1,6 @@
 package com.nuxeo.conceptshare;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
@@ -12,7 +13,7 @@ import org.nuxeo.runtime.test.runner.FeaturesRunner;
 import com.google.inject.Inject;
 
 @RunWith(FeaturesRunner.class)
-@Features({ PlatformFeature.class })
+@Features({ PlatformFeature.class, ConceptShareWSFeature.class })
 @Deploy("com.nuxeo.conceptshare.conceptshare-webservices")
 public class TestConceptshareService {
 
@@ -22,5 +23,10 @@ public class TestConceptshareService {
     @Test
     public void testService() {
         assertNotNull(conceptshareservice);
+    }
+    
+    @Test
+    public void itCanGetProjects() throws Exception {
+    		assertEquals(1, conceptshareservice.getProjects().size());
     }
 }

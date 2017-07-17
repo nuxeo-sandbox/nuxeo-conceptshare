@@ -6,4 +6,4 @@ Bundle-Version: 1.0.0
 Bundle-Name: conceptshare-webservices
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: com.nuxeo.conceptshare.conceptshare-webservices;singleton=true
-Nuxeo-Component: OSGI-INF/conceptshareservice-service.xml
+Nuxeo-Component: OSGI-INF/conceptshare-service.xml
