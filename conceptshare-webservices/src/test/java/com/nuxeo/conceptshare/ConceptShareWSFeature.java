@@ -40,6 +40,9 @@ public class ConceptShareWSFeature extends SimpleFeature {
         properties.put(ConceptshareService.API_USER_PASSWORD_PROPERTY, "****");
         properties.put(ConceptshareService.ENDPOINT_URL, "https://test.dev02.conceptshare.com/API/Service.svc");
         properties.put(ConceptshareService.WSDL_URL_PROPERTY, loadResource("conceptshare-services.wsdl").toURI().toString());
+        properties.put(ConceptshareService.DEFAULT_PROJECT_PROPERTY, "TestProject");
+        properties.put(ConceptshareService.PARTNER_KEY_PROPERTY, "****");
+        properties.put(ConceptshareService.PARTNER_PASSWORD_PROPERTY, "****");
         
     }
 
