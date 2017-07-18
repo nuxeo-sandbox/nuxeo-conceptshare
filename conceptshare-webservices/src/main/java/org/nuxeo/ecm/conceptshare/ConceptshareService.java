@@ -1,4 +1,4 @@
-package com.nuxeo.conceptshare;
+package org.nuxeo.ecm.conceptshare;
 
 import java.util.List;
 

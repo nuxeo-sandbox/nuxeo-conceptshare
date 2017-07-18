@@ -1,4 +1,4 @@
-package com.nuxeo.conceptshare;
+package org.nuxeo.ecm.conceptshare;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -11,6 +11,7 @@ import org.datacontract.schemas._2004._07.conceptshare_v4_framework.Review;
 import org.datacontract.schemas._2004._07.conceptshare_v4_framework.ReviewItem;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.nuxeo.ecm.conceptshare.ConceptshareService;
 import org.nuxeo.ecm.platform.test.PlatformFeature;
 import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
@@ -20,7 +21,7 @@ import com.google.inject.Inject;
 
 @RunWith(FeaturesRunner.class)
 @Features({ PlatformFeature.class, ConceptShareWSFeature.class })
-@Deploy("com.nuxeo.conceptshare.conceptshare-webservices")
+@Deploy("org.nuxeo.ecm.conceptshare.webservices")
 public class TestConceptshareService {
 
 	public static final String DEFAULT_PROJECT = "TestProject";

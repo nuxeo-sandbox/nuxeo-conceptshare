@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<component name="com.nuxeo.conceptshare.ConceptshareService" version="1.0">
-
-  <implementation class="com.nuxeo.conceptshare.ConceptshareServiceImpl" />
-
-  <service>
-    <provide interface="com.nuxeo.conceptshare.ConceptshareService" />
-  </service>
-</component>

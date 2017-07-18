@@ -1,4 +1,4 @@
-package com.nuxeo.conceptshare;
+package org.nuxeo.ecm.conceptshare;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.Properties;
 
 import org.junit.Assert;
+import org.nuxeo.ecm.conceptshare.ConceptshareService;
 import org.nuxeo.ecm.core.test.CoreFeature;
 import org.nuxeo.ecm.core.test.TransactionalFeature;
 import org.nuxeo.runtime.api.Framework;
@@ -37,12 +38,12 @@ public class ConceptShareWSFeature extends SimpleFeature {
     		// Create nuxeo config settings to test
         Properties properties = Framework.getProperties();
         properties.put(ConceptshareService.API_USER_PROPERTY, "mhilaire@nuxeo.com");
-        properties.put(ConceptshareService.API_USER_PASSWORD_PROPERTY, "****");
+        properties.put(ConceptshareService.API_USER_PASSWORD_PROPERTY, "***");
         properties.put(ConceptshareService.ENDPOINT_URL, "https://test.dev02.conceptshare.com/API/Service.svc");
         properties.put(ConceptshareService.WSDL_URL_PROPERTY, loadResource("conceptshare-services.wsdl").toURI().toString());
         properties.put(ConceptshareService.DEFAULT_PROJECT_PROPERTY, "TestProject");
-        properties.put(ConceptshareService.PARTNER_KEY_PROPERTY, "****");
-        properties.put(ConceptshareService.PARTNER_PASSWORD_PROPERTY, "****");
+        properties.put(ConceptshareService.PARTNER_KEY_PROPERTY, "***");
+        properties.put(ConceptshareService.PARTNER_PASSWORD_PROPERTY, "***");
         
     }
 

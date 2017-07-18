@@ -1,9 +1,9 @@
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Manifest-Version: 1.0
-Bundle-Vendor: com.nuxeo.conceptshare
+Bundle-Vendor: nuxeo
 Bundle-Version: 1.0.0
 Bundle-Name: conceptshare-webservices
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: com.nuxeo.conceptshare.conceptshare-webservices;singleton=true
+Bundle-SymbolicName: org.nuxeo.ecm.conceptshare.webservices;singleton=true
 Nuxeo-Component: OSGI-INF/conceptshare-service.xml
