@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.ecm.conceptshare.listener">
+
+  <extension target="org.nuxeo.ecm.core.event.EventServiceComponent"
+             point="listener">
+    <listener name="conceptshareCallback" postCommit="false" async="false"
+              class="org.nuxeo.ecm.conceptshare.ConceptshareCallbackListener">
+        <event>ASSET_CREATED</event>
+        <event>ASSET_ERROR</event>
+    </listener>
+  </extension>
+
+</component>

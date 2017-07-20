@@ -6,18 +6,36 @@
     <artifactId>conceptshare-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
-  <artifactId>conceptshare-core</artifactId>
-  <name>Conceptshare core</name>
+  <artifactId>conceptshare-webhook</artifactId>
+  <name>Conceptshare webhook</name>
   <description/>
 
   <dependencies>
-  	<dependency>
+    <dependency>
       <groupId>org.nuxeo.ecm.conceptshare</groupId>
-      <artifactId>conceptshare-ws-api</artifactId>
+      <artifactId>conceptshare-core</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.nuxeo.runtime</groupId>
       <artifactId>nuxeo-runtime</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.core</groupId>
+      <artifactId>nuxeo-core-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.automation</groupId>
+      <artifactId>nuxeo-automation-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.automation</groupId>
+      <artifactId>nuxeo-automation-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.nuxeo.runtime</groupId>
@@ -30,4 +48,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  
 </project>

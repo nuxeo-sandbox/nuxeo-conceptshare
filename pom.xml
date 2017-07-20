@@ -16,7 +16,8 @@
   <modules>
     <module>conceptshare-core</module>
     <module>conceptshare-package</module>
-    <module>conceptshare-webservices</module>
+    <module>conceptshare-ws-api</module>
+    <module>conceptshare-webhook</module>
   </modules>
 
   <dependencyManagement>
@@ -30,7 +31,12 @@
       </dependency>
       <dependency>
         <groupId>org.nuxeo.ecm.conceptshare</groupId>
-        <artifactId>conceptshare-webservices</artifactId>
+        <artifactId>conceptshare-ws-api</artifactId>
+        <version>1.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.nuxeo.ecm.conceptshare</groupId>
+        <artifactId>conceptshare-webhook</artifactId>
         <version>1.0-SNAPSHOT</version>
       </dependency>
       <dependency>
