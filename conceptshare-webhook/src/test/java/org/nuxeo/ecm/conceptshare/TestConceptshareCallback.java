@@ -41,9 +41,9 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 @RunWith(FeaturesRunner.class)
-@Features({ CoreFeature.class, WebEngineFeature.class, PlatformFeature.class, CoreFeature.class })
+@Features({ WebEngineFeature.class, PlatformFeature.class, CoreFeature.class })
 @Jetty(port = 18090)
-@Deploy({ "org.nuxeo.ecm.conceptshare.core", "org.nuxeo.ecm.conceptshare.webhook","org.nuxeo.ecm.platform.types.core",
+@Deploy({ "org.nuxeo.ecm.conceptshare.core", "org.nuxeo.ecm.conceptshare.webhook",
 		"org.nuxeo.ecm.platform.web.common" })
 @LocalDeploy({ "org.nuxeo.ecm.conceptshare.webhook:conceptshare-callback-test-contrib.xml" })
 @RepositoryConfig(init = CSRepositoryInit.class, cleanup = Granularity.METHOD)
