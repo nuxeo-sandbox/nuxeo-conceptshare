@@ -42,9 +42,9 @@ Required packages:
 # Resources (Documentation and other links)
 
 - [Conceptshare website](https://www.conceptshare.com/)
-- [Conceptshare integration documentation] (https://integrate.conceptshare.com/main-hub)
-- [Conceptshare integration tutorial] (https://integrate.conceptshare.com/tutorial-online-proofing-for-isvs)
-- [Roadmap of this integration] (https://ext.prodpad.com/ext/roadmap/bf4315af5d6924f54a593fdc1dc609fefe63a3e2)
+- [Conceptshare integration documentation](https://integrate.conceptshare.com/main-hub)
+- [Conceptshare integration tutorial](https://integrate.conceptshare.com/tutorial-online-proofing-for-isvs)
+- [Roadmap of this integration](https://ext.prodpad.com/ext/roadmap/bf4315af5d6924f54a593fdc1dc609fefe63a3e2)
 
 
 
