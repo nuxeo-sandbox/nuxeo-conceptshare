@@ -15,7 +15,8 @@ public class CSRepositoryInit implements RepositoryInit {
 	public void populate(CoreSession session) {
 
 		DocumentModel asset1 = session.createDocumentModel(DEFAULT_DOMAIN, "asset1", "File");
-		asset1.setProperty("dublincore", "title", "1");
+		asset1.setProperty("dublincore", "title", "asset1");
+		asset1.setPropertyValue("CSFileProp:AssetId", "1");
 		asset1 = session.createDocument(asset1);
 
 		asset1 = session.saveDocument(asset1);

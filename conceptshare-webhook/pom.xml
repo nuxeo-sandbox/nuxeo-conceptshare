@@ -11,10 +11,22 @@
   <description/>
 
   <dependencies>
+  	<dependency>
+      <groupId>nuxeo-studio</groupId>
+      <artifactId>conceptshare-integration</artifactId>
+      <version>0.0.2--master-SNAPSHOT</version>
+    </dependency>
+  	<dependency>
+      <groupId>org.nuxeo.ecm.platform</groupId>
+      <artifactId>nuxeo-platform-collections-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.platform</groupId>
+      <artifactId>nuxeo-platform-directory-sql</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.nuxeo.ecm.conceptshare</groupId>
       <artifactId>conceptshare-core</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.nuxeo.runtime</groupId>

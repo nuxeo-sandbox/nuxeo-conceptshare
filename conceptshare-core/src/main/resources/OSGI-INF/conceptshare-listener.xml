@@ -8,6 +8,15 @@
         <event>ASSET_CREATED</event>
         <event>ASSET_ERROR</event>
     </listener>
+    <listener name="conceptshareCollectionCreated" postCommit="false" async="false"
+              class="org.nuxeo.ecm.conceptshare.CollectionCreatedListener">
+        <event>documentCreated</event>
+    </listener>
+    <listener name="conceptshareAssetAddedToCollection" postCommit="false" async="false"
+              class="org.nuxeo.ecm.conceptshare.AssetAddedToCollectionListener">
+        <event>addedToCollection</event>
+    </listener>
+    
   </extension>
 
 </component>

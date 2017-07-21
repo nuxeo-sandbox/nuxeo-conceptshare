@@ -11,7 +11,7 @@
   <description/>
 
   <dependencies>
-  	<dependency>
+    <dependency>
       <groupId>org.nuxeo.ecm.conceptshare</groupId>
       <artifactId>conceptshare-ws-api</artifactId>
     </dependency>
@@ -28,6 +28,14 @@
       <groupId>org.nuxeo.ecm.platform</groupId>
       <artifactId>nuxeo-platform-test</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.automation</groupId>
+      <artifactId>nuxeo-automation-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.automation</groupId>
+      <artifactId>nuxeo-automation-test</artifactId>
     </dependency>
   </dependencies>
 </project>

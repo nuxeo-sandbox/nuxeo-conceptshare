@@ -5,3 +5,11 @@
 nuxeo.template.includes=common
 
 # org.nuxeo.ecm.instance.description=Nuxeo ECM customized with nuxeo-conceptshare
+
+conceptshare.wsdlUrl=file:${nuxeo.home}/nxserver/config/conceptshare-services.wsdl
+conceptshare.partnerKey=**
+conceptshare.partnerPassword=r**
+conceptshare.apiUser=mhilaire@nuxeo.com
+conceptshare.apiPassword=**
+conceptshare.endpointUrl=https://test.dev02.conceptshare.com/API/Service.svc
+conceptshare.defaultProject=TestProject

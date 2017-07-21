@@ -27,6 +27,7 @@ import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.core.test.CoreFeature;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
 import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
+import org.nuxeo.ecm.directory.sql.SQLDirectoryFeature;
 import org.nuxeo.ecm.platform.test.PlatformFeature;
 import org.nuxeo.ecm.webengine.test.WebEngineFeature;
 import org.nuxeo.runtime.test.runner.Deploy;
@@ -34,6 +35,8 @@ import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 import org.nuxeo.runtime.test.runner.Jetty;
 import org.nuxeo.runtime.test.runner.LocalDeploy;
+import org.nuxeo.runtime.test.runner.PartialDeploy;
+import org.nuxeo.runtime.test.runner.TargetExtensions;
 
 import com.google.inject.Inject;
 import com.sun.jersey.api.client.Client;
@@ -41,12 +44,13 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 @RunWith(FeaturesRunner.class)
-@Features({ WebEngineFeature.class, PlatformFeature.class, CoreFeature.class })
+@Features({ WebEngineFeature.class, PlatformFeature.class, CoreFeature.class, SQLDirectoryFeature.class })
 @Jetty(port = 18090)
 @Deploy({ "org.nuxeo.ecm.conceptshare.core", "org.nuxeo.ecm.conceptshare.webhook",
-		"org.nuxeo.ecm.platform.web.common" })
-@LocalDeploy({ "org.nuxeo.ecm.conceptshare.webhook:conceptshare-callback-test-contrib.xml" })
+		"org.nuxeo.ecm.platform.web.common" , "org.nuxeo.ecm.directory.api", "org.nuxeo.ecm.directory.sql"})
+@LocalDeploy({ "org.nuxeo.ecm.conceptshare.webhook:conceptshare-callback-test-contrib.xml", "org.nuxeo.ecm.conceptshare.webhook:conceptshare-diretory-test-contrib.xml" })
 @RepositoryConfig(init = CSRepositoryInit.class, cleanup = Granularity.METHOD)
+@PartialDeploy(bundle = "studio.extensions.conceptshare-integration", extensions = TargetExtensions.Automation.class)
 public class TestConceptshareCallback {
 
 	protected static final String BASE_URL = "http://localhost:18090";
@@ -102,8 +106,8 @@ public class TestConceptshareCallback {
 
 		assertEquals(200, response.getStatus());
 
-		assertEquals("uploaded",
-				session.getDocument(new PathRef("/default-domain/asset1")).getProperty("dublincore" , "description"));
+		assertEquals("available",
+				session.getDocument(new PathRef("/default-domain/asset1")).getProperty("CS-FileProperties" , "FileStatus"));
 	}
 
 	public static String createPayload(String eventId, String assetId) {
