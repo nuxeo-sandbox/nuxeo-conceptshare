@@ -1,24 +1,52 @@
 ## Principles & Concepts
 
+This package allows to edit, annotate and review assets in [conceptshare](https://www.conceptshare.com/) UI
 ### Create review
+`Collection` is actually `review` in conceptshare.
+Reviews are created in conceptshare when a collection is created in Nuxeo.
 
+### Adding Asset
+When an asset is being added to a collection, it automatically uploads the files into conceptshare. Once conceptshare calls back nuxeo to confirm upload is done, the asset is added to the review
+
+### Accessing to review
+When a collection contains at least one asset, its status change to `Ready`. A link `Access review` allows you to directly browse the asset contained in the review to directly edit them and share your ideas on the asset.
+
+### Ending a review
+TODO
+
+### Get the PDF review
+TODO
 
 ## How it works
 
 ## Build
+1. change the `nuxeo.defaults` and other webservices config in the `ConceptshareWSFeature` class
+2. `cd nuxeo-conceptshare && mvn clean install`
 
-    mvn clean install
+Note: If `mvn clean install` fails for webservices `Failed to read schema document 'xjc.xsd', because 'file' access is not allowed due to restriction set by the accessExternalSchema property.` please perform the following action : https://stackoverflow.com/questions/23011547/webservice-client-generation-error-with-jdk8
 
-Build options:
-- ...
 
 ## Deploy (how to install build product)
 
-	nuxeoctl mp-install conceptshare-package.zip
+Required packages:
+
+- DAM
+- JSF-UI
+
+
+1. `<nuxeoHome>/bin/nuxeoCtl mp-install /path/to/sources/nuxeo-conceptshare/conceptshare-package/target/conceptshare-package-1.0-SNAPSHOT.zip`
+2. For callback make your nuxeo instance is available to the internet (setup your internet firewall on your modem if pointing to your local) and add this URL to conceptshare `http://<yourIP>:8080/nuxeo/site/conceptshare/callback`
+
+
 
 # Resources (Documentation and other links)
 
-If mvn clean install fails for webservices `Failed to read schema document 'xjc.xsd', because 'file' access is not allowed due to restriction set by the accessExternalSchema property.` : https://stackoverflow.com/questions/23011547/webservice-client-generation-error-with-jdk8
+- [Conceptshare website](https://www.conceptshare.com/)
+- [Conceptshare integration documentation] (https://integrate.conceptshare.com/main-hub)
+- [Conceptshare integration tutorial] (https://integrate.conceptshare.com/tutorial-online-proofing-for-isvs)
+- [Roadmap of this integration] (https://ext.prodpad.com/ext/roadmap/bf4315af5d6924f54a593fdc1dc609fefe63a3e2)
+
+
 
 # Contributing / Reporting issues
 
