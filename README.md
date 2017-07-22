@@ -19,8 +19,16 @@ TODO
 
 ## How it works
 
+## Pre requisites
+Conceptshare is a cloud or on premise web appliaction. In order to integrate nuxeo you need the following:
+- a conceptshare account with an api user, api password, partnerKey and partnerPassword
+- a running conceptshare instance
+- a default conceptshare project where your api user has access too
+- each conceptshare user account must have a nuxeo user with the same email address 
+- an AWS S3 bucket. See more [here](https://doc.nuxeo.com/nxdoc/amazon-s3-online-storage/)
+
 ## Build
-1. change the `nuxeo.defaults` and other webservices config in the `ConceptshareWSFeature` class
+1. Update conceptshare webservices config in the [ConceptshareWSFeature](https://github.com/nuxeo-sandbox/nuxeo-conceptshare/blob/master/conceptshare-ws-api/src/test/java/org/nuxeo/ecm/conceptshare/ConceptShareWSFeature.java#L41) class to be able to run the unit test, otherwise add `-DskipTests` in the maven command if you prefer to skip this part
 2. `cd nuxeo-conceptshare && mvn clean install`
 
 Note: If `mvn clean install` fails for webservices `Failed to read schema document 'xjc.xsd', because 'file' access is not allowed due to restriction set by the accessExternalSchema property.` please perform the following action : https://stackoverflow.com/questions/23011547/webservice-client-generation-error-with-jdk8
@@ -28,15 +36,40 @@ Note: If `mvn clean install` fails for webservices `Failed to read schema docume
 
 ## Deploy (how to install build product)
 
-Required packages:
+Required packages.:
 
-- DAM
-- JSF-UI
+- `nuxeo-dam`
+- `amazon-s3-online-storage`
+- `nuxeo-jsf-ui`
 
+Or run at once `nuxeoctl mp-install amazon-s3-online-storage nuxeo-dam nuxeo-jsf-ui`
 
 1. `<nuxeoHome>/bin/nuxeoCtl mp-install /path/to/sources/nuxeo-conceptshare/conceptshare-package/target/conceptshare-package-1.0-SNAPSHOT.zip`
-2. For callback make your nuxeo instance is available to the internet (setup your internet firewall on your modem if pointing to your local) and add this URL to conceptshare `http://<yourIP>:8080/nuxeo/site/conceptshare/callback`
+2. For callback make sure your nuxeo instance is available to the internet (setup your internet firewall on your modem if pointing to your local) and add this URL to conceptshare `http://<yourIP>:<port>/nuxeo/site/conceptshare/callback` in your account callbacks, and select event `ASSET_CREATED` and `ASSET_ERROR`
+3. Check that the firewall allows only incoming connection from conceptshare IP (should be `40.114.6.151`) on the callback URL `/nuxeo/site/conceptshare/callback`
+4. Edit `nuxeo.conf` and set the following properties:
 
+`nuxeo.s3storage.region=<YourS3Region>`
+
+`nuxeo.s3storage.bucket=<YourBucketName>`
+
+`nuxeo.s3storage.awsid=<YourAWSID>`
+
+`nuxeo.s3storage.awssecret=<YourAWSsecret>`
+
+`conceptshare.partnerKey=<YourPartnerKey>`
+
+`conceptshare.partnerPassword=<YourPartnerPassword>`
+
+`conceptshare.apiUser=<YourAPIUserEmail>`
+
+`conceptshare.apiPassword=<YourAPIUSerPassword>`
+
+`conceptshare.endpointUrl=https://<conceptshareHost>/API/Service.svc`
+
+`conceptshare.defaultProject=<YourDefaultProjectName>`
+
+5. Grant access nuxeo to S3 bucket by adding this [AWS policy](https://doc.nuxeo.com/nxdoc/amazon-s3-online-storage/#aws-configuration) 
 
 
 # Resources (Documentation and other links)
