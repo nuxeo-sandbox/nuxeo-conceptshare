@@ -61,11 +61,12 @@ public class ConceptshareCallbackListener implements EventListener {
 									+ ". Possible cause the asset has been removed from the collection. No notifications sent to conceptshare to update the review.");
 						}
 						for (DocumentModel collection : collections) {
-							long reviewId = (long) collection.getPropertyValue(REVIEW_ID_PROP);
+							String reviewId = (String) collection.getPropertyValue(REVIEW_ID_PROP);
 
 							try {
-								csService.addReviewItem((int) reviewId, Integer.parseInt(assetId));
-								collection.followTransition("to_Ready");
+								csService.addReviewItem( Integer.parseInt(reviewId), Integer.parseInt(assetId));
+								collection.setPropertyValue(REVIEW_STATUS_PROP, "ready");
+								collection.getCoreSession().saveDocument(collection);
 							} catch (Exception e) {
 								log.error(
 										"Conceptshare review update failed while processing webservices call for asset "

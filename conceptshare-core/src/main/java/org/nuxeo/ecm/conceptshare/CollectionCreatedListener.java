@@ -50,7 +50,7 @@ public class CollectionCreatedListener implements EventListener {
         		}
         		try {
 					Review review = Framework.getService(ConceptshareService.class).createReview(doc.getTitle(), desc , doc.getId());
-					doc.setPropertyValue(REVIEW_ID_PROP, review.getId());
+					doc.setPropertyValue(REVIEW_ID_PROP, review.getId().toString());
 					doc.getCoreSession().saveDocument(doc);
 				} catch (Exception e) {
 					log.error("Failed to create review in conceptshare.", e);

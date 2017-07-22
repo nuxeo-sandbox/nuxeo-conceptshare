@@ -6,10 +6,18 @@ nuxeo.template.includes=common
 
 # org.nuxeo.ecm.instance.description=Nuxeo ECM customized with nuxeo-conceptshare
 
+# Conceptshare needs direct download files from S3
+nuxeo.s3storage.directdownload=true
+
+
 conceptshare.wsdlUrl=file:${nuxeo.home}/nxserver/config/conceptshare-services.wsdl
-conceptshare.partnerKey=**
-conceptshare.partnerPassword=r**
-conceptshare.apiUser=mhilaire@nuxeo.com
-conceptshare.apiPassword=**
-conceptshare.endpointUrl=https://test.dev02.conceptshare.com/API/Service.svc
-conceptshare.defaultProject=TestProject
+
+# Settings for conceptshare listed here as an example. Set these settings in your nuxeo.conf
+# DO NOT COMMIT your conceptshare credentials
+
+#conceptshare.partnerKey=YourPartnerKey
+#conceptshare.partnerPassword=YourPartnerPassword
+#conceptshare.apiUser=YourApiUserEmail
+#conceptshare.apiPassword=YourApiUserPassword
+#conceptshare.endpointUrl=https://<conceptshareHost>/API/Service.svc
+#conceptshare.defaultProject=YourProjectName

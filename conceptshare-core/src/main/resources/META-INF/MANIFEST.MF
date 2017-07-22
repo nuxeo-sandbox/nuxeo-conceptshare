@@ -8,4 +8,4 @@ Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.nuxeo.ecm.conceptshare.core;singleton=true
 Nuxeo-Component: OSGI-INF/conceptshare-listener.xml,
   OSGI-INF/conceptshare-diretory-contrib.xml,
- OSGI-INF/getreviewurl-operation-contrib.xml
+ OSGI-INF/conceptshare-operation-contrib.xml

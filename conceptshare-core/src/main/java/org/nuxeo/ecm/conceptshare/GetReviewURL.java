@@ -17,37 +17,43 @@
  */
 package org.nuxeo.ecm.conceptshare;
 
+import org.nuxeo.ecm.automation.OperationContext;
 import org.nuxeo.ecm.automation.core.Constants;
+import org.nuxeo.ecm.automation.core.annotations.Context;
 import org.nuxeo.ecm.automation.core.annotations.Operation;
 import org.nuxeo.ecm.automation.core.annotations.OperationMethod;
 import org.nuxeo.ecm.automation.core.annotations.Param;
 import org.nuxeo.ecm.conceptshare.api.ConceptshareService;
-import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.runtime.api.Framework;
 
 /**
  *
  */
-@Operation(id=GetReviewURL.ID, category=Constants.CAT_DOCUMENT, label="GetReviewURL", description="Return the direct url to review in conceptshare.")
+@Operation(id = GetReviewURL.ID, category = Constants.CAT_DOCUMENT, label = "GetReviewURL", description = "Return the direct url to review in conceptshare.")
 public class GetReviewURL {
 
-    public static final String ID = "CS.GetReviewURL";
+	public static final String ID = "CS.GetReviewURL";
 
-    @Param(name = "email", required = true)
-    protected String email;
-    
-    @Param(name = "reviewId", required = true)
-    protected long reviewId;
+	@Context
+	protected OperationContext ctx;
+	
+	@Param(name = "email", required = true)
+	protected String email;
 
-    @OperationMethod
-    public String run() throws NuxeoException {
-    		
-    		ConceptshareService cs = Framework.getService(ConceptshareService.class);
-        try {
-			int userId = cs.getUserId(email);
-			return cs.getReviewURL(userId, (int) reviewId);
-		} catch (Exception e) {
-			throw new NuxeoException("Failed to get review URL from conceptshare.",e);
-		}
-    }
+	@Param(name = "reviewId", required = true)
+	protected String reviewId;
+
+	@OperationMethod
+	public String run() throws Exception {
+
+		ConceptshareService cs = Framework.getService(ConceptshareService.class);
+
+		int userId = cs.getUserId(email);
+		String url = cs.getReviewURL(Integer.parseInt(reviewId), userId);
+		//Force outcome to display the url in JSF UI
+		ctx.put("Outcome", url);
+		
+		return url;
+
+	}
 }

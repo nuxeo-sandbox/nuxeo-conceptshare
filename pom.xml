@@ -37,6 +37,11 @@
         <version>${nuxeo.distribution.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.nuxeo.ecm.core</groupId>
+        <artifactId>nuxeo-core-binarymanager-s3</artifactId>
+        <version>${nuxeo.distribution.version}</version>
+      </dependency>
+      <dependency>
         <groupId>nuxeo-studio</groupId>
         <artifactId>conceptshare-integration</artifactId>
         <version>${conceptshare.studio.version}</version>

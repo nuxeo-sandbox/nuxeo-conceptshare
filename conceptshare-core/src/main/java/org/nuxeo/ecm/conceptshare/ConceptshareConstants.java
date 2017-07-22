@@ -27,5 +27,7 @@ public class ConceptshareConstants {
 	
 	public static final String CS_REVIEW_PROP_PREFIX = "CSReviewProp";
 	public static final String REVIEW_ID_PROP = CS_REVIEW_PROP_PREFIX+":ReviewId";
+	public static final String REVIEW_STATUS_PROP = CS_REVIEW_PROP_PREFIX+":ReviewStatus";
+	
 	
 }

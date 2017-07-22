@@ -36,10 +36,11 @@ public class ConceptShareWSFeature extends SimpleFeature {
     public void beforeRun(FeaturesRunner runner) throws Exception {
     		
     		// Create nuxeo config settings to test
+    		// DO NOT COMMIT your conceptshare credentials
         Properties properties = Framework.getProperties();
         properties.put(ConceptshareService.API_USER_PROPERTY, "mhilaire@nuxeo.com");
-        properties.put(ConceptshareService.API_USER_PASSWORD_PROPERTY, "**");
-        properties.put(ConceptshareService.ENDPOINT_URL, "https://test.dev02.conceptshare.com/API/Service.svc");
+        properties.put(ConceptshareService.API_USER_PASSWORD_PROPERTY, "***");
+        properties.put(ConceptshareService.ENDPOINT_URL, "https://<host>/API/Service.svc");
         properties.put(ConceptshareService.WSDL_URL_PROPERTY, loadResource("conceptshare-services.wsdl").toURI().toString());
         properties.put(ConceptshareService.DEFAULT_PROJECT_PROPERTY, "TestProject");
         properties.put(ConceptshareService.PARTNER_KEY_PROPERTY, "**");

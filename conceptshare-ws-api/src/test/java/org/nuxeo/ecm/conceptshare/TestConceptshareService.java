@@ -27,6 +27,9 @@ public class TestConceptshareService {
 	public static final String DEFAULT_PROJECT = "TestProject";
 
 	public static final String TEST_USER_EMAIL = "mhilaire@nuxeo.com";
+	
+	public static final int COMPLETED_STATUS = 77;
+	public static final int IN_PROGRESS_STATUS = 75;
 
 	@Inject
 	protected ConceptshareService conceptshareservice;
@@ -53,28 +56,34 @@ public class TestConceptshareService {
 		Review review = createReview(reviewTitle);
 
 		int userId = conceptshareservice.getUserId(TEST_USER_EMAIL);
-
+		
 		assertFalse(conceptshareservice.getReviewURL(review.getId(), userId).isEmpty());
 	}
+	
 
 	@Test
-	public void itCanCreateReviewAndAddAsset() throws Exception {
+	public void itCanAddAssetInReviewAndComplete() throws Exception {
 		long timestamp = new Date().getTime();
 		String reviewTitle = "myReviewUnitTest - " + timestamp;
 		String name = "Unit test - " + timestamp;
 		String filename = name + ".png";
 		Review review = createReview(reviewTitle);
-
+		assertEquals((Integer)IN_PROGRESS_STATUS, review.getStatusId().getValue());
+		
 		Asset asset = conceptshareservice.addAsset(name, filename, "https://www.nuxeo.com/assets/imgs/logo340x60.png");
 
 		assertEquals(filename, asset.getFileName().getValue());
-		// Should wait the cb
-		//Thread.sleep(10000);
+
 		
 		ReviewItem ri = conceptshareservice.addReviewItem(review.getId(), asset.getId());
+		
 		assertEquals(asset.getId(), ri.getAssetId());
 		assertEquals(review.getId(), ri.getReviewId());
-
+		
+		review = conceptshareservice.endReview(review.getId(), reviewTitle, "myDescription", "12345");
+		assertEquals(review.getId(), review.getId());
+		
+		assertEquals((Integer)COMPLETED_STATUS, review.getStatusId().getValue());
 
 	}
 

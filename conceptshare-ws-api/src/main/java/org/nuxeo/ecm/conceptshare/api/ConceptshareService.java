@@ -60,4 +60,6 @@ public interface ConceptshareService {
 	public Asset addAsset(String assetName, String fileName, String url) throws Exception;
 
 	public ReviewItem addReviewItem(int reviewId, int assetId) throws Exception;
+
+	public Review endReview(int reviewId, String title, String description, String code) throws Exception;
 }

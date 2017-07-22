@@ -14,6 +14,9 @@ import org.apache.commons.logging.LogFactory;
 import org.datacontract.schemas._2004._07.conceptshare_v4.APIContext;
 import org.datacontract.schemas._2004._07.conceptshare_v4.ReferenceType;
 import org.datacontract.schemas._2004._07.conceptshare_v4_framework.ArrayOfAssetUploadParameter;
+import org.datacontract.schemas._2004._07.conceptshare_v4_framework.ArrayOfExternalReviewer;
+import org.datacontract.schemas._2004._07.conceptshare_v4_framework.ArrayOfReviewItem;
+import org.datacontract.schemas._2004._07.conceptshare_v4_framework.ArrayOfReviewMember;
 import org.datacontract.schemas._2004._07.conceptshare_v4_framework.Asset;
 import org.datacontract.schemas._2004._07.conceptshare_v4_framework.Project;
 import org.datacontract.schemas._2004._07.conceptshare_v4_framework.ResourceUrlOptions;
@@ -35,7 +38,7 @@ import com.microsoft.schemas._2003._10.serialization.arrays.ArrayOfstring;
 
 public class ConceptshareServiceImpl extends DefaultComponent implements ConceptshareService {
 
-	protected static APIService csService = null;
+	protected static IAPIService csService = null;
 
 	protected static APIContext apiContext = null;
 
@@ -96,10 +99,10 @@ public class ConceptshareServiceImpl extends DefaultComponent implements Concept
 						"Conceptshare mandatory settings endpoint URL is missing, conceptshare integration won't work.");
 			} else {
 				try {
-					csService = new APIService(new URL(wsdlUrl), new QName(WS_NAMESPACE, LOCAL_SERVICE));
-					((BindingProvider) csService.getBasicHttpBindingIAPIService()).getRequestContext()
+					APIService apiService = new APIService(new URL(wsdlUrl), new QName(WS_NAMESPACE, LOCAL_SERVICE));
+					((BindingProvider) apiService.getBasicHttpBindingIAPIService()).getRequestContext()
 							.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointUrl);
-
+					csService = apiService.getBasicHttpBindingIAPIService();
 				} catch (MalformedURLException e) {
 					log.error("WSDL malformed URL : " + wsdlUrl + ". Conceptshare integration won't work", e);
 
@@ -107,7 +110,7 @@ public class ConceptshareServiceImpl extends DefaultComponent implements Concept
 			}
 		}
 
-		return csService.getBasicHttpBindingIAPIService();
+		return csService;
 	}
 
 	protected APIContext getOrCreateApiContext() {
@@ -165,8 +168,8 @@ public class ConceptshareServiceImpl extends DefaultComponent implements Concept
 	public Review createReview(String title, String description, String code) throws Exception {
 		Integer projectId = getDefaultProject().getId();
 
-		return getOrCreateApiService().addUpdateReviewFull(getOrCreateApiContext(), null, projectId, projectId,
-				ReferenceType.PROJECT, ReviewType.FEEDBACK, null, null, null, null, null, null, null, title,
+		return getOrCreateApiService().addUpdateReviewFull( getOrCreateApiContext(), null, projectId, projectId,
+				ReferenceType.PROJECT, ReviewType.FEEDBACK, null, null, null, null, true, true, true, title,
 				description, code, new ArrayOfstring(), null, null, null, null, null, null, null);
 	}
 
@@ -178,11 +181,11 @@ public class ConceptshareServiceImpl extends DefaultComponent implements Concept
 	@Override
 	public Asset addAsset(String assetName, String fileName, String url) throws Exception {
 		int projectId = getDefaultProject().getId();
-		
-		return getOrCreateApiService().addProjectAssetFromExternalUri( getOrCreateApiContext(), assetName, fileName,
+
+		return getOrCreateApiService().addProjectAssetFromExternalUri(getOrCreateApiContext(), assetName, fileName,
 				null, projectId, URLEncoder.encode(url, "UTF-8"), false, new ArrayOfAssetUploadParameter());
 	}
-	
+
 	@Override
 	public ReviewItem addReviewItem(int reviewId, int assetId) throws Exception {
 		return getOrCreateApiService().addReviewItem(getOrCreateApiContext(), reviewId, assetId);
@@ -204,5 +207,19 @@ public class ConceptshareServiceImpl extends DefaultComponent implements Concept
 
 		options.setReferenceType(new JAXBElement<Integer>(REFERENCE_TYPE, Integer.class, refType));
 		return getOrCreateApiService().getResourceUrlForUser(getOrCreateApiContext(), userId, options);
+	}
+
+	@Override
+	public Review endReview(int reviewId, String title, String description, String code) throws Exception {
+		int projectId = getDefaultProject().getId();
+
+		// Should match the 'completed' status from the ajax call I inspect...
+		int statusId = 77;
+
+		return getOrCreateApiService().addUpdateReviewFull(getOrCreateApiContext(), reviewId, projectId, projectId,
+				ReferenceType.PROJECT, ReviewType.FEEDBACK, statusId, null, null, null, null, null, null, title,
+				description, code, new ArrayOfstring(), null, new ArrayOfReviewMember(), new ArrayOfReviewItem(), null,
+				null, null, new ArrayOfExternalReviewer());
+
 	}
 }
