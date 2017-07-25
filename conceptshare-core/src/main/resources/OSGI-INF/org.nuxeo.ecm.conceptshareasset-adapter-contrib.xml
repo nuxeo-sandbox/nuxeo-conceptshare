@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.ecm.conceptshare.adapters.asset">
+
+  <extension target="org.nuxeo.ecm.core.api.DocumentAdapterService" point="adapters">
+    <adapter class="org.nuxeo.ecm.conceptshare.AssetAdapter" factory="org.nuxeo.ecm.conceptshare.AssetAdapterFactory"/>
+  </extension>
+
+</component>
