@@ -23,6 +23,7 @@ import org.datacontract.schemas._2004._07.conceptshare_v4_framework.ResourceUrlO
 import org.datacontract.schemas._2004._07.conceptshare_v4_framework.ResourceUrlType;
 import org.datacontract.schemas._2004._07.conceptshare_v4_framework.Review;
 import org.datacontract.schemas._2004._07.conceptshare_v4_framework.ReviewItem;
+import org.datacontract.schemas._2004._07.conceptshare_v4_framework.ReviewMember;
 import org.datacontract.schemas._2004._07.conceptshare_v4_framework.ReviewType;
 import org.datacontract.schemas._2004._07.conceptshare_v4_framework.User;
 import org.nuxeo.ecm.core.api.NuxeoException;
@@ -165,12 +166,22 @@ public class ConceptshareServiceImpl extends DefaultComponent implements Concept
 	}
 
 	@Override
+	public ReviewMember addReviewMember(String email, int reviewId) throws Exception {
+		int userId = getUserId(email);
+
+		return getOrCreateApiService().addUpdateReviewMember(getOrCreateApiContext(), reviewId, userId,
+				ReferenceType.USER, null, null, null);
+
+	}
+
+	@Override
 	public Review createReview(String title, String description, String code) throws Exception {
 		Integer projectId = getDefaultProject().getId();
 
-		return getOrCreateApiService().addUpdateReviewFull( getOrCreateApiContext(), null, projectId, projectId,
+		return getOrCreateApiService().addUpdateReviewFull(getOrCreateApiContext(), null, projectId, projectId,
 				ReferenceType.PROJECT, ReviewType.FEEDBACK, null, null, null, null, true, true, true, title,
 				description, code, new ArrayOfstring(), null, null, null, null, null, null, null);
+
 	}
 
 	@Override

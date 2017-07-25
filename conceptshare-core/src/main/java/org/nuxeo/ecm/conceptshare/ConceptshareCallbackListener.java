@@ -2,7 +2,6 @@ package org.nuxeo.ecm.conceptshare;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.nuxeo.ecm.conceptshare.api.ConceptshareService;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
@@ -10,8 +9,6 @@ import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
 import org.nuxeo.ecm.core.event.Event;
 import org.nuxeo.ecm.core.event.EventContext;
 import org.nuxeo.ecm.core.event.EventListener;
-import org.nuxeo.runtime.api.Framework;
-import static org.nuxeo.ecm.conceptshare.ConceptshareConstants.*;
 
 public class ConceptshareCallbackListener implements EventListener {
 
@@ -35,7 +32,8 @@ public class ConceptshareCallbackListener implements EventListener {
 			new UnrestrictedSessionRunner(session) {
 				@Override
 				public void run() {
-					String query = "SELECT * From Document WHERE " + ASSET_ID_PROP + " = '" + assetId + "'";
+					String query = "SELECT * From Document WHERE " + AssetAdapter.ASSET_ID_PROP + " = '" + assetId
+							+ "'";
 					DocumentModelList assetList = session.query(query);
 
 					String status = "";
@@ -47,10 +45,9 @@ public class ConceptshareCallbackListener implements EventListener {
 
 					// There should be only one doc.. but in case it has been duplicated
 					for (DocumentModel doc : assetList) {
-						doc.setPropertyValue(FILE_STATUS_PROP, status);
-						session.saveDocument(doc);
-
-						ConceptshareService csService = Framework.getService(ConceptshareService.class);
+						AssetAdapter assetDoc = doc.getAdapter(AssetAdapter.class);
+						assetDoc.setFileStatus(status);
+						assetDoc.save();
 
 						String collectionQuery = "SELECT * From Collection WHERE collection:documentIds = '"
 								+ doc.getId() + "'";
@@ -61,20 +58,8 @@ public class ConceptshareCallbackListener implements EventListener {
 									+ ". Possible cause the asset has been removed from the collection. No notifications sent to conceptshare to update the review.");
 						}
 						for (DocumentModel collection : collections) {
-							String reviewId = (String) collection.getPropertyValue(REVIEW_ID_PROP);
-
-							try {
-								csService.addReviewItem( Integer.parseInt(reviewId), Integer.parseInt(assetId));
-								collection.setPropertyValue(REVIEW_STATUS_PROP, "ready");
-								collection.getCoreSession().saveDocument(collection);
-							} catch (Exception e) {
-								log.error(
-										"Conceptshare review update failed while processing webservices call for asset "
-												+ doc.getPathAsString() + " and collection "
-												+ collection.getPathAsString(),
-										e);
-							}
-
+							ReviewAdapter reviewDoc = collection.getAdapter(ReviewAdapter.class);
+							reviewDoc.addAssetToCollection(assetDoc);
 						}
 
 					}

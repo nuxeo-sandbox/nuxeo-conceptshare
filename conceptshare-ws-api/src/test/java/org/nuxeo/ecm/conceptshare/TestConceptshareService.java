@@ -9,6 +9,7 @@ import java.util.Date;
 import org.datacontract.schemas._2004._07.conceptshare_v4_framework.Asset;
 import org.datacontract.schemas._2004._07.conceptshare_v4_framework.Review;
 import org.datacontract.schemas._2004._07.conceptshare_v4_framework.ReviewItem;
+import org.datacontract.schemas._2004._07.conceptshare_v4_framework.ReviewMember;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.nuxeo.ecm.conceptshare.api.ConceptshareService;
@@ -27,7 +28,7 @@ public class TestConceptshareService {
 	public static final String DEFAULT_PROJECT = "TestProject";
 
 	public static final String TEST_USER_EMAIL = "mhilaire@nuxeo.com";
-	
+
 	public static final int COMPLETED_STATUS = 77;
 	public static final int IN_PROGRESS_STATUS = 75;
 
@@ -56,10 +57,20 @@ public class TestConceptshareService {
 		Review review = createReview(reviewTitle);
 
 		int userId = conceptshareservice.getUserId(TEST_USER_EMAIL);
-		
+
 		assertFalse(conceptshareservice.getReviewURL(review.getId(), userId).isEmpty());
 	}
-	
+
+	@Test
+	public void itCanAddMember() throws Exception {
+		String reviewTitle = "myReviewUnitTest - " + new Date().getTime();
+		Review review = createReview(reviewTitle);
+
+		String memberEmail = "nuxeo.demo.dam+administrator@gmail.com";
+
+		ReviewMember member = conceptshareservice.addReviewMember(memberEmail, review.getId());
+		assertEquals(memberEmail, member.getUserName().getValue());
+	}
 
 	@Test
 	public void itCanAddAssetInReviewAndComplete() throws Exception {
@@ -68,22 +79,21 @@ public class TestConceptshareService {
 		String name = "Unit test - " + timestamp;
 		String filename = name + ".png";
 		Review review = createReview(reviewTitle);
-		assertEquals((Integer)IN_PROGRESS_STATUS, review.getStatusId().getValue());
-		
+		assertEquals((Integer) IN_PROGRESS_STATUS, review.getStatusId().getValue());
+
 		Asset asset = conceptshareservice.addAsset(name, filename, "https://www.nuxeo.com/assets/imgs/logo340x60.png");
 
 		assertEquals(filename, asset.getFileName().getValue());
 
-		
 		ReviewItem ri = conceptshareservice.addReviewItem(review.getId(), asset.getId());
-		
+
 		assertEquals(asset.getId(), ri.getAssetId());
 		assertEquals(review.getId(), ri.getReviewId());
-		
+
 		review = conceptshareservice.endReview(review.getId(), reviewTitle, "myDescription", "12345");
 		assertEquals(review.getId(), review.getId());
-		
-		assertEquals((Integer)COMPLETED_STATUS, review.getStatusId().getValue());
+
+		assertEquals((Integer) COMPLETED_STATUS, review.getStatusId().getValue());
 
 	}
 

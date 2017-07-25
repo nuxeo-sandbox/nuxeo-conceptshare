@@ -8,6 +8,7 @@ import org.datacontract.schemas._2004._07.conceptshare_v4_framework.Asset;
 import org.datacontract.schemas._2004._07.conceptshare_v4_framework.Project;
 import org.datacontract.schemas._2004._07.conceptshare_v4_framework.Review;
 import org.datacontract.schemas._2004._07.conceptshare_v4_framework.ReviewItem;
+import org.datacontract.schemas._2004._07.conceptshare_v4_framework.ReviewMember;
 
 public interface ConceptshareService {
 
@@ -62,4 +63,6 @@ public interface ConceptshareService {
 	public ReviewItem addReviewItem(int reviewId, int assetId) throws Exception;
 
 	public Review endReview(int reviewId, String title, String description, String code) throws Exception;
+
+	public ReviewMember addReviewMember(String email, int reviewId) throws Exception;
 }

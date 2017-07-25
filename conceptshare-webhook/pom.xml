@@ -14,7 +14,6 @@
   	<dependency>
       <groupId>nuxeo-studio</groupId>
       <artifactId>conceptshare-integration</artifactId>
-      <version>0.0.2--master-SNAPSHOT</version>
     </dependency>
   	<dependency>
       <groupId>org.nuxeo.ecm.platform</groupId>
