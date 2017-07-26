@@ -17,6 +17,7 @@
  */
 package org.nuxeo.ecm.conceptshare;
 
+import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.event.Event;
 import org.nuxeo.ecm.core.event.EventListener;
@@ -32,7 +33,14 @@ public class CollectionCreatedListener implements EventListener {
 		}
 		DocumentEventContext docCtx = (DocumentEventContext) event.getContext();
 		DocumentModel doc = docCtx.getSourceDocument();
-
+		CoreSession session = doc.getCoreSession();
+		
+		if("Collection".equals(doc.getType()) && !doc.hasFacet("CS-Review"))
+		{
+			doc.addFacet("CS-Review");
+			session.saveDocument(doc);
+		}
+		
 		ReviewAdapter reviewDoc = doc.getAdapter(ReviewAdapter.class);
 		if (reviewDoc != null) {
 			reviewDoc.createReview();

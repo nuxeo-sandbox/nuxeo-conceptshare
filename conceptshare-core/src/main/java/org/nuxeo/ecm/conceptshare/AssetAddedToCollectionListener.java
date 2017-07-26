@@ -35,9 +35,15 @@ public class AssetAddedToCollectionListener implements EventListener {
 		}
 		DocumentEventContext docCtx = (DocumentEventContext) event.getContext();
 		DocumentModel doc = docCtx.getSourceDocument();
-
-		AssetAdapter assetDoc = doc.getAdapter(AssetAdapter.class);
 		CoreSession session = doc.getCoreSession();
+		
+		if(doc.getPropertyValue("file:content") != null && !doc.hasFacet("CS-File"))
+		{
+			doc.addFacet("CS-File");
+			doc = session.saveDocument(doc);
+		}
+		
+		AssetAdapter assetDoc = doc.getAdapter(AssetAdapter.class);
 		if (assetDoc != null) {
 			if (assetDoc.getAssetId() == null) {
 				// If asset has not yet been uploaded already then upload it
