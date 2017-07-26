@@ -2,7 +2,7 @@
 <package type="addon" name="nuxeo-conceptshare" version="@VERSION@">
   <title>Nuxeo conceptshare</title>
   <description>
-    <p>Put here an HTML description of your Nuxeo Package.</p>
+    <p>Integrate Conceptshare feature into Nuxeo for review and feedback on assets</p>
   </description>
   <!-- <home-page>http://doc.nuxeo.com/</home-page> -->
   <vendor>Nuxeo</vendor>
@@ -20,13 +20,11 @@
     <platform>server-@DISTRIB_VERSION@-HF*</platform>
   </platforms>
   <!-- Dependencies on other packages -->
-  <!-- <dependencies> -->
-  <!-- <package>another-package:1.0.0:1.0.0</package> -->
-  <!-- If you require JSF UI package:  -->
-  <!-- <package>nuxeo-jsf-ui</package> -->
-  <!-- If you require WEB UI package:  -->
-  <!-- <package>nuxeo-web-ui</package> -->
-  <!-- </dependencies> -->
+  <dependencies>
+    <package>nuxeo-jsf-ui</package>
+    <package>amazon-s3-online-storage</package>
+    <package>nuxeo-dam</package>
+  </dependencies>
   <!-- Conflicts with other packages -->
   <!-- <conflicts> -->
   <!-- <package>a-conflicting-package:1.0.0:1.0.0</package> -->
