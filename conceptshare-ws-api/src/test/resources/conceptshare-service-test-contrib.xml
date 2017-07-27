@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.ecm.conceptshare.api.ConceptshareService.contrib.test" version="1.0">
+
+  <!-- DO NOT COMMIT your credentials -->
+  <extension target="org.nuxeo.ecm.conceptshare.api.ConceptshareService" point="configuration">
+    <config>
+      <wsdlUrl>file:src/test/resources/conceptshare-services.wsdl</wsdlUrl>
+      <partnerKey>***</partnerKey>
+      <partnerPassword>***</partnerPassword>
+      <apiUser>mhilaire@nuxeo.com</apiUser>
+      <apiPassword>***</apiPassword>
+      <endpointUrl>https://<>yourhost>/API/Service.svc</endpointUrl>
+      <defaultProject>TestProject</defaultProject>
+    </config>
+  </extension>
+</component>

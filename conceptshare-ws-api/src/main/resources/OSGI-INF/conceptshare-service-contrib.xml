@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.ecm.conceptshare.api.ConceptshareService.contrib" version="1.0">
+
+  <!-- Default contrib -->
+  <extension target="org.nuxeo.ecm.conceptshare.api.ConceptshareService" point="configuration">
+    <config>
+      <wsdlUrl>${conceptshare.wsdlUrl:=}</wsdlUrl>
+      <partnerKey>${conceptshare.partnerKey:=}</partnerKey>
+      <partnerPassword>${conceptshare.partnerPassword:=}</partnerPassword>
+      <apiUser>${conceptshare.apiUser:=}</apiUser>
+      <apiPassword>${conceptshare.apiPassword:=}</apiPassword>
+      <endpointUrl>${conceptshare.endpointUrl:=}</endpointUrl>
+      <defaultProject>${conceptshare.defaultProject:=}</defaultProject>
+    </config>
+  </extension>
+</component>

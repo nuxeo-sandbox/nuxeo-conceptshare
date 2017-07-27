@@ -17,12 +17,14 @@ import org.nuxeo.ecm.platform.test.PlatformFeature;
 import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
+import org.nuxeo.runtime.test.runner.LocalDeploy;
 
 import com.google.inject.Inject;
 
 @RunWith(FeaturesRunner.class)
-@Features({ PlatformFeature.class, ConceptShareWSFeature.class })
+@Features({ PlatformFeature.class })
 @Deploy("org.nuxeo.ecm.conceptshare.ws.api")
+@LocalDeploy("org.nuxeo.ecm.conceptshare.ws.api:conceptshare-service-test-contrib.xml")
 public class TestConceptshareService {
 
 	public static final String DEFAULT_PROJECT = "TestProject";
