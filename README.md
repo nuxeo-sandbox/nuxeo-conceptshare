@@ -6,13 +6,13 @@ This package allows to edit, annotate and review assets in [conceptshare](https:
 Reviews are created in conceptshare when a collection is created in Nuxeo.
 
 ### Adding Asset
-When an asset is being added to a collection, it automatically uploads the files into conceptshare. Once conceptshare calls back nuxeo to confirm upload is done, the asset is added to the review
+When an asset is being added to a collection, it automatically uploads the files into conceptshare. Once conceptshare calls back nuxeo to confirm upload is done, the asset is added to the review. Asset are uploaded in conceptshare only one time and can be reused for other reviews. If the docuemnt added to the review in nuxeo doesn't have any binary, (like for folder or a file placeholder) asset creation won't be pushed to conceptshare.
 
 ### Accessing to review
 When a collection contains at least one asset, its status change to `Ready`. A link `Access review` allows you to directly browse the asset contained in the review to directly edit them and share your ideas on the asset.
 
 ### Ending a review
-TODO
+Once you've done your review you can close it and complete it from nuxeo by clicking on the end review button. Its status will change to `completed`
 
 ### Get the PDF review
 TODO
@@ -28,7 +28,7 @@ Conceptshare is a cloud or on premise web appliaction. In order to integrate nux
 - an AWS S3 bucket. See more [here](https://doc.nuxeo.com/nxdoc/amazon-s3-online-storage/)
 
 ## Build
-1. Update conceptshare webservices config in the [ConceptshareWSFeature](https://github.com/nuxeo-sandbox/nuxeo-conceptshare/blob/master/conceptshare-ws-api/src/test/java/org/nuxeo/ecm/conceptshare/ConceptShareWSFeature.java#L41) class to be able to run the unit test, otherwise add `-DskipTests` in the maven command if you prefer to skip this part
+1. Update conceptshare webservices config in the [Core test contrib](https://github.com/nuxeo-sandbox/nuxeo-conceptshare/blob/master/conceptshare-core/src/test/resources/conceptshare-service-test-contrib.xml) and [WS test contrib](https://github.com/nuxeo-sandbox/nuxeo-conceptshare/blob/master/conceptshare-ws-api/src/test/resources/conceptshare-service-test-contrib.xml) to be able to run the unit test, otherwise add `-DskipTests` in the maven command if you prefer to skip this part
 2. `cd nuxeo-conceptshare && mvn clean install`
 
 Note: If `mvn clean install` fails for webservices `Failed to read schema document 'xjc.xsd', because 'file' access is not allowed due to restriction set by the accessExternalSchema property.` please perform the following action : https://stackoverflow.com/questions/23011547/webservice-client-generation-error-with-jdk8
@@ -42,9 +42,9 @@ Required packages.:
 - `amazon-s3-online-storage`
 - `nuxeo-jsf-ui`
 
-Or run at once `nuxeoctl mp-install amazon-s3-online-storage nuxeo-dam nuxeo-jsf-ui`
+Those 3 pakcages will be automatically installed if not already present when you install the first time the nuxeo-conceptshare module.
 
-1. `<nuxeoHome>/bin/nuxeoCtl mp-install /path/to/sources/nuxeo-conceptshare/conceptshare-package/target/conceptshare-package-1.0-SNAPSHOT.zip`
+1. `<nuxeoHome>/bin/nuxeoCtl mp-install /path/to/sources/nuxeo-conceptshare/conceptshare-package/target/conceptshare-package-<VERSION>.zip`
 2. For callback make sure your nuxeo instance is available to the internet (setup your internet firewall on your modem if pointing to your local) and add this URL to conceptshare `http://<yourIP>:<port>/nuxeo/site/conceptshare/callback` in your account callbacks, and select event `ASSET_CREATED` and `ASSET_ERROR`
 3. Check that the firewall allows only incoming connection from conceptshare IP (should be `40.114.6.151`) on the callback URL `/nuxeo/site/conceptshare/callback`
 4. Edit `nuxeo.conf` and set the following properties:
