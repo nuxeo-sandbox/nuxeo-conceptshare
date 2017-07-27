@@ -23,10 +23,11 @@ public class TestReviewAdapter {
 		String testTitle = "My Adapter Title";
 
 		DocumentModel doc = session.createDocumentModel("/", "test-adapter", doctype);
+		doc = session.createDocument(doc);
+		// session.save() is only needed in the context of unit tests
+
 		ReviewAdapter adapter = doc.getAdapter(ReviewAdapter.class);
 		adapter.setTitle(testTitle);
-		adapter.create();
-		// session.save() is only needed in the context of unit tests
 		session.save();
 
 		Assert.assertNotNull("The adapter can't be used on the " + doctype + " document type", adapter);

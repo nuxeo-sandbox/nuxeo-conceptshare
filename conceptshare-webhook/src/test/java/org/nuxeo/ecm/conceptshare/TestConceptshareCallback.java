@@ -48,7 +48,7 @@ import com.sun.jersey.api.client.WebResource;
 @Jetty(port = 18090)
 @Deploy({ "org.nuxeo.ecm.conceptshare.core", "org.nuxeo.ecm.conceptshare.webhook",
 		"org.nuxeo.ecm.platform.web.common" , "org.nuxeo.ecm.directory.api", "org.nuxeo.ecm.directory.sql"})
-@LocalDeploy({ "org.nuxeo.ecm.conceptshare.webhook:conceptshare-callback-test-contrib.xml", "org.nuxeo.ecm.conceptshare.webhook:conceptshare-diretory-test-contrib.xml" })
+@LocalDeploy({ "org.nuxeo.ecm.conceptshare.webhook:conceptshare-callback-test-contrib.xml"})
 @RepositoryConfig(init = CSRepositoryInit.class, cleanup = Granularity.METHOD)
 @PartialDeploy(bundle = "studio.extensions.conceptshare-integration", extensions = TargetExtensions.Automation.class)
 public class TestConceptshareCallback {

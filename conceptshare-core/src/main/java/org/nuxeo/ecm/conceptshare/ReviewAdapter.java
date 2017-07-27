@@ -40,11 +40,6 @@ public class ReviewAdapter {
 	// because this would be handled through workflows / buttons / events in your
 	// application.
 	//
-	public void create() {
-		CoreSession session = doc.getCoreSession();
-		session.createDocument(doc);
-	}
-
 	public void save() {
 		CoreSession session = doc.getCoreSession();
 		session.saveDocument(doc);
