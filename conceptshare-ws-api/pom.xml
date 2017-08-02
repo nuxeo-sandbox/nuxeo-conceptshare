@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.nuxeo.ecm.conceptshare</groupId>
     <artifactId>conceptshare-parent</artifactId>
-    <version>1.0.0-Beta-SNAPSHOT</version>
+    <version>8.10-SNAPSHOT</version>
   </parent>
   <artifactId>conceptshare-ws-api</artifactId>
   <name>Conceptshare webservices api</name>

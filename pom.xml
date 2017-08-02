@@ -8,13 +8,13 @@
   </parent>
   <groupId>org.nuxeo.ecm.conceptshare</groupId>
   <artifactId>conceptshare-parent</artifactId>
-  <version>1.0.0-Beta-SNAPSHOT</version>
+  <version>8.10-SNAPSHOT</version>
   <name>Conceptshare parent</name>
   <description>Integrate conceptshare feature with nuxeo</description>
   <packaging>pom</packaging>
 
   <properties>
-    <conceptshare.version>1.0.0-Beta-SNAPSHOT</conceptshare.version>
+    <conceptshare.version>8.10-SNAPSHOT</conceptshare.version>
     <nuxeo.distribution.version>8.10</nuxeo.distribution.version>
     <conceptshare.studio.version>1.0.2--master-SNAPSHOT</conceptshare.studio.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
