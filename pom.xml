@@ -15,7 +15,7 @@
 
   <properties>
     <conceptshare.version>8.10-SNAPSHOT</conceptshare.version>
-    <nuxeo.distribution.version>8.10-HF11</nuxeo.distribution.version>
+    <nuxeo.distribution.version>8.10</nuxeo.distribution.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
