@@ -127,6 +127,8 @@ public class ConceptshareServiceImpl extends DefaultComponent implements Concept
                     ((BindingProvider) apiService.getBasicHttpBindingIAPIService()).getRequestContext().put(
                             BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointUrl);
                     csService = apiService.getBasicHttpBindingIAPIService();
+                    ((BindingProvider) csService).getRequestContext().put(
+                            "org.apache.cxf.message.Message.ENDPOINT_ADDRESS", endpointUrl);
                 } catch (MalformedURLException e) {
                     log.error("WSDL malformed URL : " + wsdlUrl + ". Conceptshare integration won't work", e);
 
