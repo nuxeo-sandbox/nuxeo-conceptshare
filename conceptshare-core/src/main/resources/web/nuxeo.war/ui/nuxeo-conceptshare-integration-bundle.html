@@ -1,0 +1,33 @@
+<link rel="import" href="conceptshare-template/actions/nuxeo-conceptshare-access-review.html">
+<link rel="import" href="conceptshare-template/actions/nuxeo-conceptshare-end-review.html">
+<link rel="import" href="conceptshare-template/actions/nuxeo-conceptshare-new-review.html">
+<!-- Contribution of element 'nuxeo-conceptshare-access-review' for slot 'DOCUMENT_ACTIONS' -->
+<nuxeo-slot-content name="accessReview" slot="DOCUMENT_ACTIONS" order="-10" >
+  <template>
+    <nuxeo-filter document="[[document]]" facet="CS-Review">
+      <template>
+        <nuxeo-conceptshare-access-review document="[[document]]"></nuxeo-conceptshare-access-review>
+      </template>
+    </nuxeo-filter>
+  </template>
+</nuxeo-slot-content>
+<!-- Contribution of element 'nuxeo-conceptshare-end-review' for slot 'DOCUMENT_ACTIONS' -->
+<nuxeo-slot-content name="endReview" slot="DOCUMENT_ACTIONS" order="-10" >
+  <template>
+    <nuxeo-filter document="[[document]]" facet="CS-Review">
+      <template>
+        <nuxeo-conceptshare-end-review document="[[document]]"></nuxeo-conceptshare-end-review>
+      </template>
+    </nuxeo-filter>
+  </template>
+</nuxeo-slot-content>
+<!-- Contribution of element 'nuxeo-conceptshare-new-review' for slot 'DOCUMENT_ACTIONS' -->
+<nuxeo-slot-content name="newReview" slot="DOCUMENT_ACTIONS" order="-10" >
+  <template>
+    <nuxeo-filter document="[[document]]" facet="CS-Review">
+      <template>
+        <nuxeo-conceptshare-new-review document="[[document]]"></nuxeo-conceptshare-new-review>
+      </template>
+    </nuxeo-filter>
+  </template>
+</nuxeo-slot-content>

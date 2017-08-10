@@ -1,0 +1,287 @@
+<!--
+Show hide slots and buttons that are vulcanized and not (yet) configurable in ViewDesigner
+
+Use the WebInspector to find the values to pass:
+* For Drawer buttons, change doHideDrawerButtons() and pass an array of DOM _names_.
+Use the name of the nuxeo-menu-icon element (not the paper-icon-button). For example, "expiredSearch":
+<nuxeo-menu-icon name="expiredSearch" . . .></nuxeo-menu-icon>
+
+* For toolbar buttons, change doHideToolbarButtons() and pass an array of _tagNames_.
+Use the tag name of the element, for example:
+nuxeo-add-to-collection-button
+
+================================================
+IMPORTANT ** IMPORTANT ** IMPORTANT ** IMPORTANT
+================================================
+* This file is temporary, the time for WebUI/ViewDesigner to provide an _easy_ way to show/hide default slots, based on current user and current document
+=> We don't spend time in optimisation of loops etc.
+
+* It is a workaround, based on the existence, in the dom, of specific elements and classes, with a timeout and a loop, so after 5 seconds, if the parent elements are not found, we stop trying to hide anything
+=> Very fragile, somewhow :-)
+-->
+<dom-module id="nuxeo-dam-hack">
+  <template>
+
+    <nuxeo-connection id="currentConnection"></nuxeo-connection>
+
+  </template>
+
+  <script>
+  Polymer({
+    is: 'nuxeo-dam-hack',
+    properties: {
+      document: {
+        type: Object,
+        observer: '_documentChanged'
+      },
+
+      // This is the object as filled by the nuxeo-connection
+      currentUser: {
+        type: Object,
+        value: null,
+        observer: "_currentUserChanged"
+      },
+
+      drawerReadyCount: {
+        type: Number,
+        value: 0
+      },
+
+      docActionsReadyCount: {
+        type: Number,
+        value: 0
+      }
+    },
+
+    // Doc changed => we can hide the toolbar button
+    _documentChanged: function(newValue, oldValue) {
+      if(!!newValue && newValue["entity-type"] === "document") {
+        if(this.currentUser) {
+          this.hideToolbarButtons();
+        } else {
+          let connection = this.$.currentConnection;
+          connection.connect()
+            .then(function(userObj) {
+            this.currentUser = userObj;
+            this.hideToolbarButtons();
+          }.bind(this))
+            .catch(function(error) {
+            console.error("connection.connect(): " + error);
+            debugger;
+          });
+        }
+      }
+    },
+
+    _currentUserChanged: function (newValue, oldValue) {
+      if(newValue) {
+        this.hideDrawerButtons();
+      }
+    },
+
+    // Doc ready => we can hide the drawer buttons (not the toolbar buttons)
+    ready: function() {
+      // Sometime, nuxeo-conneciton is not totally ready (premise takes more time)
+      // So we force the connection (it will occurs only if needed)
+      let connection = this.$.currentConnection;
+      if(connection.user) {
+        this.currentUser = connection.user;
+      } else {
+        connection.connect()
+          .then(function(userObj) {
+          this.currentUser = userObj;
+        }.bind(this))
+          .catch(function(error) {
+          console.error("connection.connect(): " + error);
+          debugger;
+        });
+      }
+    },
+
+    getCurrentUserGroups: function() {
+      let groups;
+      groups = [];
+      currentConnection = this.$.currentConnection;
+      if(this.currentUser) {
+        this.currentUser.extendedGroups.forEach(function(groupObj) {
+          groups.push(groupObj.label);
+        });
+      } else {
+        console.warn("this.currentUser is not ready when calling getCurrentUserGroups()");
+      }
+
+      return groups;
+    },
+
+    isDrawerReady: function () {
+      return jQuery("#drawer").length > 0;
+    },
+
+    areToolbarButtonsReady: function() {
+      return jQuery("#mainContainer .document-actions").length > 0;
+    },
+
+    hideDrawerButtons: function () {
+
+      let groups;
+
+      console.log("hideDrawerButtons: " + this.drawerReadyCount);
+      if(this.isDrawerReady()) {
+        this.doHideDrawerButtons(["defaultSearch", "expiredSearch", "assetsSearch","tasks"]);
+        // Drawer buttons we hide only depending on current user
+        groups = this.getCurrentUserGroups();
+        if(groups.indexOf("MainUsers") < 0) {
+          /*this.doHideDrawerButtons([
+            "tasks", "favorites", "collections",
+            "clipboard", "administration"
+          ]);*/
+        }
+      } else {
+        this.drawerReadyCount += 1;
+        if(this.drawerReadyCount < 11) {
+          //ES6 way of calling setTimeout while keeping the this object we want
+          window.setTimeout(() => {
+            this.hideDrawerButtons();
+          }, 500);
+        } else {
+          console.log("Stop searching for the drawer buttons");
+        }
+      }
+    },
+
+    hideToolbarButtons: function() {
+      console.log("hideToolbarButtons: " + this.docActionsReadyCount);
+      if(this.areToolbarButtonsReady()) {
+        // Uncomment and adapt
+        /*
+      this.doHideToolbarButtons([
+        "nuxeo-add-to-collection-button",
+        "nuxeo-favorites-toggle-button",
+        "nuxeo-share-button",
+        "nuxeo-notifications-toggle-button",
+        "nuxeo-clipboard-toggle-button",
+        "nuxeo-lock-toggle-button",
+        "nuxeo-preview-button",
+        "nuxeo-export-button",
+        "nuxeo-drive-sync-toggle-button"
+      ]);
+      */
+
+        // If something must be done depening on user groups, use:
+        /*
+      let groups = this.getCurrentUserGroups();
+      if(groups.indexOf("MainUsers") < 0) {
+        this.doHideToolbarButtons([
+          "nuxeo-add-to-collection-button",
+          "nuxeo-favorites-toggle-button",
+          "nuxeo-share-button",
+          "nuxeo-notifications-toggle-button",
+          "nuxeo-clipboard-toggle-button",
+          "nuxeo-lock-toggle-button",
+          "nuxeo-preview-button",
+          "nuxeo-export-button",
+          "nuxeo-drive-sync-toggle-button"
+        ]);
+      }
+      */
+
+      } else {
+        this.docActionsReadyCount += 1;
+        if(this.docActionsReadyCount < 11) {
+          window.setTimeout(() => {
+            this.hideToolbarButtons();
+          }, 500);
+        } else {
+          console.log("Stop searching for the toolbar buttons");
+        }
+      }
+    },
+
+    /* Return true if all buttons could be made invisible
+       Return false if at least one was not found in the DOM
+    */
+    doHideDrawerButtons: function (arrayOfDomNames) {
+      let drawerButtons, i, max, oneObj,
+          jQueryObj, objName, index;
+
+      //Error check
+      if(!Array.isArray(arrayOfDomNames)) {
+        console.error("arrayOfDomNames should be an array");
+        return false;
+      }
+
+      drawerButtons = jQuery("#drawer paper-menu nuxeo-menu-icon");
+      max = drawerButtons.length - 1;
+      for (i = 0; i < max; ++i) {
+        oneObj = drawerButtons[i];
+        objName = oneObj.name;
+        if(typeof objName === "string") {
+          index = arrayOfDomNames.indexOf(objName);
+          if(index > -1) {
+            jQueryObj = jQuery(oneObj);
+            jQueryObj.css("display", "none");
+            console.log("Hidding drawer button: " + oneObj.name);
+            arrayOfDomNames.splice(index, 1);
+          }
+        }
+      }
+
+      // Handle exception. For some reason, assetsSearch is not always found
+      // As we are writing a quick hack waiting for a clean implementation,
+      // we don't spend time. The thing is: this nuxeo-menu-icon also have
+      // a DOM ID, let's use it
+      index = arrayOfDomNames.indexOf("assetsSearch");
+      if(index > -1) {
+        jQueryObj = jQuery("#assetsSearchButton");
+        if(jQueryObj) {
+          jQueryObj.css("display", "none");
+          console.log("SPECIAL Hidding drawer button: " + "assetsSearch");
+          arrayOfDomNames.splice(index, 1);
+        }
+      }
+
+      if(arrayOfDomNames.length > 0) {
+        console.log("Could not find the drawer button(s): " + arrayOfDomNames);
+        return false;
+      }
+
+      return true;
+    },
+
+
+    /* Return true if all buttons could be made invisible
+     Return false if at least one was not found in the DOM
+    */
+    doHideToolbarButtons: function(arrayOfTagNames) {
+      let notFound, jQueryObj;
+
+      //Error check
+      if(!Array.isArray(arrayOfTagNames)) {
+        console.error("arrayOfDomNames should be an array");
+        return false;
+      }
+
+      notFound = [];
+      for(var tagName of arrayOfTagNames) {
+        jQueryObj = jQuery("#mainContainer .document-actions " + tagName);
+        if(jQueryObj.length > 0) {
+          jQueryObj.css("display", "none");
+          console.log("Hidding toolbar button: " + tagName);
+        } else {
+          notFound.push(tagName)
+        }
+      }
+
+      if(notFound.length > 0) {
+        console.log("Could not find the toolbar button(s): " + notFound);
+        return false;
+      }
+
+      return true;
+    }
+
+  });
+  </script>
+
+</dom-module>
+

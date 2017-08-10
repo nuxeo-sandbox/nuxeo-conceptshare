@@ -15,10 +15,6 @@
       <groupId>org.nuxeo.ecm.platform</groupId>
       <artifactId>nuxeo-platform-collections-core</artifactId>
     </dependency>
-  	<dependency>
-      <groupId>nuxeo-studio</groupId>
-      <artifactId>conceptshare-integration</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.nuxeo.ecm.conceptshare</groupId>
       <artifactId>conceptshare-ws-api</artifactId>

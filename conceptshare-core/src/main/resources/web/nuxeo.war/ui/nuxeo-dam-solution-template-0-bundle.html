@@ -1,0 +1,65 @@
+<!-- Imports -->
+<link rel="import" href="dam-template/document/nuxeo-dam-asset-document-view.html">
+<link rel="import" href="dam-template/document/nuxeo-dam-folderish-document-view.html">
+<link rel="import" href="dam-template/tasks/nuxeo-dam-task-list.html">
+<link rel="import" href="dam-template/actions/nuxeo-dam-creative-review-start.html">
+<link rel="import" href="nuxeo-dam-hack.html">
+<link rel="import" href="dam-template/tasks/nuxeo-dam-task-asset-view.html">
+
+<!-- Contribution of element 'nuxeo-dam-folderish-document-view' for slot 'DOCUMENT_VIEWS_PAGES' -->
+<nuxeo-slot-content name="customFolderishView" slot="DOCUMENT_VIEWS_PAGES" >
+  <template>
+    <nuxeo-filter document="[[document]]" type="Workspace,Folder,BrandPortal">
+      <template>
+        <nuxeo-dam-folderish-document-view document="[[document]]" name="view"></nuxeo-dam-folderish-document-view>
+      </template>
+    </nuxeo-filter>
+  </template>
+</nuxeo-slot-content>
+<!-- Contribution of element 'nuxeo-dam-asset-document-view' for slot 'DOCUMENT_VIEWS_PAGES' -->
+<nuxeo-slot-content name="customPictureView" slot="DOCUMENT_VIEWS_PAGES" >
+  <template>
+    <nuxeo-filter document="[[document]]" facet="Picture,Video">
+      <template>
+        <nuxeo-dam-asset-document-view document="[[document]]" name="view"></nuxeo-dam-asset-document-view>
+      </template>
+    </nuxeo-filter>
+  </template>
+</nuxeo-slot-content>
+<!-- Contribution of element 'nuxeo-search-form' for slot 'DRAWER_PAGES' -->
+<nuxeo-slot-content name="damSearch" slot="DRAWER_PAGES" >
+  <template>
+    <nuxeo-search-form name="damSearch" search-name="dam" auto="" display-auto-control="" provider="asset-search" schemas="dublincore,common,uid,picture,file,video,business,asset"></nuxeo-search-form>
+  </template>
+</nuxeo-slot-content>
+<!-- Contribution of element 'nuxeo-dam-task-list' for slot 'DRAWER_PAGES' -->
+<nuxeo-slot-content name="damTasks" slot="DRAWER_PAGES" >
+  <template>
+    <nuxeo-dam-task-list id="dam-tasks-list" name="damTasks"></nuxeo-dam-task-list>
+  </template>
+</nuxeo-slot-content>
+<!-- Contribution of element 'nuxeo-menu-icon' for slot 'SEARCH_MENU_BUTTONS' -->
+<nuxeo-slot-content name="damSearch" slot="SEARCH_MENU_BUTTONS" >
+  <template>
+    <nuxeo-menu-icon name="damSearch" icon="icons:search" label="DAM"></nuxeo-menu-icon>
+  </template>
+</nuxeo-slot-content>
+<!-- Contribution of element 'nuxeo-menu-icon' for slot 'SEARCH_MENU_BUTTONS' -->
+<nuxeo-slot-content name="damTasks" slot="SEARCH_MENU_BUTTONS" >
+  <template>
+    <nuxeo-menu-icon name="damTasks" icon="icons:check-box" id="damTasks" label="app.tasks"></nuxeo-menu-icon>
+  </template>
+</nuxeo-slot-content>
+<!-- Contribution of element 'nuxeo-dam-bulk-creative-review-start' for slot 'RESULTS_SELECTION_ACTIONS' -->
+<nuxeo-slot-content name="BulkStartCreativeReview" slot="RESULTS_SELECTION_ACTIONS" >
+  <template>
+    <nuxeo-dam-creative-review-start documents="{{selectedItems}}"></nuxeo-dam-creative-review-start>
+  </template>
+</nuxeo-slot-content>
+<!-- Contribution of element 'nuxeo-dam-tempworkarounds' for slot 'SEARCH_MENU_BUTTONS' -->
+<nuxeo-slot-content name="unused" slot="SEARCH_MENU_BUTTONS" >
+  <template>
+    <nuxeo-dam-hack document="[[document]]"></nuxeo-dam-hack>
+  </template>
+</nuxeo-slot-content>
+

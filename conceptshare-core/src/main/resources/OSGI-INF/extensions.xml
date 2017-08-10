@@ -1,0 +1,1390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component name="studio.extensions.conceptshare-integration" version="1.0.0">
+  <require>org.nuxeo.runtime.started</require>
+  <extension target="org.nuxeo.ecm.core.schema.TypeService" point="schema">
+    <schema name="cs-reviewsummery" prefix="cs-reviewsummery" override="true" src="data/schemas/cs-reviewsummery.xsd"/>
+    <schema name="cs-reviews" prefix="cs-reviews" override="true" src="data/schemas/cs-reviews.xsd"/>
+    <schema name="CS-FileProperties" prefix="CSFileProp" override="true" src="data/schemas/CS-FileProperties.xsd"/>
+    <schema name="CS-ReviewProperties" prefix="CSReviewProp" override="true" src="data/schemas/CS-ReviewProperties.xsd"/>
+    <schema name="concep_as" prefix="concep_as" override="true" src="data/schemas/concep_as.xsd"/>
+  </extension>
+  <extension target="org.nuxeo.ecm.core.schema.TypeService" point="doctype">
+    <doctype name="CS-ReviewSummary" extends="File">
+      <schema name="cs-reviewsummery"/>
+      <schema name="CS-ReviewProperties"/>
+      <facet name="Thumbnail"/>
+    </doctype>
+    <doctype name="Collection" append="true">
+      <subtypes>
+        <type>CS-ReviewSummary</type>
+      </subtypes>
+    </doctype>
+    <doctype name="Workspace" append="true">
+      <subtypes>
+        <type>CS-ReviewSummary</type>
+      </subtypes>
+    </doctype>
+    <doctype name="Folder" append="true">
+      <subtypes>
+        <type>CS-ReviewSummary</type>
+      </subtypes>
+    </doctype>
+    <doctype name="CS-Reviews" extends="Folder">
+      <schema name="cs-reviews"/>
+      <schema name="uid"/>
+      <subtypes>
+        <type>CS-ReviewSummary</type>
+      </subtypes>
+    </doctype>
+    <doctype name="Workspace" append="true">
+      <subtypes>
+        <type>CS-Reviews</type>
+      </subtypes>
+    </doctype>
+    <doctype name="Folder" append="true">
+      <subtypes>
+        <type>CS-Reviews</type>
+      </subtypes>
+    </doctype>
+    <doctype name="CS-CollectionContent_cv" extends="Document">
+      <facet name="ContentViewDisplay"/>
+      <facet name="SavedSearch"/>
+      <facet name="HiddenInNavigation"/>
+    </doctype>
+    <doctype name="concep_as" extends="DefaultSearch">
+      <schema name="concep_as"/>
+    </doctype>
+ 
+    <facet name="CS-File">
+      
+      <schema name="CS-FileProperties"/>
+    
+    </facet>
+  
+    
+    <facet name="CS-Review">
+      
+      <schema name="CS-ReviewProperties"/>
+    
+    </facet>
+  
+  </extension>  <extension target="org.nuxeo.ecm.core.lifecycle.LifeCycleService" point="types">    <types>      <type name="CS-ReviewSummary">default</type>
+    </types>
+    <types>
+      <type name="CS-Reviews">default</type>
+    </types>
+  </extension>
+  <extension target="org.nuxeo.ecm.platform.types.TypeService" point="types">
+    <type id="CS-ReviewSummary">
+      <label>Review Summary</label>
+      <category>SimpleDocument</category>
+      <icon>/img/CS-Review.png</icon>
+      <bigIcon>/img/CS-Review-Big.png</bigIcon>
+      <description></description>
+      <default-view>view_documents</default-view>
+      <layouts mode="create">
+        <layout>layout@CS-ReviewSummary-create</layout>
+      </layouts>
+      <layouts mode="edit">
+        <layout>layout@CS-ReviewSummary-edit</layout>
+      </layouts>
+      <layouts mode="view">
+        <layout>layout@CS-ReviewSummary-view</layout>
+      </layouts>
+    </type>
+    <type id="CS-Reviews">
+      <label>Review Summaries</label>
+      <category>Collaborative</category>
+      <icon>/img/CS-ReviewsFolder.png</icon>
+      <bigIcon>/img/CS-ReviewsFolder-Big.png</bigIcon>
+      <description>All the past review summaries are initially stored here.</description>
+      <default-view>view_documents</default-view>
+      <layouts mode="create">
+        <layout>layout@CS-Reviews-create</layout>
+      </layouts>
+      <layouts mode="edit">
+        <layout>layout@CS-Reviews-edit</layout>
+      </layouts>
+      <layouts mode="view">
+        <layout>layout@CS-Reviews-view</layout>
+      </layouts>
+      <contentViews category="content">
+        <contentView showInExportView="false">document_content</contentView>
+      </contentViews>
+      <contentViews category="trash_content">
+        <contentView showInExportView="false">document_trash_content</contentView>
+      </contentViews>
+    </type>
+    <type id="concep_as">
+      <label>DefaultSearch</label>
+      <icon>/icons/search.png</icon>
+      <bigIcon>/icons/search_100.png</bigIcon>
+      <description>DefaultSearch.description</description>
+      <default-view>home_view_documents</default-view>
+      <layouts mode="any">
+        <layout>heading</layout>
+        <layout>concep_as@layout</layout>
+      </layouts>
+    </type>
+  </extension>
+  <extension target="org.nuxeo.ecm.platform.actions.ActionService" point="actions">
+    <action id="CS-ResendFile" label="Resend to Review" enabled="true" order="0" type="link" immediate="false" icon="/img/CS-ResendFile.png" link="#{operationActionBean.doOperation('CS-ResendFile')}">
+      <category>DOCUMENT_UPPER_ACTION</category>
+      <filter id="filter@CS-ResendFile">
+        <rule grant="true">
+          <type>File</type>
+          <condition>#{currentDocument.CSFileProp.FileStatus == 'Failed'}</condition>
+        </rule>
+        <rule grant="false">
+          <condition>document.isImmutable() || document.isProxy()</condition>
+        </rule>
+      </filter>
+    </action>
+    <action id="CS-CollectionView-ReviewControls" link="/studio_tabs/studio_tab_CS-CollectionView-ReviewControls.xhtml" order="0" label="Review" type="rest_document_link">
+      <category>VIEW_ACTION_LIST</category>
+      <filter id="filter@tab@CS-CollectionView-ReviewControls">
+        <rule grant="true">
+          <condition>#{currentDocument.CSReviewProp.ReviewId!= null}</condition>
+        </rule>
+      </filter>
+    </action>
+    <action id="TAB_VIEW_FOLDERISH" link="/incl/tabs/document_view.xhtml" order="11" label="action.view.summary" icon="/icons/file.gif">
+      <category>VIEW_ACTION_LIST</category>
+      <filter id="viewTabForFolderish">
+        <rule grant="true">
+          <type>CS-Reviews</type>
+        </rule>
+      </filter>
+    </action>
+  </extension>
+  <extension target="org.nuxeo.ecm.platform.forms.layout.WebLayoutManager" point="layouts">
+    <layout name="layout@CS-ReviewSummary-create">
+      <templates>
+        <template mode="any">/layouts/conceptshare-integration_layout_template.xhtml</template>
+      </templates>
+      <rows>
+        <row>
+          <properties mode="any">
+            <property name="nxl_colspan_0">1</property>
+          </properties>
+          <widget>title</widget>
+        </row>
+        <row>
+          <properties mode="any">
+            <property name="nxl_colspan_0">1</property>
+          </properties>
+          <widget>description</widget>
+        </row>
+        <row>
+          <properties mode="any">
+            <property name="nxl_colspan_0">1</property>
+          </properties>
+          <widget/>
+        </row>
+      </rows>
+      <widget name="title" type="text">
+        <labels>
+          <label mode="any">Title</label>
+        </labels>
+        <translated>false</translated>
+        <fields>
+          <field>dc:title</field>
+        </fields>
+        <properties widgetMode="edit">
+          <property name="styleClass">dataInputText</property>
+          <property name="required">true</property>
+        </properties>
+      </widget>
+      <widget name="description" type="textarea">
+        <labels>
+          <label mode="any">Description</label>
+        </labels>
+        <translated>false</translated>
+        <fields>
+          <field>dc:description</field>
+        </fields>
+        <properties widgetMode="edit">
+          <property name="styleClass">dataInputText</property>
+        </properties>
+      </widget>
+    </layout>
+    <layout name="layout@CS-ReviewSummary-edit">
+      <templates>
+        <template mode="any">/layouts/conceptshare-integration_layout_template.xhtml</template>
+      </templates>
+      <rows>
+        <row>
+          <properties mode="any">
+            <property name="nxl_colspan_0">1</property>
+          </properties>
+          <widget>title</widget>
+        </row>
+        <row>
+          <properties mode="any">
+            <property name="nxl_colspan_0">1</property>
+          </properties>
+          <widget>description</widget>
+        </row>
+        <row>
+          <properties mode="any">
+            <property name="nxl_colspan_0">1</property>
+          </properties>
+          <widget/>
+        </row>
+      </rows>
+      <widget name="title" type="text">
+        <labels>
+          <label mode="any">Title</label>
+        </labels>
+        <translated>false</translated>
+        <fields>
+          <field>dc:title</field>
+        </fields>
+        <properties widgetMode="edit">
+          <property name="styleClass">dataInputText</property>
+          <property name="required">true</property>
+        </properties>
+      </widget>
+      <widget name="description" type="textarea">
+        <labels>
+          <label mode="any">Description</label>
+        </labels>
+        <translated>false</translated>
+        <fields>
+          <field>dc:description</field>
+        </fields>
+        <properties widgetMode="edit">
+          <property name="styleClass">dataInputText</property>
+        </properties>
+      </widget>
+    </layout>
+    <layout name="layout@CS-ReviewSummary-view">
+      <templates>
+        <template mode="any">/layouts/conceptshare-integration_layout_template.xhtml</template>
+      </templates>
+      <rows>
+        <row>
+          <properties mode="any">
+            <property name="nxl_colspan_0">1</property>
+          </properties>
+          <widget>title</widget>
+        </row>
+        <row>
+          <properties mode="any">
+            <property name="nxl_colspan_0">1</property>
+          </properties>
+          <widget>description</widget>
+        </row>
+        <row>
+          <properties mode="any">
+            <property name="nxl_colspan_0">1</property>
+          </properties>
+          <widget>ReviewEndDate</widget>
+        </row>
+        <row>
+          <properties mode="any">
+            <property name="nxl_colspan_0">1</property>
+          </properties>
+          <widget>TypeOfReview</widget>
+        </row>
+        <row>
+          <properties mode="any">
+            <property name="nxl_colspan_0">1</property>
+          </properties>
+          <widget>ReviewCreator</widget>
+        </row>
+        <row>
+          <properties mode="any">
+            <property name="nxl_colspan_0">1</property>
+          </properties>
+          <widget>ReviewName</widget>
+        </row>
+      </rows>
+      <widget name="title" type="text">
+        <labels>
+          <label mode="any">Title</label>
+        </labels>
+        <translated>false</translated>
+        <fields>
+          <field>dc:title</field>
+        </fields>
+      </widget>
+      <widget name="description" type="textarea">
+        <labels>
+          <label mode="any">Description</label>
+        </labels>
+        <translated>false</translated>
+        <fields>
+          <field>dc:description</field>
+        </fields>
+      </widget>
+      <widget name="ReviewEndDate" type="datetime">
+        <labels>
+          <label mode="any">Review End Date</label>
+        </labels>
+        <translated>false</translated>
+        <fields>
+          <field>CSReviewProp:ReviewEndDate</field>
+        </fields>
+      </widget>
+      <widget name="TypeOfReview" type="suggestOneDirectory">
+        <labels>
+          <label mode="any">Type Of Review</label>
+        </labels>
+        <translated>false</translated>
+        <fields>
+          <field>CSReviewProp:TypeOfReview</field>
+        </fields>
+        <properties widgetMode="view">
+          <property name="directoryName">CS-TypeofReview</property>
+        </properties>
+      </widget>
+      <widget name="ReviewCreator" type="singleUserSuggestion">
+        <labels>
+          <label mode="any">Review Creator</label>
+        </labels>
+        <translated>false</translated>
+        <fields>
+          <field>CSReviewProp:ReviewCreator</field>
+        </fields>
+        <properties widgetMode="view">
+          <property name="prefixed">true</property>
+        </properties>
+      </widget>
+      <widget name="ReviewName" type="text">
+        <labels>
+          <label mode="any">Review Name</label>
+        </labels>
+        <translated>false</translated>
+        <fields>
+          <field>CSReviewProp:ReviewName</field>
+        </fields>
+      </widget>
+    </layout>
+    <layout name="layout@CS-Reviews-create">
+      <templates>
+        <template mode="any">/layouts/conceptshare-integration_layout_template.xhtml</template>
+      </templates>
+      <rows>
+        <row>
+          <properties mode="any">
+            <property name="nxl_colspan_0">1</property>
+          </properties>
+          <widget>title</widget>
+        </row>
+        <row>
+          <properties mode="any">
+            <property name="nxl_colspan_0">1</property>
+          </properties>
+          <widget>description</widget>
+        </row>
+        <row>
+          <properties mode="any">
+            <property name="nxl_colspan_0">1</property>
+          </properties>
+          <widget/>
+        </row>
+      </rows>
+      <widget name="title" type="text">
+        <labels>
+          <label mode="any">Title</label>
+        </labels>
+        <translated>false</translated>
+        <fields>
+          <field>dc:title</field>
+        </fields>
+        <properties widgetMode="edit">
+          <property name="styleClass">dataInputText</property>
+          <property name="required">true</property>
+        </properties>
+      </widget>
+      <widget name="description" type="textarea">
+        <labels>
+          <label mode="any">Description</label>
+        </labels>
+        <translated>false</translated>
+        <fields>
+          <field>dc:description</field>
+        </fields>
+        <properties widgetMode="edit">
+          <property name="styleClass">dataInputText</property>
+        </properties>
+      </widget>
+    </layout>
+    <layout name="layout@CS-Reviews-edit">
+      <templates>
+        <template mode="any">/layouts/conceptshare-integration_layout_template.xhtml</template>
+      </templates>
+      <rows>
+        <row>
+          <properties mode="any">
+            <property name="nxl_colspan_0">1</property>
+          </properties>
+          <widget>title</widget>
+        </row>
+        <row>
+          <properties mode="any">
+            <property name="nxl_colspan_0">1</property>
+          </properties>
+          <widget>description</widget>
+        </row>
+        <row>
+          <properties mode="any">
+            <property name="nxl_colspan_0">1</property>
+          </properties>
+          <widget/>
+        </row>
+      </rows>
+      <widget name="title" type="text">
+        <labels>
+          <label mode="any">Title</label>
+        </labels>
+        <translated>false</translated>
+        <fields>
+          <field>dc:title</field>
+        </fields>
+        <properties widgetMode="edit">
+          <property name="styleClass">dataInputText</property>
+          <property name="required">true</property>
+        </properties>
+      </widget>
+      <widget name="description" type="textarea">
+        <labels>
+          <label mode="any">Description</label>
+        </labels>
+        <translated>false</translated>
+        <fields>
+          <field>dc:description</field>
+        </fields>
+        <properties widgetMode="edit">
+          <property name="styleClass">dataInputText</property>
+        </properties>
+      </widget>
+    </layout>
+    <layout name="layout@CS-Reviews-view">
+      <templates>
+        <template mode="any">/layouts/conceptshare-integration_layout_template.xhtml</template>
+      </templates>
+      <rows>
+        <row>
+          <properties mode="any">
+            <property name="nxl_colspan_0">1</property>
+          </properties>
+          <widget>title</widget>
+        </row>
+        <row>
+          <properties mode="any">
+            <property name="nxl_colspan_0">1</property>
+          </properties>
+          <widget>description</widget>
+        </row>
+        <row>
+          <properties mode="any">
+            <property name="nxl_colspan_0">1</property>
+          </properties>
+          <widget/>
+        </row>
+      </rows>
+      <widget name="title" type="text">
+        <labels>
+          <label mode="any">Title</label>
+        </labels>
+        <translated>false</translated>
+        <fields>
+          <field>dc:title</field>
+        </fields>
+      </widget>
+      <widget name="description" type="textarea">
+        <labels>
+          <label mode="any">Description</label>
+        </labels>
+        <translated>false</translated>
+        <fields>
+          <field>dc:description</field>
+        </fields>
+      </widget>
+    </layout>
+    <layout name="CS-CollectionContentTable">
+      <templates>
+        <template mode="any">/layouts/layout_listing_ajax_template.xhtml</template>
+        <template mode="edit_columns">/layouts/layout_column_selection_template.xhtml</template>
+        <template mode="edit_sort_infos">/layouts/layout_sort_infos_template.xhtml</template>
+        <template mode="edit_sort_infos_map">/layouts/layout_sort_infos_template.xhtml</template>
+        <template mode="csv">/layouts/layout_listing_csv_template.xhtml</template>
+        <template mode="pdf">/layouts/layout_listing_pdf_template.xhtml</template>
+      </templates>
+      <properties mode="any">
+        <property name="showListingHeader">true</property>
+        <property name="showRowEvenOddClass">true</property>
+      </properties>
+      <properties mode="edit_columns">
+        <property name="availableElementsLabel">label.selection.availableColumns</property>
+        <property name="selectedElementsLabel">label.selection.selectedColumns</property>
+        <property name="selectedElementsHelp"></property>
+        <property name="selectSize">10</property>
+        <property name="displayAlwaysSelectedColumns">false</property>
+      </properties>
+      <properties mode="edit_sort_infos">
+        <property name="newSortInfoTemplate">#{documentSearchActions.newSortInfo}</property>
+        <property name="required">false</property>
+      </properties>
+      <properties mode="edit_sort_infos_map">
+        <property name="newSortInfoTemplate">#{documentSearchActions.newSortInfoMap}</property>
+        <property name="required">false</property>
+      </properties>
+      <columns>
+        <column name="listing_thumbnail">
+          <properties mode="any">
+            <property name="useFirstWidgetLabelAsColumnHeader">true</property>
+            <property name="columnStyleClass"></property>
+            <property name="label">Thumbnail</property>
+            <property name="sortPropertyName"></property>
+          </properties>
+          <properties mode="edit_sort_infos">
+            <property name="showInSortInfoSelection">true</property>
+          </properties>
+          <properties mode="edit_sort_infos_map">
+            <property name="showInSortInfoSelection">true</property>
+          </properties>
+          <widget>listing_thumbnail</widget>
+        </column>
+        <column name="listing_title_link">
+          <properties mode="any">
+            <property name="useFirstWidgetLabelAsColumnHeader">true</property>
+            <property name="columnStyleClass"></property>
+            <property name="label">Title</property>
+            <property name="sortPropertyName">dc:title</property>
+          </properties>
+          <properties mode="edit_sort_infos">
+            <property name="showInSortInfoSelection">true</property>
+          </properties>
+          <properties mode="edit_sort_infos_map">
+            <property name="showInSortInfoSelection">true</property>
+          </properties>
+          <widget>listing_title_link</widget>
+        </column>
+        <column name="listing_main_file_format">
+          <properties mode="any">
+            <property name="useFirstWidgetLabelAsColumnHeader">true</property>
+            <property name="columnStyleClass"></property>
+            <property name="label">File Format</property>
+            <property name="sortPropertyName"></property>
+          </properties>
+          <properties mode="edit_sort_infos">
+            <property name="showInSortInfoSelection">true</property>
+          </properties>
+          <properties mode="edit_sort_infos_map">
+            <property name="showInSortInfoSelection">true</property>
+          </properties>
+          <widget>listing_main_file_format</widget>
+        </column>
+        <column name="modified">
+          <properties mode="any">
+            <property name="useFirstWidgetLabelAsColumnHeader">true</property>
+            <property name="columnStyleClass"></property>
+            <property name="label">Modified</property>
+            <property name="sortPropertyName">dc:modified</property>
+          </properties>
+          <properties mode="edit_sort_infos">
+            <property name="showInSortInfoSelection">true</property>
+          </properties>
+          <properties mode="edit_sort_infos_map">
+            <property name="showInSortInfoSelection">true</property>
+          </properties>
+          <widget>modified</widget>
+        </column>
+        <column name="lastContributor">
+          <properties mode="any">
+            <property name="useFirstWidgetLabelAsColumnHeader">true</property>
+            <property name="columnStyleClass"></property>
+            <property name="label">Last Contributor</property>
+            <property name="sortPropertyName">dc:lastContributor</property>
+          </properties>
+          <properties mode="edit_sort_infos">
+            <property name="showInSortInfoSelection">true</property>
+          </properties>
+          <properties mode="edit_sort_infos_map">
+            <property name="showInSortInfoSelection">true</property>
+          </properties>
+          <widget>lastContributor</widget>
+        </column>
+        <column name="FileStatus">
+          <properties mode="any">
+            <property name="useFirstWidgetLabelAsColumnHeader">true</property>
+            <property name="columnStyleClass"></property>
+            <property name="label">File Status</property>
+            <property name="sortPropertyName">CSFileProp:FileStatus</property>
+          </properties>
+          <properties mode="edit_sort_infos">
+            <property name="showInSortInfoSelection">true</property>
+          </properties>
+          <properties mode="edit_sort_infos_map">
+            <property name="showInSortInfoSelection">true</property>
+          </properties>
+          <widget>FileStatus</widget>
+        </column>
+        <column name="listing_version">
+          <properties mode="any">
+            <property name="useFirstWidgetLabelAsColumnHeader">true</property>
+            <property name="columnStyleClass"></property>
+            <property name="label">Version</property>
+            <property name="sortPropertyName"></property>
+          </properties>
+          <properties mode="edit_sort_infos">
+            <property name="showInSortInfoSelection">true</property>
+          </properties>
+          <properties mode="edit_sort_infos_map">
+            <property name="showInSortInfoSelection">true</property>
+          </properties>
+          <widget>listing_version</widget>
+        </column>
+        <column name="nxl_unknown_col" selectedByDefault="false">
+          <properties mode="any">
+            <property name="useFirstWidgetLabelAsColumnHeader">true</property>
+            <property name="columnStyleClass"></property>
+            <property name="label"></property>
+            <property name="sortPropertyName"></property>
+          </properties>
+          <properties mode="edit_sort_infos">
+            <property name="showInSortInfoSelection">true</property>
+          </properties>
+          <properties mode="edit_sort_infos_map">
+            <property name="showInSortInfoSelection">true</property>
+          </properties>
+        </column>
+        <column name="nxl_unknown_col_1" selectedByDefault="false">
+          <properties mode="any">
+            <property name="useFirstWidgetLabelAsColumnHeader">true</property>
+            <property name="columnStyleClass"></property>
+            <property name="label"></property>
+            <property name="sortPropertyName"></property>
+          </properties>
+          <properties mode="edit_sort_infos">
+            <property name="showInSortInfoSelection">true</property>
+          </properties>
+          <properties mode="edit_sort_infos_map">
+            <property name="showInSortInfoSelection">true</property>
+          </properties>
+        </column>
+        <column name="nxl_unknown_col_2" selectedByDefault="false">
+          <properties mode="any">
+            <property name="useFirstWidgetLabelAsColumnHeader">true</property>
+            <property name="columnStyleClass"></property>
+            <property name="label"></property>
+            <property name="sortPropertyName"></property>
+          </properties>
+          <properties mode="edit_sort_infos">
+            <property name="showInSortInfoSelection">true</property>
+          </properties>
+          <properties mode="edit_sort_infos_map">
+            <property name="showInSortInfoSelection">true</property>
+          </properties>
+        </column>
+        <column name="nxl_unknown_col_3" selectedByDefault="false">
+          <properties mode="any">
+            <property name="useFirstWidgetLabelAsColumnHeader">true</property>
+            <property name="columnStyleClass"></property>
+            <property name="label"></property>
+            <property name="sortPropertyName"></property>
+          </properties>
+          <properties mode="edit_sort_infos">
+            <property name="showInSortInfoSelection">true</property>
+          </properties>
+          <properties mode="edit_sort_infos_map">
+            <property name="showInSortInfoSelection">true</property>
+          </properties>
+        </column>
+        <column name="nxl_unknown_col_4" selectedByDefault="false">
+          <properties mode="any">
+            <property name="useFirstWidgetLabelAsColumnHeader">true</property>
+            <property name="columnStyleClass"></property>
+            <property name="label"></property>
+            <property name="sortPropertyName"></property>
+          </properties>
+          <properties mode="edit_sort_infos">
+            <property name="showInSortInfoSelection">true</property>
+          </properties>
+          <properties mode="edit_sort_infos_map">
+            <property name="showInSortInfoSelection">true</property>
+          </properties>
+        </column>
+      </columns>
+      <widget name="listing_thumbnail" type="listing_thumbnail">
+        <labels>
+          <label mode="any">Thumbnail</label>
+        </labels>
+        <translated>false</translated>
+        <fields>
+          <field>data</field>
+        </fields>
+      </widget>
+      <widget name="listing_title_link" type="listing_title_link">
+        <labels>
+          <label mode="any">Title</label>
+        </labels>
+        <translated>false</translated>
+        <fields>
+          <field>data</field>
+          <field>data.ref</field>
+          <field>data.dc.description</field>
+          <field>data.file.content</field>
+          <field>data.file.content.filename</field>
+        </fields>
+      </widget>
+      <widget name="listing_main_file_format" type="listing_main_file_format">
+        <labels>
+          <label mode="any">Main File Format</label>
+        </labels>
+        <translated>false</translated>
+        <fields>
+          <field>data</field>
+        </fields>
+      </widget>
+      <widget name="modified" type="datetime">
+        <labels>
+          <label mode="any">Modified</label>
+        </labels>
+        <translated>false</translated>
+        <fields>
+          <field>data['dc']['modified']</field>
+        </fields>
+      </widget>
+      <widget name="lastContributor" type="singleUserSuggestion">
+        <labels>
+          <label mode="any">Last Contributor</label>
+        </labels>
+        <translated>false</translated>
+        <fields>
+          <field>data['dc']['lastContributor']</field>
+        </fields>
+        <properties widgetMode="view">
+          <property name="prefixed">false</property>
+        </properties>
+        <properties mode="any">
+          <property name="prefixed">false</property>
+        </properties>
+      </widget>
+      <widget name="FileStatus" type="text">
+        <labels>
+          <label mode="any">File Status</label>
+        </labels>
+        <translated>false</translated>
+        <fields>
+          <field>data['CSFileProp']['FileStatus']</field>
+        </fields>
+      </widget>
+      <widget name="listing_version" type="listing_version">
+        <labels>
+          <label mode="any">Version</label>
+        </labels>
+        <translated>false</translated>
+        <fields>
+          <field>data</field>
+        </fields>
+      </widget>
+    </layout>
+    <layout name="concep_as@layout">
+      <templates>
+        <template mode="any">/layouts/conceptshare-integration_layout_template.xhtml</template>
+      </templates>
+      <rows>
+        <row>
+          <properties mode="any">
+            <property name="nxl_colspan_0">1</property>
+          </properties>
+          <widget>container</widget>
+        </row>
+        <row>
+          <properties mode="any"/>
+        </row>
+        <row>
+          <properties mode="any"/>
+        </row>
+        <row>
+          <properties mode="any"/>
+        </row>
+        <row>
+          <properties mode="any"/>
+        </row>
+      </rows>
+      <widget name="container" type="container">
+        <labels>
+          <label mode="any">Full-text</label>
+        </labels>
+        <translated>false</translated>
+        <fields/>
+        <properties widgetMode="edit">
+          <property name="display">block_top</property>
+        </properties>
+        <controls mode="any">
+          <control name="handleLabels">true</control>
+        </controls>
+        <subWidgets>
+          <widget name="sub0" type="text">
+            <labels>
+              <label mode="any">Full Text</label>
+            </labels>
+            <translated>false</translated>
+            <fields>
+              <field>concep_as:system_fulltext</field>
+            </fields>
+            <controls mode="any">
+              <control name="handleLabels">true</control>
+            </controls>
+          </widget>
+        </subWidgets>
+      </widget>
+    </layout>
+    <layout name="CS-CollectionView-ReviewControls@tabLayout">
+      <templates>
+        <template mode="any">/layouts/studio_tab_layout_template.xhtml</template>
+      </templates>
+      <rows>
+        <row>
+          <widget>container</widget>
+          <widget>container_1</widget>
+        </row>
+      </rows>
+      <widget name="container" type="container">
+        <labels>
+          <label mode="any"></label>
+        </labels>
+        <translated>false</translated>
+        <fields>
+          <field></field>
+        </fields>
+        <controls mode="any">
+          <control name="handleLabels">true</control>
+          <control name="gridStyleClass">gridStyle10</control>
+        </controls>
+        <subWidgets>
+          <widget name="sub0" type="contentViewWithForms">
+            <labels>
+              <label mode="any">Content view</label>
+            </labels>
+            <translated>false</translated>
+            <properties widgetMode="view">
+              <property name="contentViewName">CS-CollectionContent</property>
+            </properties>
+            <controls mode="any">
+              <control name="handleLabels">true</control>
+            </controls>
+          </widget>
+        </subWidgets>
+      </widget>
+      <widget name="container_1" type="container">
+        <labels>
+          <label mode="any">Review</label>
+        </labels>
+        <translated>false</translated>
+        <fields>
+          <field></field>
+        </fields>
+        <properties widgetMode="view">
+          <property name="display">block_top</property>
+        </properties>
+        <controls mode="any">
+          <control name="requireSurroundingForm">true</control>
+          <control name="handleLabels">true</control>
+          <control name="gridStyleClass">gridStyle2</control>
+        </controls>
+        <subWidgets>
+          <widget name="sub0" type="template">
+            <labels>
+              <label mode="any">Review Interaction</label>
+            </labels>
+            <translated>false</translated>
+            <fields/>
+            <properties widgetMode="view">
+              <property name="template">/widgets/CS_review_access_interaction.xhtml</property>
+            </properties>
+            <controls mode="any">
+              <control name="handleLabels">true</control>
+            </controls>
+            <subWidgets/>
+          </widget>
+          <widget name="sub1" type="suggestOneDirectory">
+            <labels>
+              <label mode="any">Status:</label>
+            </labels>
+            <translated>false</translated>
+            <fields>
+              <field>CSReviewProp:ReviewStatus</field>
+            </fields>
+            <properties widgetMode="view">
+              <property name="directoryName">cs-reviewstatus</property>
+            </properties>
+          </widget>
+        </subWidgets>
+      </widget>
+    </layout>
+  </extension>
+  <extension target="org.nuxeo.dam.DamService" point="allowedAssetTypes">
+    <allowedAssetType name="CS-ReviewSummary"/>
+  </extension>
+  <extension target="org.nuxeo.ecm.platform.ui.web.ContentViewService" point="contentViews">
+    <contentView name="CS-CollectionContent">
+      <genericPageProvider class="org.nuxeo.elasticsearch.provider.ElasticSearchNxqlPageProvider">
+        <property name="coreSession">#{documentManager}</property>
+        <searchDocumentType>CS-CollectionContent_cv</searchDocumentType>
+        <pattern>SELECT * FROM Document WHERE (ecm:mixinType != 'HiddenInNavigation' AND ecm:isCheckedInVersion = 0 AND ecm:currentLifeCycleState != 'deleted' AND ecm:uuid IN (?)
+
+)</pattern>
+        <parameter>#{empty currentDocument.collection.documentIds ? '%' : currentDocument.collection.documentIds}</parameter>
+        <sort column="dc:title" ascending="true"/>
+        <pageSize>10</pageSize>
+      </genericPageProvider>
+      <useGlobalPageSize>true</useGlobalPageSize>
+      <refresh>
+        <event>documentChanged</event>
+        <event>documentChildrenChanged</event>
+      </refresh>
+      <cacheKey>#{currentDocument.repositoryName}_#{currentDocument.id}</cacheKey>
+      <cacheSize>10</cacheSize>
+      <selectionList>CURRENT_SELECTION</selectionList>
+      <showTitle>false</showTitle>
+      <showFilterForm>true</showFilterForm>
+      <showPageSizeSelector>true</showPageSizeSelector>
+      <showRefreshCommand>true</showRefreshCommand>
+      <resultLayouts>
+        <layout name="CS-CollectionContentTable" title="document_listing" translateTitle="true" iconPath="/icons/document_listing_icon.png" showCSVExport="true" showEditColumns="true" showSpreadsheet="true"/>
+      </resultLayouts>
+      <resultColumns>#{searchDocument.cvd.selectedLayoutColumns}</resultColumns>
+      <resultLayout>#{searchDocument.cvd.resultLayoutName}</resultLayout>
+      <flags>
+        <flag>DOCUMENT_CONTENT</flag>
+      </flags>
+    </contentView>
+    <contentView name="default_search">
+      <title>label.search.default</title>
+      <translateTitle>true</translateTitle>
+      <genericPageProvider class="org.nuxeo.elasticsearch.provider.ElasticSearchNxqlPageProvider">
+        <property name="coreSession">#{documentManager}</property>
+        <whereClause>
+          <predicate parameter="ecm:fulltext" operator="FULLTEXT">
+            <field schema="concep_as" name="system_fulltext"/>
+          </predicate>
+          <fixedPart>ecm:mixinType NOT IN ('HiddenInNavigation','Folderish','Collection') AND ecm:isCheckedInVersion = 0 AND ecm:currentLifeCycleState != 'deleted'</fixedPart>
+        </whereClause>
+        <searchDocumentType>concep_as</searchDocumentType>
+        <sortInfosBinding>#{documentSearchActions.searchSortInfos}</sortInfosBinding>
+        <pageSize>10</pageSize>
+      </genericPageProvider>
+      <searchLayout name="concep_as@layout"/>
+      <useGlobalPageSize>true</useGlobalPageSize>
+      <refresh>
+        <event>documentChanged</event>
+        <event>documentChildrenChanged</event>
+      </refresh>
+      <cacheKey>only_one_cache</cacheKey>
+      <cacheSize>1</cacheSize>
+      <selectionList>CURRENT_SELECTION</selectionList>
+      <showTitle>false</showTitle>
+      <showFilterForm>false</showFilterForm>
+      <showPageSizeSelector>true</showPageSizeSelector>
+      <showRefreshCommand>true</showRefreshCommand>
+      <actions category="CURRENT_SELECTION_LIST"/>
+      <actions category="cv_actions@advanced_search"/>
+      <resultLayouts>
+        <layout name="document_listing_thumbnail" title="document_thumbnail_listing" translateTitle="true" iconPath="/icons/document_listing_icon_2_columns_icon.png" showEditRows="true"/>
+        <layout name="search_listing_ajax" title="document_listing" translateTitle="true" iconPath="/icons/document_listing_icon.png" showCSVExport="true" showEditColumns="true" showSpreadsheet="true"/>
+      </resultLayouts>
+      <resultColumns>#{searchDocument.cvd.selectedLayoutColumns}</resultColumns>
+      <flags>
+        <flag>ADVANCED_SEARCH</flag>
+        <flag>SEARCH</flag>
+      </flags>
+    </contentView>
+  </extension>
+  <extension target="org.nuxeo.ecm.core.operation.OperationServiceComponent" point="chains">
+    <chain id="CS-AccessReviewChain">
+      <operation id="Context.FetchDocument"/>
+      <operation id="CS.GetReviewURL">
+        <param type="string" name="email">expr:CurrentUser.email</param>
+        <param type="string" name="reviewId">expr:Document.getProperty("CSReviewProp:ReviewId")</param>
+      </operation>
+    </chain>
+    <chain id="CS-EndReviewChain">
+      <operation id="Context.FetchDocument"/>
+      <operation id="CS.EndReview"/>
+    </chain>
+    <chain id="CS-NewReviewChain">
+      <operation id="Context.FetchDocument"/>
+      <operation id="Document.SetProperty">
+        <param type="string" name="xpath">CSReviewProp:ReviewStatus</param>
+        <param type="boolean" name="save">true</param>
+        <param type="serializable" name="value">ready</param>
+      </operation>
+    </chain>
+    <chain id="CS-ResendFile">
+      <operation id="Context.FetchDocument"/>
+    </chain>
+  </extension>
+  <extension target="org.nuxeo.ecm.directory.GenericDirectory" point="directories">
+    <directory name="userDirectory" extends="template-user">
+      <passwordField>password</passwordField>
+      <dataFile>data/users.csv</dataFile>
+      <idField>username</idField>
+      <schema>user</schema>
+      <passwordHashAlgorithm>SSHA</passwordHashAlgorithm>
+      <autoincrementIdField>false</autoincrementIdField>
+      <querySizeLimit>50</querySizeLimit>
+      <types>
+        <type>system</type>
+      </types>
+      <references>
+        <inverseReference field="groups" directory="groupDirectory" dualReferenceField="members"/>
+      </references>
+      <createTablePolicy>on_missing_columns</createTablePolicy>
+    </directory>
+    <directory name="groupDirectory" extends="template-group">
+      <dataFile>data/groups.csv</dataFile>
+      <idField>groupname</idField>
+      <schema>group</schema>
+      <autoincrementIdField>false</autoincrementIdField>
+      <querySizeLimit>50</querySizeLimit>
+      <types>
+        <type>system</type>
+      </types>
+      <references>
+        <reference field="members" directory="userDirectory" name="user2group" source="groupId" target="userId" dataFile="data/user2group.csv"/>
+        <reference field="subGroups" directory="groupDirectory" name="group2group" source="parentGroupId" target="childGroupId"/>
+        <inverseReference field="parentGroups" directory="groupDirectory" dualReferenceField="subGroups"/>
+      </references>
+      <createTablePolicy>on_missing_columns</createTablePolicy>
+    </directory>
+    <directory name="cs-filestatus" extends="template-vocabulary">
+      <autoincrementIdField>false</autoincrementIdField>
+      <createTablePolicy>always</createTablePolicy>
+      <dataFile>data/vocabularies/cs-filestatus.csv</dataFile>
+      <cacheEntryName>vocab-cs-filestatus-cache</cacheEntryName>
+      <cacheEntryWithoutReferencesName>vocab-cs-filestatus-cache-without-references</cacheEntryWithoutReferencesName>
+    </directory>
+    <directory name="cs-reviewstatus" extends="template-vocabulary">
+      <autoincrementIdField>false</autoincrementIdField>
+      <createTablePolicy>always</createTablePolicy>
+      <dataFile>data/vocabularies/cs-reviewstatus.csv</dataFile>
+      <cacheEntryName>vocab-cs-reviewstatus-cache</cacheEntryName>
+      <cacheEntryWithoutReferencesName>vocab-cs-reviewstatus-cache-without-references</cacheEntryWithoutReferencesName>
+    </directory>
+    <directory name="cs-typeofreview" extends="template-vocabulary">
+      <autoincrementIdField>false</autoincrementIdField>
+      <createTablePolicy>always</createTablePolicy>
+      <dataFile>data/vocabularies/cs-typeofreview.csv</dataFile>
+      <cacheEntryName>vocab-cs-typeofreview-cache</cacheEntryName>
+      <cacheEntryWithoutReferencesName>vocab-cs-typeofreview-cache-without-references</cacheEntryWithoutReferencesName>
+    </directory>
+  </extension>
+  <extension target="org.nuxeo.ecm.core.cache.CacheService" point="caches">
+    <cache name="vocab-cs-filestatus-cache" class="org.nuxeo.ecm.core.cache.InMemoryCacheImpl">
+      <option name="maxSize">1000</option>
+      <option name="concurrencyLevel">500</option>
+      <ttl>60</ttl>
+    </cache>
+    <cache name="vocab-cs-filestatus-cache-without-references" class="org.nuxeo.ecm.core.cache.InMemoryCacheImpl">
+      <option name="maxSize">1000</option>
+      <option name="concurrencyLevel">500</option>
+      <ttl>60</ttl>
+    </cache>
+    <cache name="vocab-cs-reviewstatus-cache" class="org.nuxeo.ecm.core.cache.InMemoryCacheImpl">
+      <option name="maxSize">1000</option>
+      <option name="concurrencyLevel">500</option>
+      <ttl>60</ttl>
+    </cache>
+    <cache name="vocab-cs-reviewstatus-cache-without-references" class="org.nuxeo.ecm.core.cache.InMemoryCacheImpl">
+      <option name="maxSize">1000</option>
+      <option name="concurrencyLevel">500</option>
+      <ttl>60</ttl>
+    </cache>
+    <cache name="vocab-cs-typeofreview-cache" class="org.nuxeo.ecm.core.cache.InMemoryCacheImpl">
+      <option name="maxSize">1000</option>
+      <option name="concurrencyLevel">500</option>
+      <ttl>60</ttl>
+    </cache>
+    <cache name="vocab-cs-typeofreview-cache-without-references" class="org.nuxeo.ecm.core.cache.InMemoryCacheImpl">
+      <option name="maxSize">1000</option>
+      <option name="concurrencyLevel">500</option>
+      <ttl>60</ttl>
+    </cache>
+  </extension>
+  <extension target="org.nuxeo.ecm.directory.ui.DirectoryUIManager" point="directories">
+    <directory name="cs-filestatus" layout="vocabulary" sortField="label"/>
+    <directory name="cs-reviewstatus" layout="vocabulary" sortField="label"/>
+    <directory name="cs-typeofreview" layout="vocabulary" sortField="label"/>
+  </extension>
+  <extension target="org.nuxeo.ecm.platform.WebResources" point="resources">
+    <resource name="nuxeo-conceptshare-integration-bundle.html" type="import" shrinkable="false">
+      <uri>/ui/nuxeo-conceptshare-integration-bundle.html</uri>
+    </resource>
+  </extension>
+  <extension target="org.nuxeo.ecm.platform.WebResources" point="bundles">
+    <bundle name="web-ui">
+      <resources append="true">
+        <resource>nuxeo-conceptshare-integration-bundle.html</resource>
+      </resources>
+    </bundle>
+  </extension>
+  <extension target="org.nuxeo.ecm.platform.actions.ActionService" point="filters">
+    <filter id="create" append="true">
+      <rule grant="false">
+        <type>CS-ReviewSummary</type>
+        <type>CS-Reviews</type>
+      </rule>
+    </filter>
+  </extension>
+  <extension target="org.nuxeo.ecm.platform.forms.layout.WebLayoutManager" point="widgettypes">
+
+    
+    <documentation>Widget types declared in studio</documentation>
+
+    
+    <widgetType name="studio_header">
+      
+      <configuration>
+        
+        <title>Header</title>
+        
+        <description>
+          The header widget just displays the widget label.
+        </description>
+        
+        <supportedModes>
+          
+          <mode>edit</mode>
+          
+          <mode>view</mode>
+        
+        </supportedModes>
+        
+        <fields>
+          
+          <list>false</list>
+          
+          <complex>false</complex>
+          
+          <supportedTypes/>
+          
+          <defaultTypes/>
+        
+        </fields>
+        
+        <handlingLabels>true</handlingLabels>
+        
+        <categories>
+          
+          <category>document</category>
+          
+          <category>studio</category>
+        
+        </categories>
+        
+        <properties>
+          
+          <layouts mode="any">
+            
+            <layout name="studio_header_widget_type_properties_any">
+              
+              <rows>
+                
+                <row>
+                  
+                  <widget>styleClass</widget>
+                
+                </row>
+                
+                <row>
+                  
+                  <widget>style</widget>
+                
+                </row>
+              
+              </rows>
+              
+              <widget name="styleClass" type="text">
+                
+                <labels>
+                  
+                  <label mode="any">Style class</label>
+                
+                </labels>
+                
+                <fields>
+                  
+                  <field>styleClass</field>
+                
+                </fields>
+              
+              </widget>
+              
+              <widget name="style" type="text">
+                
+                <labels>
+                  
+                  <label mode="any">Style</label>
+                
+                </labels>
+                
+                <fields>
+                  
+                  <field>style</field>
+                
+                </fields>
+              
+              </widget>
+            
+            </layout>
+          
+          </layouts>
+        
+        </properties>
+      
+      </configuration>
+      
+      <handler-class>
+        org.nuxeo.ecm.platform.forms.layout.facelets.plugins.TemplateWidgetTypeHandler
+      </handler-class>
+      
+      <property name="template">
+        /widgets/studio_header_widget.xhtml
+      </property>
+    
+    </widgetType>
+
+    
+    <widgetType name="filesList">
+      
+      <configuration>
+        
+        <title>Files</title>
+        
+        <description>
+          
+          <p>
+            The Files displays an editable list of files, using javascript to
+            keep the uploaded file path when adding several files in a row.
+          </p>
+          
+          <p>Items are defined using sub wigdets configuration.</p>
+          
+          <p>
+            This is actually a template widget type whose template uses a
+            &lt;nxu:inputList /&gt; tag in edit or create mode, and a table
+            iterating over items in other modes.
+          </p>
+        
+        </description>
+        
+        <categories>
+          
+          <category>document</category>
+          
+          <category>studio</category>
+        
+        </categories>
+        
+        <supportedModes>
+          
+          <mode>edit</mode>
+          
+          <mode>view</mode>
+        
+        </supportedModes>
+        
+        <acceptingSubWidgets>true</acceptingSubWidgets>
+        
+        <fields>
+          
+          <list>true</list>
+          
+          <complex>false</complex>
+          
+          <supportedTypes>
+            
+            <type>blob</type>
+          
+          </supportedTypes>
+          
+          <defaultTypes>
+            
+            <type>blob</type>
+          
+          </defaultTypes>
+        
+        </fields>
+        
+        <properties>
+          
+          <layouts mode="edit">
+            
+            <layout name="list_widget_type_properties_edit">
+              
+              <rows>
+                
+                <row>
+                  
+                  <widget>required</widget>
+                
+                </row>
+                
+                <row>
+                  
+                  <widget>diff</widget>
+                
+                </row>
+              
+              </rows>
+              
+              <widget name="required" type="checkbox">
+                
+                <labels>
+                  
+                  <label mode="any">Required</label>
+                
+                </labels>
+                
+                <fields>
+                  
+                  <field>required</field>
+                
+                </fields>
+              
+              </widget>
+              
+              <widget name="diff" type="checkbox">
+                
+                <labels>
+                  
+                  <label mode="any">Diff</label>
+                
+                </labels>
+                
+                <fields>
+                  
+                  <field>diff</field>
+                
+                </fields>
+              
+              </widget>
+            
+            </layout>
+          
+          </layouts>
+        
+        </properties>
+      
+      </configuration>
+      
+      <handler-class>
+        org.nuxeo.ecm.platform.forms.layout.facelets.plugins.ListWidgetTypeHandler
+      </handler-class>
+      
+      <property name="template">/widgets/js_files_list_widget_template.xhtml</property>
+      
+      <property name="compatTemplate">/widgets/files_list_widget_template.xhtml</property>
+    
+    </widgetType>
+
+  
+  </extension>
+</component>

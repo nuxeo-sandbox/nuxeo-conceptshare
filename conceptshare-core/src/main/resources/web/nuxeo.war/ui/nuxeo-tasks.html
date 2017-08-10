@@ -1,0 +1,348 @@
+<link rel="import" href="dam-template/document/nuxeo-dam-asset-view.html">
+<link rel="import" href="dam-template/tasks/nuxeo-dam-document-task.html">
+<link rel="import" href="dam-template/tasks/nuxeo-dam-task-asset-view.html">
+<!--
+(C) Copyright 2016 Nuxeo SA (http://nuxeo.com/) and contributors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Contributors:
+Andre Justo <ajusto@nuxeo.com>
+-->
+
+<!--
+`nuxeo-tasks`
+@group Nuxeo UI
+@element nuxeo-tasks
+-->
+
+<dom-module id="nuxeo-tasks">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      .task-list {
+        background: #fff;
+      }
+
+      .task-item {
+        cursor: pointer;
+      }
+
+      .task-item:hover {
+        background-color: var(--nuxeo-light-background);
+      }
+
+      .task-view paper-card {
+        display: block;
+        margin-right: 24px;
+        min-width: 350px;
+      }
+
+      .task-box {
+        line-height: 130%;
+        padding: 1em;
+        border: 1px solid var(--divider-color);
+      }
+
+      .task-info {
+        margin-left: .5em;
+      }
+
+      .task-name {
+        font-weight: bold;
+      }
+
+      .task-directive {
+        font-size: .8em;
+      }
+
+      .task-document {
+        color: var(--primary-text-color);
+        font-size: .8em;
+      }
+
+      .task-document iron-icon {
+        height: 16px;
+        width: 16px;
+        margin: -.3em 0 0 -.3em;
+      }
+
+      iron-icon.task-name-icon {
+        --iron-icon-height: .9em;
+        --iron-icon-width: .9em;
+        border-radius: 50px;
+        background-color: var(--dark-primary-color);
+        color: white;
+        padding: .4em;
+        margin-right: .5em;
+      }
+
+      .date {
+        color: var(--nuxeo-warn-text);
+      }
+
+      .document-view {
+        margin-right: .5em;
+        min-width: 300px;
+      }
+
+      nuxeo-document-task,
+      nuxeo-document-view {
+        width: 100%;
+      }
+
+      .task-header {
+        border: 1px solid var(--nuxeo-border);
+        color: var(--nuxeo-text-default);
+        margin-bottom: .5em;
+        padding: .5em;
+      }
+
+      .workflow-name {
+        font-weight: 400;
+        margin-left: 1em;
+      }
+
+      .buttons {
+        @apply(--buttons-bar);
+      }
+
+      nuxeo-workflow-graph {
+        position: relative;
+      }
+
+      .prev-button,
+      .next-button {
+        height: 64px;
+        width: 64px;
+      }
+
+      .contentbox {
+        width:90%;
+        margin: auto;
+      }
+
+      .header {
+        font-size: 1.5em;
+      }
+
+      nuxeo-dam-asset-view {
+        --custom-viewer: {
+          margin:0px;
+          width:100%;
+        };
+        --custom-view-side-padding: 0px;
+      }
+
+    </style>
+
+    <nuxeo-document id="currentTaskDoc"
+                    doc-id="[[_docId(current)]]"
+                    enrichers="preview,tags,acls"
+                    response="{{currentTaskDocument}}"></nuxeo-document>
+
+    <nuxeo-page>
+      <div class="header">
+        <template is="dom-if" if="[[_hasCurrent(current)]]">
+          <a href="[[_href(currentTaskDocument)]]">[[currentTaskDocument.properties.dc:title]]</a>
+        </template>
+        <template is="dom-if" if="[[!_hasCurrent(current)]]">
+          <span class="flex">[[i18n('tasks.label')]]</span>
+        </template>
+      </div>
+
+      <div class="content">
+        <div class="contentbox">
+          <template is="dom-if" if="[[_hasCurrent(current)]]">
+            <div class="layout vertical">
+              <div class="layout horizontal wrap">
+                <div class="task-view">
+                  <paper-card elevation="0">
+                    <nuxeo-dam-document-task task="[[current]]"></nuxeo-dam-document-task>
+                  </paper-card>
+                </div>
+                <template is="dom-if" if="[[_docId(current)]]">
+                  <div class="vertical layout flex-2 document-view">
+                    <nuxeo-dam-task-asset-view document="[[currentTaskDocument]]"></nuxeo-dam-task-asset-view>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </template>
+
+          <template is="dom-if" if="[[!_hasCurrent(current)]]">
+            <div class="task-list layout vertical">
+              <template is="dom-repeat" items="[[tasks]]" as="task">
+                <div class="task-item task-box layout horizontal" on-tap="_process">
+                  <div class="layout vertical flex-4">
+                    <div class="layout horizontal">
+                      <iron-icon icon="icons:content-paste" class="task-name-icon"></iron-icon>
+                      <div class="task-info layout vertical">
+                        <div>
+                          <span class="task-name">[[i18n(task.name)]]</span>
+                        </div>
+                        <span class="task-directive">[[i18n(task.directive)]]</span>
+                        <span class="task-document">
+                          <iron-icon icon="icons:description"></iron-icon>
+                          <span class="docTitle">[[task.targetDocumentIds.0.title]]</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex-2">
+                    <template is="dom-repeat" items="[[task.actors]]" as="actor">
+
+                      <template is="dom-repeat" items="[[task.actors]]" as="actor">
+                        <template is="dom-if" if="[[_isUser(actor)]]">
+                          <nuxeo-user-tag user="[[actor]]"></nuxeo-user-tag>
+                        </template>
+                        <template is="dom-if" if="[[_isGroup(actor)]]">
+                          <nuxeo-group-tag group="[[actor]]"></nuxeo-group-tag>
+                        </template>
+                        <template is="dom-if" if="[[_isNotUserOrGroup(actor)]]">
+                          <nuxeo-tag>[[actor]]</nuxeo-tag>
+                        </template>
+                      </template>
+
+                    </template>
+                  </div>
+                  <span class="date flex">
+                    <iron-icon icon="icons:today"></iron-icon> [[_date(task.dueDate)]]
+                  </span>
+                </div>
+              </template>
+              <template is="dom-if" if="[[_empty(tasks)]]">
+                <div class="task-box">[[i18n('tasks.noTasks')]]</div>
+              </template>
+            </div>
+          </template>
+        </div>
+
+
+      </div>
+    </nuxeo-page>
+
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'nuxeo-tasks',
+
+      properties: {
+        tasks: {
+          type: Array
+        },
+
+        current: {
+          type: Object,
+          value: null,
+          observer: '_currentChanged'
+        },
+
+        currentTaskDocument: Object
+      },
+
+      behaviors: [Nuxeo.RoutingBehavior, Nuxeo.I18nBehavior],
+
+      _process: function(e) {
+        page('/tasks/' + e.model.task.id);
+      },
+
+      _currentChanged: function() {
+        if (this.current) {
+          this.$.currentTaskDoc.get();
+        }
+      },
+
+      _hasCurrent: function() {
+        return this.current ? true : false;
+      },
+
+      _href: function(doc) {
+        if (doc) {
+          return this.urlFor('browse', doc.path);
+        }
+      },
+
+      _date: function(date) {
+        return moment(date).format('MMMM D, YYYY');
+      },
+
+      _isUser: function(actor) {
+        return actor['entity-type'] && actor['entity-type'] === 'user';
+      },
+
+      _isGroup: function(actor) {
+        return actor['entity-type'] && actor['entity-type'] === 'group';
+      },
+
+      _isNotUserOrGroup: function(actor) {
+        return !this._isUser(actor) && !this._isGroup(actor);
+      },
+
+      _toggleGraphDialog: function() {
+        this.$$('#graphDialog').toggle();
+      },
+
+      _count: function() {
+        if (this.tasks) {
+          return this.tasks.length;
+        }
+      },
+
+      _docId: function() {
+        if (this.current && this.current.targetDocumentIds && this.current.targetDocumentIds[0]  ) {
+          return this.current.targetDocumentIds[0].uid;
+        }
+      },
+
+      _prev: function() {
+        page('/tasks/' + this.tasks[this.currenIndex - 1].id);
+      },
+
+      _next: function() {
+        page('/tasks/' + this.tasks[this.currenIndex + 1].id);
+      },
+
+      _isFirst: function() {
+        return this.currenIndex <= 0;
+      },
+
+      _isLast: function() {
+        return this.currenIndex === this.tasks.length - 1 || this.currenIndex < 0;
+      },
+
+      _empty: function(tasks) {
+        return tasks && tasks.length === 0;
+      },
+
+      get currenIndex() {
+        if (this.tasks && this.current) {
+          for (var i = 0; i < this.tasks.length; i++) {
+            if (this.tasks[i].id === this.current.id) {
+              return i;
+            }
+          }
+        }
+        return -1;
+      }
+
+    });
+  })();
+  </script>
+</dom-module>

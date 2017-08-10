@@ -1,0 +1,116 @@
+<!--
+`embedded-metadata-page`
+@group Nuxeo UI
+@element embedded-metadata-page
+-->
+
+<dom-module id="nuxeo-dam-document-exif-metadata">
+  <template>
+    <style>
+      .properties {
+        column-count: 1;
+        -moz-column-count: 1; /* Firefox */
+        -webkit-column-count: 1; /* webkit, Safari, Chrome */
+      }
+      .properties label {
+        width:15em;
+        min-width:15em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .item {
+        @apply(--layout-horizontal);
+        @apply(--layout-flex);
+        @apply(--layout-horizontal);
+        @apply(--layout-flex);
+        line-height: 1.5em;
+        margin-bottom: 4px;
+      }
+    </style>
+
+    <div class="box">
+      <div class="properties">
+        <div class="item">
+          <label>Color Space</label>
+          <div>[[document.properties.imd:color_space]]</div>
+        </div>
+        <div class="item">
+          <label>Copyright</label>
+          <div>[[document.properties.imd:copyright]]</div>
+        </div>
+        <div class="item">
+          <label>Date Time Original</label>
+          <div>[[formatDate(document.properties.imd:date_time_original)]]</div>
+        </div>
+        <div class="item">
+          <label>Equipment</label>
+          <div>[[document.properties.imd:equipment]]</div>
+        </div>
+        <div class="item">
+          <label>Exposure Time</label>
+          <div>[[document.properties.imd:exposure_time]]</div>
+        </div>
+        <div class="item">
+          <label>Fnumber</label>
+          <div>[[document.properties.imd:fnumber]]</div>
+        </div>
+        <div class="item">
+          <label>Focal Length</label>
+          <div>[[document.properties.imd:focal_length]]</div>
+        </div>
+        <div class="item">
+          <label>Icc Profile</label>
+          <div>[[document.properties.imd:icc_profile]]</div>
+        </div>
+        <div class="item">
+          <label>Image Description</label>
+          <div>[[document.properties.imd:image_description]]</div>
+        </div>
+        <div class="item">
+          <label>Iso Speed Ratings</label>
+          <div>[[document.properties.imd:iso_speed_ratings]]</div>
+        </div>
+        <div class="item">
+          <label>Orientation</label>
+          <div>[[document.properties.imd:orientation]]</div>
+        </div>
+        <div class="item">
+          <label>Pixel Xdimension</label>
+          <div>[[document.properties.imd:pixel_xdimension]]</div>
+        </div>
+        <div class="item">
+          <label>Pixel Ydimension</label>
+          <div>[[document.properties.imd:pixel_ydimension]]</div>
+        </div>
+        <div class="item">
+          <label>User Comment</label>
+          <div>[[document.properties.imd:user_comment]]</div>
+        </div>
+        <div class="item">
+          <label>White Balance</label>
+          <div>[[document.properties.imd:white_balance]]</div>
+        </div>
+        <div class="item">
+          <label>Xresolution</label>
+          <div>[[document.properties.imd:xresolution]]</div>
+        </div>
+        <div class="item">
+          <label>Yresolution</label>
+          <div>[[document.properties.imd:yresolution]]</div>
+        </div>
+      </div>
+    </div>
+
+  </template>
+  <script>
+  Polymer({
+    is: 'nuxeo-dam-document-exif-metadata',
+    behaviors: [Nuxeo.LayoutBehavior],
+    properties: {
+      document: {
+        type: Object
+      }
+    }
+  });
+  </script>
+</dom-module>
