@@ -9,7 +9,7 @@
       <partnerPassword>***</partnerPassword>
       <apiUser>mhilaire@nuxeo.com</apiUser>
       <apiPassword>***</apiPassword>
-      <endpointUrl>https://host/API/Service.svc</endpointUrl>
+      <endpointUrl>https://host/API/Service.svc/secure</endpointUrl>
       <defaultProject>TestProject</defaultProject>
     </config>
   </extension>
