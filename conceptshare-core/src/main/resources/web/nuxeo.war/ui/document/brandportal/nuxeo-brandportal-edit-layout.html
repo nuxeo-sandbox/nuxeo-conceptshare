@@ -1,0 +1,35 @@
+<!--
+`nuxeo-brandportal-edit-layout`
+@group Nuxeo UI
+@element nuxeo-brandportal-edit-layout
+-->
+<dom-module id="nuxeo-brandportal-edit-layout">
+  <template>
+    <style>
+      *[role=widget] {
+        padding: 5px;
+      }
+    </style>
+    <paper-input role="widget" value="{{document.properties.dc:title}}" label="Title" type="text"></paper-input>
+
+    <paper-input role="widget" value="{{document.properties.dc:description}}" label="Description" type="text"></paper-input>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'nuxeo-brandportal-edit-layout',
+      behaviors: [Nuxeo.LayoutBehavior],
+      properties: {
+
+        /**
+         * @doctype BrandPortal
+         */
+        document: {
+          type: Object,
+        },
+
+      }
+    });
+  </script>
+</dom-module>

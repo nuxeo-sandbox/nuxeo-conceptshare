@@ -1,0 +1,69 @@
+<!--
+`nuxeo-project-metadata-layout`
+@group Nuxeo UI
+@element nuxeo-project-metadata-layout
+-->
+<dom-module id="nuxeo-project-metadata-layout">
+  <template>
+    <style>
+      *[role=widget] {
+        padding: 5px;
+      }
+    </style>
+    <div role="widget">
+      <label>Description</label>
+      <div>[[document.properties.dc:description]]</div>
+    </div>
+
+    <nuxeo-directory-suggestion role="widget" value="[[document.properties.business:brand]]" label="Brand" readonly="true" directory-name="brands"></nuxeo-directory-suggestion>
+
+    <nuxeo-directory-suggestion role="widget" value="[[document.properties.business:market]]" label="Market" readonly="true" directory-name="markets"></nuxeo-directory-suggestion>
+
+    <nuxeo-directory-suggestion role="widget" value="[[document.properties.business:product]]" label="Product" readonly="true" directory-name="products"></nuxeo-directory-suggestion>
+
+    <div role="widget">
+      <label>Contributors</label>
+      <nuxeo-tags items="[[document.properties.project:contributors]]"></nuxeo-tags>
+    </div>
+
+    <div role="widget">
+      <label>Creative Manager</label>
+      <div>[[document.properties.project:creative_manager]]</div>
+    </div>
+
+    <div role="widget">
+      <label>Due Date</label>
+      <div>[[formatDate(document.properties.project:due_date)]]</div>
+    </div>
+
+    <div role="widget">
+      <label>Project Manager</label>
+      <div>[[document.properties.project:project_manager]]</div>
+    </div>
+
+    <nuxeo-directory-suggestion role="widget" value="[[document.properties.project:type]]" label="Type" readonly="true" directory-name="project_types"></nuxeo-directory-suggestion>
+
+    <div role="widget">
+      <label>Internalid</label>
+      <div>[[document.properties.identifier:internalid]]</div>
+    </div>
+
+  </template>
+
+  <script>
+  Polymer({
+    is: 'nuxeo-project-metadata-layout',
+    behaviors: [Nuxeo.LayoutBehavior],
+    properties: {
+
+      /**
+         * @doctype Project
+         */
+      document: {
+        type: Object,
+      },
+
+    }
+  });
+  </script>
+</dom-module>

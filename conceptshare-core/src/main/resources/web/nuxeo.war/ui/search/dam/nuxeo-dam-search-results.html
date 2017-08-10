@@ -1,0 +1,144 @@
+<link rel="import" href="../../dam-template/justified-grid/nuxeo-dam-data-justified.html">
+<link rel="import" href="../../dam-template/thumbnail/nuxeo-dam-thumbnail.html">
+
+<!--
+(C) Copyright 2017 Nuxeo (http://nuxeo.com/) and contributors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<!--
+`nuxeo-default-search-results`
+@group Nuxeo UI
+@element nuxeo-default-search-results
+-->
+<dom-module id="nuxeo-dam-search-results">
+  <template>
+    <style>
+      nuxeo-results {
+        --layout-vertical: {
+          position: relative;
+        };
+        --layout-horizontal: {
+          position: absolute;
+          right: 8px;
+          top: 8px;
+          z-index: 5;
+        };
+      }
+    </style>
+
+    <nuxeo-results name="default" nx-provider="[[nxProvider]]" display-mode="justified">
+
+      <!-- justified grid view -->
+      <nuxeo-dam-data-justified class="results"
+                                name="justified"
+                                icon="icons:view-array"
+                                empty-label="[[i18n('searchResults.noResults')]]"
+                                selection-enabled display-quick-filters>
+      </nuxeo-dam-data-justified>
+
+      <nuxeo-data-grid name="grid" icon="icons:apps" class="results" empty-label="[[i18n('searchResults.noResults')]]" selection-enabled display-quick-filters>
+        <template>
+          <nuxeo-document-grid-thumbnail tabindex$="{{tabIndex}}" selected$="{{selected}}" doc="[[item]]" on-navigate="_navigate">
+          </nuxeo-document-grid-thumbnail>
+        </template>
+      </nuxeo-data-grid>
+
+      <nuxeo-data-table name="table" icon="icons:list" class="results"
+                        settings-enabled
+                        empty-label="[[i18n('searchResults.noResults')]]"
+                        selection-enabled
+                        display-quick-filters
+                        on-row-clicked="_navigate">
+
+        <nuxeo-data-table-column name="[[i18n('label.dublincore.title')]]" field="dc:title" sort-by="dc:title" flex="100">
+          <template>
+            <nuxeo-document-thumbnail document="[[item]]"></nuxeo-document-thumbnail>
+            <a class="ellipsis" href$="[[urlFor('browse', item.path)]]" on-click="_navigate">[[item.title]]</a>
+          </template>
+        </nuxeo-data-table-column>
+
+        <nuxeo-data-table-column name="[[i18n('label.business.brand')]]" field="business:brand">
+          <template>
+            <nuxeo-tag hidden$="[[!item.properties.business:brand]]">[[formatDirectory(item.properties.business:brand)]]</nuxeo-tag>
+          </template>
+        </nuxeo-data-table-column>
+
+        <nuxeo-data-table-column name="[[i18n('label.business.product_line')]]" field="business:product_line">
+          <template>
+            <nuxeo-tag hidden$="[[!item.properties.business:product_line]]">[[formatDirectory(item.properties.business:product_line)]]</nuxeo-tag>
+          </template>
+        </nuxeo-data-table-column>
+
+        <nuxeo-data-table-column name="[[i18n('label.business.product')]]" field="business:product">
+          <template>
+            <nuxeo-tag hidden$="[[!item.properties.business:product]]">[[formatDirectory(item.properties.business:product)]]</nuxeo-tag>
+          </template>
+        </nuxeo-data-table-column>
+
+        <nuxeo-data-table-column name="[[i18n('label.business.season')]]" field="business:season">
+          <template>
+            <nuxeo-tag hidden$="[[!item.properties.business:season]]">[[formatDirectory(item.properties.business:season)]]</nuxeo-tag>
+          </template>
+        </nuxeo-data-table-column>
+
+        <nuxeo-data-table-column name="[[i18n('label.business.year')]]" field="business:year">
+          <template>
+            <nuxeo-tag hidden$="[[!item.properties.business:year]]">[[formatDirectory(item.properties.business:year)]]</nuxeo-tag>
+          </template>
+        </nuxeo-data-table-column>
+
+        <nuxeo-data-table-column name="[[i18n('label.business.market')]]" field="business:market">
+          <template>
+            <nuxeo-tag hidden$="[[!item.properties.business:market]]">[[formatDirectory(item.properties.business:market)]]</nuxeo-tag>
+          </template>
+        </nuxeo-data-table-column>
+        
+        <nuxeo-data-table-column name="[[i18n('label.dublincore.modified')]]" field="dc:modified" sort-by="dc:modified" flex="50">
+          <template>
+            [[formatDate(item.properties.dc:modified)]]
+          </template>
+        </nuxeo-data-table-column>
+
+        <nuxeo-data-table-column name="[[i18n('label.state')]]" field="currentLifeCycleState">
+          <template>
+            <span class="capitalize">[[i18n(item.state)]]</span>
+          </template>
+        </nuxeo-data-table-column>
+
+        <nuxeo-data-table-column name="[[i18n('label.version')]]" field="versionLabel">
+          <template>
+            [[formatVersion(item)]]
+          </template>
+        </nuxeo-data-table-column>
+
+      </nuxeo-data-table>
+    </nuxeo-results>
+  </template>
+
+  <script>
+  Polymer({
+    is: 'nuxeo-dam-search-results',
+    behaviors: [Nuxeo.LayoutBehavior],
+    properties: {
+      nxProvider: Object
+    },
+
+    _navigate: function(e) {
+      this.fire('navigate', {doc: (e.model || e.detail).item});
+    }
+  });
+  </script>
+
+</dom-module>

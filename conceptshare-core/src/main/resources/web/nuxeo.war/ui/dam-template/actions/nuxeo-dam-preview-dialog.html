@@ -1,0 +1,66 @@
+<dom-module id="nuxeo-dam-preview-dialog">
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+      }
+
+      paper-dialog {
+        width: 100%;
+        height: 100%;
+        min-width: 480px;
+      }
+
+      paper-dialog > nuxeo-document-preview {
+        height: 100%;
+      }
+
+      paper-dialog > * {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+
+    <paper-dialog id="dialog" with-backdrop>
+      <nuxeo-document-preview document="[[document]]" xpath="[[xpath]]"></nuxeo-document-preview>
+    </paper-dialog>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'nuxeo-dam-preview-dialog',
+      behaviors: [Nuxeo.I18nBehavior, Nuxeo.FiltersBehavior],
+      properties: {
+
+        /**
+         * Input document.
+         */
+        document: Object,
+
+        /**
+         * Path of the file object to preview.
+         * For example `xpath="files:files/0/file"`.
+         */
+        xpath: {
+          type: String,
+          value: 'file:content'
+        },
+
+        /**
+         * Icon to use (iconset_name:icon_name).
+         */
+        icon: {
+          type: String,
+          value: 'icons:visibility'
+        }
+      },
+
+      toggleDialog: function() {
+        this.$.dialog.toggle();
+      }
+
+    });
+  </script>
+
+</dom-module>

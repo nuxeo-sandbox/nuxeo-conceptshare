@@ -1,0 +1,280 @@
+<link rel="import" href="nuxeo-dam-justified-gallery.html">
+<link rel="import" href="../thumbnail/nuxeo-dam-thumbnail.html">
+<link rel="import" href="nuxeo-dam-pageprovider-behavior.html">
+<link rel="import" href="../actions/nuxeo-dam-share-icon.html">
+<link rel="import" href="../actions/nuxeo-dam-share-dialog.html">
+<link rel="import" href="../actions/nuxeo-dam-preview-icon.html">
+<link rel="import" href="../actions/nuxeo-dam-preview-dialog.html">
+
+<!--
+@license
+(C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<!--
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+<link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
+-->
+
+<!--
+An element to display page provider results as a grid with infinite scrolling.
+
+<nuxeo-page-provider id="cvProvider" auto
+provider="default_search"
+page-size="40"
+enrichers="thumbnail"
+params='{"ecm_path": ["/default-domain/workspaces"]}'>
+</nuxeo-page-provider>
+
+<nuxeo-data-grid nx-provider="nxProvider" selection-enabled>
+<template>
+<div class="list-item-box vertical layout">
+<div class="list-item-info horizontal layout center">
+<div class="vertical layout center">
+<img class="nxicon" src="[[_thumbnail(item)]]">
+</div>
+<span class="list-item-title">[[item.title]]</span>
+</div>
+<div class="list-item-detail">
+<div class="layout center">
+<span class="list-item-property">
+[[item.type]]
+</span>
+</div>
+</div>
+</div>
+</template>
+</nuxeo-data-grid>
+
+@group Nuxeo UI
+@element nuxeo-data-grid
+-->
+<dom-module id="nuxeo-dam-data-justified">
+  <template>
+
+    <style is="custom-style">
+
+      :host[loading] .loadable {
+        opacity: 0.25;
+      }
+
+      :host[loading] paper-spinner-lite {
+        position: absolute;
+        top: 45%;
+        left: 50%;
+        --paper-spinner-color: var(--default-primary-color);
+      }
+
+      .emptyResult {
+        color: var(--nuxeo-text-light);
+        display: block;
+        font-weight: 300;
+        padding: 1.5em .7em;
+        text-align: center;
+        font-size: 1.1em;
+      }
+
+      .scrollArea {
+        height: 80vh;
+      }
+
+      iron-scroll-threshold {
+        height: 100%;
+      }
+
+      .gridHeader {
+        align-items: center;
+        width: calc(100% - 96px);
+      }
+
+      .gridHeader paper-dropdown-menu {
+        width:4em;
+        padding-bottom: 0.5em;
+      }
+
+      .pageLabel {
+        padding-right: 8px;
+        padding-bottom: 0.5em;
+      }
+
+      .filters {
+        display: block;
+        margin: 1em 0 0 2.3em;
+      }
+
+      .filter {
+        display: inline-block;
+        background-color: var(--nuxeo-tag-background);
+        color: var(--nuxeo-tag-text);
+        padding: .2rem .4rem;
+        margin: 0 .3em .1em 0;
+        font-size: .8em;
+        border-radius: 2.5em;
+        line-height: initial;
+      }
+
+      .filter .remove:hover {
+        cursor: pointer;
+      }
+    </style>
+
+    <div id="container">
+
+      <content select="nuxeo-selection-toolbar"></content>
+
+      <div class="layout horizontal wrap gridHeader">
+
+        <template is="dom-if" if="[[displayQuickFilters]]">
+          <nuxeo-quick-filters quick-filters="{{quickFilters}}" on-quick-filters-changed="_quickFilterChanged">
+          </nuxeo-quick-filters>
+        </template>
+
+        <div id="filters" class="filters">
+          <template is="dom-repeat" items="[[filters]]" as="filter">
+            <span class="tag filter">
+              [[filter.name]]: [[filter.value]]
+              <iron-icon icon="icons:clear" class="remove" on-tap="_removeFilter"></iron-icon>
+            </span>
+          </template>
+        </div>
+        <div class="pageLabel">Page:</div>
+        <paper-dropdown-menu no-label-float valueattr="value">
+          <paper-listbox class="dropdown-content" selected="{{selectedPageIndex}}">
+            <template is="dom-repeat" items="[[_getPages(numberOfPages)]]" as="page">
+              <paper-item value="[[page]]">[[page]]</paper-item>
+            </template>
+          </paper-listbox>
+        </paper-dropdown-menu>
+      </div>
+
+      <nuxeo-dam-justified-gallery id="gallery">
+        <template is="dom-repeat" items="[[items]]" on-dom-change="_redrawGallery">
+          <nuxeo-dam-thumbnail
+                               document="[[item]]"
+                               on-selected="_selected"
+                               selection-enabled="true"
+                               actions-enabled="true">
+            <nuxeo-download-button document="[[item]]"></nuxeo-download-button>
+            <nuxeo-dam-creative-review-start document="[[item]]"></nuxeo-dam-creative-review-start>
+            <nuxeo-dam-share-icon document="[[item]]" class="icons" on-tap="_display_direct_link"></nuxeo-dam-share-icon>
+            <nuxeo-dam-preview-icon  document="[[item]]" class="icons" on-tap="_display_preview"></nuxeo-dam-preview-icon>
+            <nuxeo-drive-edit-button document="[[item]]" blob="[[item.properties.file:content]]" class="icons"></nuxeo-drive-edit-button>
+          </nuxeo-dam-thumbnail>
+        </template>
+      </nuxeo-dam-justified-gallery>
+
+      <template is="dom-if" if="[[_isEmpty]]">
+        <div class="emptyResult">[[_computedEmptyLabel]]</div>
+      </template>
+    </div>
+    <paper-spinner-lite active hidden$="[[!loading]]"></paper-spinner-lite>
+    <nuxeo-dam-share-dialog id="shareDialog"></nuxeo-dam-share-dialog>
+    <nuxeo-dam-preview-dialog id="previewDialog"></nuxeo-dam-preview-dialog>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+    Polymer({
+      is: 'nuxeo-dam-data-justified',
+
+      behaviors: [
+        Polymer.IronResizableBehavior,
+        Nuxeo.DamPageProviderDisplayBehavior
+      ],
+
+      properties: {
+        multiSelection: {
+          type: Boolean,
+          value: true
+        }
+      },
+
+      observers: ['_pageSelectionChange(selectedPageIndex)'],
+
+      _removeFilter: function(e) {
+        this.fire('column-filter-changed', {value: '', filterBy: e.model.filter.path});
+      },
+
+      clearSelection:function() {
+        this.splice('selectedItems',0,this.selectedItems.length);
+        var elements = Polymer.dom(this.root).querySelectorAll('nuxeo-dam-thumbnail[selected]');
+        elements.forEach(function(element) {
+          element.selected = false;
+        });
+        this._updateFlags();
+      },
+
+      selectItems: function(items) {
+        if (items.length === 0) return;
+        var elements = Polymer.dom(this.root).querySelectorAll('nuxeo-dam-thumbnail');
+        elements.forEach(function(element) {
+          if (items.indexOf(element.document) >= 0) element.selected = true;
+        });
+      },
+
+      _selected:function(e) {
+        var element = e.srcElement;
+        if (element.selected) {
+          if (this.selectedItems.indexOf(element.document)<0) {
+            this.push('selectedItems',element.document);
+            this._updateFlags();
+          }
+        } else {
+          if (this.selectedItems.indexOf(element.document)>=0) {
+            this.splice('selectedItems',this.selectedItems.indexOf(element.document),1);
+            this._updateFlags();
+          }
+        }
+      },
+
+      _display_direct_link:function(e) {
+        var doc = e.model.item;
+        var dialog = this.$.shareDialog;
+        dialog.document = doc;
+        dialog.toggleDialog();
+      },
+
+      _display_preview:function(e) {
+        var doc = e.model.item;
+        var dialog = this.$.previewDialog;
+        dialog.document = doc;
+        dialog.toggleDialog();
+      },
+
+      _getPages:function(number) {
+        var pages = [];
+        for(var i=1;i<=number;i++) {
+          pages.push(i);
+        }
+        return pages;
+      },
+
+      _pageSelectionChange:function() {
+        if (this.nxProvider) {
+          this.nxProvider.page = this.selectedPageIndex +1;
+        }
+      },
+
+      _redrawGallery:function(e) {
+        this.$.gallery._redraw();
+      }
+
+    });
+  })();
+  </script>
+
+</dom-module>

@@ -1,0 +1,55 @@
+<link rel="import" href="nuxeo-dam-picture-view.html">
+<link rel="import" href="nuxeo-dam-video-view.html">
+<!--
+`custom-document-view`
+@group Nuxeo UI
+@element custom-document-view
+-->
+<dom-module id="nuxeo-dam-asset-view">
+  <template>
+    <style>
+    </style>
+    <template is="dom-if" if="[[isPicture(document)]]">
+      <nuxeo-dam-picture-view document="{{document}}" display-actions="[[displayActions]]"></nuxeo-dam-picture-view>
+    </template>
+    <template is="dom-if" if="[[isVideo(document)]]">
+      <nuxeo-dam-video-view document="{{document}}" display-actions="[[displayActions]]"></nuxeo-dam-video-view>
+    </template>
+  </template>
+
+  <script>
+  (function() {
+    'use strict';
+    Polymer({
+      is: 'nuxeo-dam-asset-view',
+      behaviors: [Nuxeo.LayoutBehavior],
+      properties: {
+        document: {
+          type: Object
+        },
+        displayActions: {
+          type: Boolean,
+          value: false
+        }
+      },
+
+      isPicture: function(document) {
+        if (document !== undefined && document !== null) {
+          return document.facets.indexOf('Picture')>=0;
+        } else {
+          return false;
+        }
+      },
+
+      isVideo: function(document) {
+        if (document !== undefined && document !== null) {
+          return document.facets.indexOf('Video')>=0;
+        } else {
+          return false;
+        }
+      }
+
+    });
+  })();
+  </script>
+</dom-module>

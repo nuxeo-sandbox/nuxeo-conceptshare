@@ -1,0 +1,5 @@
+"id","label","obsolete","ordering"
+"pending","Pending","0","1"
+"available","Available","0","2"
+"failed","Failed","0","3"
+"notinreview","NotInReview","0","0"

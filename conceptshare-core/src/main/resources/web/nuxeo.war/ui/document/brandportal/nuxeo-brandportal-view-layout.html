@@ -1,0 +1,35 @@
+<!--
+`nuxeo-brandportal-view-layout`
+@group Nuxeo UI
+@element nuxeo-brandportal-view-layout
+-->
+<dom-module id="nuxeo-brandportal-view-layout">
+  <template>
+    <style>
+      *[role=widget] {
+        padding: 5px;
+      }
+    </style>
+    <nuxeo-document-viewer role="widget" document="[[document]]"></nuxeo-document-viewer>
+
+    <nuxeo-document-content role="widget" document="[[document]]"></nuxeo-document-content>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'nuxeo-brandportal-view-layout',
+      behaviors: [Nuxeo.LayoutBehavior],
+      properties: {
+
+        /**
+         * @doctype BrandPortal
+         */
+        document: {
+          type: Object,
+        },
+
+      }
+    });
+  </script>
+</dom-module>

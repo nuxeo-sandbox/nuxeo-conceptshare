@@ -1,0 +1,4 @@
+"id","label","obsolete","ordering"
+"waiting","Waiting","0","0"
+"ready","Ready","0","1"
+"completed","Completed","0","2"

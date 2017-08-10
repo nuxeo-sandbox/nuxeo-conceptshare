@@ -1,0 +1,33 @@
+<!--
+`nuxeo-project-view-layout`
+@group Nuxeo UI
+@element nuxeo-project-view-layout
+-->
+<dom-module id="nuxeo-project-view-layout">
+  <template>
+    <style>
+      *[role=widget] {
+        padding: 5px;
+      }
+    </style>
+    <nuxeo-document-content role="widget" document="[[document]]"></nuxeo-document-content>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'nuxeo-project-view-layout',
+      behaviors: [Nuxeo.LayoutBehavior],
+      properties: {
+
+        /**
+         * @doctype Project
+         */
+        document: {
+          type: Object,
+        },
+
+      }
+    });
+  </script>
+</dom-module>

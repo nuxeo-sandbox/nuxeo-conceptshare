@@ -1,0 +1,35 @@
+<!--
+`nuxeo-brandportal-metadata-layout`
+@group Nuxeo UI
+@element nuxeo-brandportal-metadata-layout
+-->
+<dom-module id="nuxeo-brandportal-metadata-layout">
+  <template>
+    <style>
+      *[role=widget] {
+        padding: 5px;
+      }
+    </style>
+    <nuxeo-document-viewer role="widget" document="[[document]]"></nuxeo-document-viewer>
+
+    <nuxeo-document-content role="widget" document="[[document]]"></nuxeo-document-content>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'nuxeo-brandportal-metadata-layout',
+      behaviors: [Nuxeo.LayoutBehavior],
+      properties: {
+
+        /**
+         * @doctype BrandPortal
+         */
+        document: {
+          type: Object,
+        },
+
+      }
+    });
+  </script>
+</dom-module>

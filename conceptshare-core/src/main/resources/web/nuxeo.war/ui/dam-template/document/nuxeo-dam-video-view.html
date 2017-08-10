@@ -1,0 +1,185 @@
+<!--
+`custom-document-view`
+@group Nuxeo UI
+@element custom-document-view
+-->
+<dom-module id="nuxeo-dam-video-view">
+  <template>
+    <style>
+      *[role=widget] {
+        padding: 5px;
+      }
+
+      .viewer {
+        width: calc(100% + 32px);
+        height: 100%;
+        background: var(--nuxeo-page-background);
+        margin: -72px -16px 0px -16px;
+        position: relative;
+        z-index:1;
+        padding-top:1%;
+        padding: 0px;
+      }
+
+      nuxeo-dam-video-player {
+          width:auto;
+          margin: auto;
+      }
+
+      nuxeo-document-info-bar {
+        background-color: black;
+      }
+
+      .actions {
+        height: 40px;
+        width: calc(100% + 32px);
+        margin-left: -16px;
+        background-color: #222;
+        text-align: center;
+      }
+
+      .icons {
+        --iron-icon-stroke-color: #fff;
+        --iron-icon-width: 24px;
+        --iron-icon-height: 24px;
+      }
+
+      .container {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: flex-start;
+        width: 90%;
+        margin: 0 auto;
+      }
+
+      .item {
+        flex-basis: 28%;
+        margin-top: 2%;
+        margin-left:5%;
+      }
+
+      .relative {
+        position: relative;
+      }
+
+      #edit {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+      }
+
+      h3 {
+        color: #213f7d;
+      }
+
+      .bottom {
+        height: 5vh;
+      }
+
+      nuxeo-tag-suggestion {
+        margin-top: 28px;
+      }
+
+      nuxeo-document-preview {
+        --primary-background-color: transparent;
+      }
+
+    </style>
+
+    <nuxeo-document-info-bar document="[[document]]"></nuxeo-document-info-bar>
+
+    <div class="">
+
+    </div>
+
+
+    <nuxeo-document-preview document="[[document]]" controls responsive></nuxeo-document-preview>
+
+    <div class="container">
+      <div class="item">
+        <div hidden$="[[edit]]" class="relative">
+          <paper-card>
+            <h3>Metadata</h3>
+            <paper-icon-button id="edit" icon="editor:mode-edit" on-tap="_editMode" hidden$="[[!_canEdit(document)]]"></paper-icon-button>
+            <nuxeo-document-metadata document="[[document]]"></nuxeo-document-metadata>
+          </paper-card>
+        </div>
+        <nuxeo-document-edit document="[[document]]" hidden$="[[!edit]]"></nuxeo-document-edit>
+      </div>
+      <div class="item">
+        <paper-card>
+          <h3>Video Properties</h3>
+          <nuxeo-video-info document="[[document]]"></nuxeo-video-info>
+        </paper-card>
+      </div>
+      <div class="item">
+        <paper-card>
+          <h3>Tags</h3>
+          <nuxeo-tag-suggestion document="[[document]]" allow-new-tags
+                                placeholder="[[i18n('documentPage.tags.placeholder')]]">
+          </nuxeo-tag-suggestion>
+        </paper-card>
+      </div>
+      <div class="item">
+        <!-- workflows -->
+        <custom-document-workflows document="[[document]]" is-processing-task$="[[isProcessingTask]]"></custom-document-workflows>
+      </div>
+    </div>
+    <div class="bottom"></div>
+
+  </template>
+
+  <script>
+  (function() {
+    'use strict';
+    Polymer({
+      is: 'nuxeo-dam-video-view',
+      behaviors: [Nuxeo.LayoutBehavior],
+      properties: {
+        document: {
+          type: Object,
+          observer: '_documentChanged'
+        },
+        edit: {
+          type: Boolean,
+          value: false
+        },
+        displayActions: {
+          type: Boolean,
+          value: false
+        }
+      },
+
+      _documentChanged: function() {
+        if (this.document) {
+          this.edit = false;
+        }
+      },
+
+      _isMutable: function(doc) {
+        return !this.hasFacet(doc, 'Immutable') && doc.type !== 'Root' && doc.state !== 'deleted';
+      },
+
+      _canEdit: function(doc) {
+        return doc && doc.type !== 'Root' && this.hasPermission(doc, 'Write') && this._isMutable(doc);
+      },
+
+      _editMode: function() {
+        this.edit = true;
+      },
+
+      computeVideoSources: function(document) {
+          if (this.document && this.document.properties && this.document.properties['vid:transcodedVideos']) {
+            return this.document.properties['vid:transcodedVideos'].map(function(conversion) {
+              return {
+                data: conversion.content.data,
+                type: conversion.content['mime-type']
+              };
+            });
+          }
+        }
+
+    });
+  })();
+  </script>
+</dom-module>
