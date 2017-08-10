@@ -65,7 +65,7 @@ Those 3 pakcages will be automatically installed if not already present when you
 
 `conceptshare.apiPassword=<YourAPIUSerPassword>`
 
-`conceptshare.endpointUrl=https://<conceptshareHost>/API/Service.svc`
+`conceptshare.endpointUrl=https://<conceptshareHost>/API/Service.svc/secure`
 
 `conceptshare.defaultProject=<YourDefaultProjectName>`
 
