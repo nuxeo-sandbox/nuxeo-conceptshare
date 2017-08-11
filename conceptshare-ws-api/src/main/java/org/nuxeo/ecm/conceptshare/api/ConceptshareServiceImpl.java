@@ -3,7 +3,9 @@ package org.nuxeo.ecm.conceptshare.api;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
@@ -26,6 +28,8 @@ import org.datacontract.schemas._2004._07.conceptshare_v4_framework.Review;
 import org.datacontract.schemas._2004._07.conceptshare_v4_framework.ReviewItem;
 import org.datacontract.schemas._2004._07.conceptshare_v4_framework.ReviewMember;
 import org.datacontract.schemas._2004._07.conceptshare_v4_framework.ReviewType;
+import org.datacontract.schemas._2004._07.conceptshare_v4_framework.Status;
+import org.datacontract.schemas._2004._07.conceptshare_v4_framework.StatusType;
 import org.datacontract.schemas._2004._07.conceptshare_v4_framework.User;
 import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.runtime.model.ComponentContext;
@@ -42,11 +46,13 @@ public class ConceptshareServiceImpl extends DefaultComponent implements Concept
 
     protected static final String XP = "configuration";
 
-    protected static ConceptshareDescriptor descriptor = null;
+    protected ConceptshareDescriptor descriptor = null;
 
-    protected static IAPIService csService = null;
+    protected IAPIService csService = null;
 
-    protected static APIContext apiContext = null;
+    protected APIContext apiContext = null;
+
+    protected final Map<String, Integer> reviewStatusMap = new HashMap<String, Integer>();
 
     public static final Log log = LogFactory.getLog(ConceptshareServiceImpl.class);
 
@@ -84,6 +90,7 @@ public class ConceptshareServiceImpl extends DefaultComponent implements Concept
         // Initiate apiService and context
         getOrCreateApiService();
         getOrCreateApiContext();
+        initReviewStatusList();
     }
 
     @Override
@@ -124,10 +131,10 @@ public class ConceptshareServiceImpl extends DefaultComponent implements Concept
             } else {
                 try {
                     APIService apiService = new APIService(new URL(wsdlUrl), new QName(WS_NAMESPACE, LOCAL_SERVICE));
-                    
+
                     IAPIService port = apiService.getPort(IAPIService.class);
-                    ((BindingProvider)port).getRequestContext().put(
-                            BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointUrl);
+                    ((BindingProvider) port).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                            endpointUrl);
                     csService = port;
                 } catch (MalformedURLException e) {
                     log.error("WSDL malformed URL : " + wsdlUrl + ". Conceptshare integration won't work", e);
@@ -177,6 +184,32 @@ public class ConceptshareServiceImpl extends DefaultComponent implements Concept
         apiContext = getOrCreateApiContext();
         return getOrCreateApiService().getProjectList(apiContext).getProject();
 
+    }
+
+    protected void initReviewStatusList() {
+        List<Status> statusList = getReviewStatusList();
+        for (Status status : statusList) {
+            reviewStatusMap.put(status.getName().getValue(), status.getId());
+        }
+    }
+
+    @Override
+    public List<Status> getReviewStatusList() {
+        apiContext = getOrCreateApiContext();
+        try {
+            return getOrCreateApiService().getStatusList(apiContext, StatusType.REVIEW).getStatus();
+        } catch (Exception e) {
+            throw new NuxeoException("Unable to fetch review status list from conceptshare!", e);
+        }
+    }
+
+    @Override
+    public int getReviewStatusId(String statusName) {
+        int statusId = this.reviewStatusMap.getOrDefault(statusName, -1);
+        if (statusId == -1) {
+            throw new NuxeoException("Unknown review status name : " + statusName);
+        }
+        return statusId;
     }
 
     @Override
@@ -253,12 +286,11 @@ public class ConceptshareServiceImpl extends DefaultComponent implements Concept
     @Override
     public Review endReview(int reviewId, String title, String description, String code) throws Exception {
         int projectId = getDefaultProject().getId();
-
-        // Should match the 'completed' status from the ajax call I inspect...
-        int statusId = 77;
-
+        
+        Integer completedStatus = getReviewStatusId(REVIEW_COMPLETED_STATUS);
+        
         return getOrCreateApiService().addUpdateReviewFull(getOrCreateApiContext(), reviewId, projectId, projectId,
-                ReferenceType.PROJECT, ReviewType.FEEDBACK, statusId, null, null, null, null, null, null, title,
+                ReferenceType.PROJECT, ReviewType.FEEDBACK, completedStatus, null, null, null, null, null, null, title,
                 description, code, new ArrayOfstring(), null, new ArrayOfReviewMember(), new ArrayOfReviewItem(), null,
                 null, null, new ArrayOfExternalReviewer());
 
