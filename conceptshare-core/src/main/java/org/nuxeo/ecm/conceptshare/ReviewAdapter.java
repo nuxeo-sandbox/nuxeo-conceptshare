@@ -13,159 +13,165 @@ import org.nuxeo.runtime.api.Framework;
  *
  */
 public class ReviewAdapter {
-	protected final DocumentModel doc;
+    protected final DocumentModel doc;
 
-	protected String titleXpath = "dc:title";
-	protected String descriptionXpath = "dc:description";
+    protected String titleXpath = "dc:title";
 
-	public static final String CS_REVIEW_PROP_PREFIX = "CSReviewProp";
-	public static final String REVIEW_ID_PROP = CS_REVIEW_PROP_PREFIX + ":ReviewId";
-	public static final String REVIEW_STATUS_PROP = CS_REVIEW_PROP_PREFIX + ":ReviewStatus";
+    protected String descriptionXpath = "dc:description";
 
-	private static Log log = LogFactory.getLog(ReviewAdapter.class);
+    public static final String CS_REVIEW_PROP_PREFIX = "CSReviewProp";
 
-	public static final int CS_COMPLETED_STATUS_ID = 77;
+    public static final String REVIEW_ID_PROP = CS_REVIEW_PROP_PREFIX + ":ReviewId";
 
-	public ReviewAdapter(DocumentModel doc) {
-		this.doc = doc;
-	}
+    public static final String REVIEW_STATUS_PROP = CS_REVIEW_PROP_PREFIX + ":ReviewStatus";
 
-	// Basic methods
-	//
-	// Note that we voluntarily expose only a subset of the DocumentModel API in
-	// this adapter.
-	// You may wish to complete it without exposing everything!
-	// For instance to avoid letting people change the document state using your
-	// adapter,
-	// because this would be handled through workflows / buttons / events in your
-	// application.
-	//
-	public void save() {
-		CoreSession session = doc.getCoreSession();
-		session.saveDocument(doc);
-	}
+    private static Log log = LogFactory.getLog(ReviewAdapter.class);
 
-	public DocumentRef getParentRef() {
-		return doc.getParentRef();
-	}
+    public ReviewAdapter(DocumentModel doc) {
+        this.doc = doc;
+    }
 
-	// Technical properties retrieval
-	public String getId() {
-		return doc.getId();
-	}
+    // Basic methods
+    //
+    // Note that we voluntarily expose only a subset of the DocumentModel API in
+    // this adapter.
+    // You may wish to complete it without exposing everything!
+    // For instance to avoid letting people change the document state using your
+    // adapter,
+    // because this would be handled through workflows / buttons / events in your
+    // application.
+    //
+    public void save() {
+        CoreSession session = doc.getCoreSession();
+        session.saveDocument(doc);
+    }
 
-	public String getName() {
-		return doc.getName();
-	}
+    public DocumentRef getParentRef() {
+        return doc.getParentRef();
+    }
 
-	public String getPath() {
-		return doc.getPathAsString();
-	}
+    // Technical properties retrieval
+    public String getId() {
+        return doc.getId();
+    }
 
-	public String getState() {
-		return doc.getCurrentLifeCycleState();
-	}
+    public String getName() {
+        return doc.getName();
+    }
 
-	// Metadata get / set
-	public String getTitle() {
-		return doc.getTitle();
-	}
+    public String getPath() {
+        return doc.getPathAsString();
+    }
 
-	public void setTitle(String value) {
-		doc.setPropertyValue(titleXpath, value);
-	}
+    public String getState() {
+        return doc.getCurrentLifeCycleState();
+    }
 
-	public void setReviewId(String reviewId) {
-		doc.setPropertyValue(REVIEW_ID_PROP, reviewId);
-	}
+    // Metadata get / set
+    public String getTitle() {
+        return doc.getTitle();
+    }
 
-	public String getReviewId() {
-		return (String) doc.getPropertyValue(REVIEW_ID_PROP);
-	}
+    public void setTitle(String value) {
+        doc.setPropertyValue(titleXpath, value);
+    }
 
-	public String getDescription() {
-		return (String) doc.getPropertyValue(descriptionXpath);
-	}
+    public void setReviewId(String reviewId) {
+        doc.setPropertyValue(REVIEW_ID_PROP, reviewId);
+    }
 
-	public void setDescription(String value) {
-		doc.setPropertyValue(descriptionXpath, value);
-	}
+    public String getReviewId() {
+        return (String) doc.getPropertyValue(REVIEW_ID_PROP);
+    }
 
-	public void setReviewStatus(String status) {
-		doc.setPropertyValue(REVIEW_STATUS_PROP, status);
-	}
+    public String getDescription() {
+        return (String) doc.getPropertyValue(descriptionXpath);
+    }
 
-	public void addAssetToCollection(AssetAdapter asset) {
-		String reviewId = this.getReviewId();
+    public void setDescription(String value) {
+        doc.setPropertyValue(descriptionXpath, value);
+    }
 
-		try {
-			getCSService().addReviewItem(Integer.parseInt(reviewId), Integer.parseInt(asset.getAssetId()));
-			this.setReviewStatus("ready");
-			this.save();
-		} catch (Exception e) {
-			log.error("Conceptshare review update failed while processing webservices call for asset " + asset.getPath()
-					+ " and collection " + doc.getPathAsString(), e);
-		}
+    public void setReviewStatus(String status) {
+        doc.setPropertyValue(REVIEW_STATUS_PROP, status);
+    }
 
-	}
+    public String getReviewStatus() {
+        return (String) doc.getPropertyValue(REVIEW_STATUS_PROP);
+    }
 
-	public void createReview() {
-		if (this.getReviewId() == null) {
+    public void addAssetToCollection(AssetAdapter asset) {
+        String reviewId = this.getReviewId();
 
-			String desc = "";
-			if (this.getDescription() != null) {
-				desc = (String) this.getDescription();
-			}
-			try {
-				Review review = getCSService().createReview(doc.getTitle(), desc, doc.getId());
-				this.setReviewId(review.getId().toString());
-				this.save();
+        try {
+            getCSService().addReviewItem(Integer.parseInt(reviewId), Integer.parseInt(asset.getAssetId()));
+            this.setReviewStatus("ready");
+            this.save();
+        } catch (Exception e) {
+            log.error("Conceptshare review update failed while processing webservices call for asset " + asset.getPath()
+                    + " and collection " + doc.getPathAsString(), e);
+        }
 
-				// TODO : Implement member selection feature
-				// XXX : For current demo purpose, we are adding manually all members to the
-				// review
-				getCSService().addReviewMember("nuxeo.demo.dam+administrator@gmail.com",
-						Integer.parseInt(this.getReviewId()));
-				getCSService().addReviewMember("nuxeo.demo.dam+alice@gmail.com", Integer.parseInt(this.getReviewId()));
-				getCSService().addReviewMember("nuxeo.demo.dam+bob@gmail.com", Integer.parseInt(this.getReviewId()));
-				getCSService().addReviewMember("nuxeo.demo.dam+josh@gmail.com", Integer.parseInt(this.getReviewId()));
-				getCSService().addReviewMember("nuxeo.demo.dam+julie@gmail.com", Integer.parseInt(this.getReviewId()));
-				getCSService().addReviewMember("nuxeo.demo.dam+lisa@gmail.com", Integer.parseInt(this.getReviewId()));
-				getCSService().addReviewMember("nuxeo.demo.dam+sunny@gmail.com", Integer.parseInt(this.getReviewId()));
-				getCSService().addReviewMember("ngrant@nuxeo.com", Integer.parseInt(this.getReviewId()));
-				getCSService().addReviewMember("rrowles@nuxeo.com", Integer.parseInt(this.getReviewId()));
+    }
 
-			} catch (Exception e) {
-				log.error("Failed to create review in conceptshare.", e);
-			}
-		} else {
-			log.warn("Can not create a review once it has already been created");
-		}
+    public void createReview() {
+        if (this.getReviewId() == null) {
 
-	}
+            String desc = "";
+            if (this.getDescription() != null) {
+                desc = (String) this.getDescription();
+            }
+            try {
+                Review review = getCSService().createReview(doc.getTitle(), desc, doc.getId());
+                this.setReviewId(review.getId().toString());
+                this.save();
 
-	public void endReview() throws Exception {
-		String desc = this.getDescription();
-		if (desc == null) {
-			desc = "";
-		}
-		Review review = getCSService().endReview(Integer.parseInt(this.getReviewId()), doc.getTitle(), desc,
-				doc.getId());
+                // TODO : Implement member selection feature
+                // XXX : For current demo purpose, we are adding manually all members to the
+                // review
+                getCSService().addReviewMember("nuxeo.demo.dam+administrator@gmail.com",
+                        Integer.parseInt(this.getReviewId()));
+                getCSService().addReviewMember("nuxeo.demo.dam+alice@gmail.com", Integer.parseInt(this.getReviewId()));
+                getCSService().addReviewMember("nuxeo.demo.dam+bob@gmail.com", Integer.parseInt(this.getReviewId()));
+                getCSService().addReviewMember("nuxeo.demo.dam+josh@gmail.com", Integer.parseInt(this.getReviewId()));
+                getCSService().addReviewMember("nuxeo.demo.dam+julie@gmail.com", Integer.parseInt(this.getReviewId()));
+                getCSService().addReviewMember("nuxeo.demo.dam+lisa@gmail.com", Integer.parseInt(this.getReviewId()));
+                getCSService().addReviewMember("nuxeo.demo.dam+sunny@gmail.com", Integer.parseInt(this.getReviewId()));
+                getCSService().addReviewMember("ngrant@nuxeo.com", Integer.parseInt(this.getReviewId()));
+                getCSService().addReviewMember("rrowles@nuxeo.com", Integer.parseInt(this.getReviewId()));
 
-		if (review.getStatusId().getValue() == CS_COMPLETED_STATUS_ID) {
-			this.setReviewStatus("completed");
-			this.save();
-		} else {
-			log.warn("Review has not been updated, because the received status was not completed but "
-					+ review.getStatusName().getValue());
-		}
-	}
+            } catch (Exception e) {
+                log.error("Failed to create review in conceptshare.", e);
+            }
+        } else {
+            log.warn("Can not create a review once it has already been created");
+        }
 
-	public void addMember(String email) throws Exception {
-		getCSService().addReviewMember(email, Integer.parseInt(this.getReviewId()));
-	}
+    }
 
-	protected ConceptshareService getCSService() {
-		return Framework.getService(ConceptshareService.class);
-	}
+    public void endReview() throws Exception {
+        String desc = this.getDescription();
+        if (desc == null) {
+            desc = "";
+        }
+        Review review = getCSService().endReview(Integer.parseInt(this.getReviewId()), doc.getTitle(), desc,
+                doc.getId());
+
+        int completedStatus = getCSService().getReviewStatusId(ConceptshareService.REVIEW_COMPLETED_STATUS);
+        if (review.getStatusId().getValue() == completedStatus) {
+            this.setReviewStatus("completed");
+            this.save();
+        } else {
+            log.warn("Review has not been updated, because the received status was not completed but "
+                    + review.getStatusName().getValue());
+        }
+    }
+
+    public void addMember(String email) throws Exception {
+        getCSService().addReviewMember(email, Integer.parseInt(this.getReviewId()));
+    }
+
+    protected ConceptshareService getCSService() {
+        return Framework.getService(ConceptshareService.class);
+    }
 }
