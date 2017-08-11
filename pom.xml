@@ -4,7 +4,7 @@
    <parent>
     <groupId>org.nuxeo.ecm.distribution</groupId>
     <artifactId>nuxeo-distribution</artifactId>
-    <version>8.10-HF11</version>
+    <version>8.10</version>
   </parent>
   <groupId>org.nuxeo.ecm.conceptshare</groupId>
   <artifactId>conceptshare-parent</artifactId>
