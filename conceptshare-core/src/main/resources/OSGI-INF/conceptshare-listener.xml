@@ -16,7 +16,10 @@
               class="org.nuxeo.ecm.conceptshare.AssetAddedToCollectionListener">
         <event>addedToCollection</event>
     </listener>
-    
+    <listener name="assetRemovedFromCollection" postCommit="false" async="false"
+              class="org.nuxeo.ecm.conceptshare.RemovedFromCollectionListener">
+        <event>removedFromCollection</event>
+    </listener>
   </extension>
 
 </component>

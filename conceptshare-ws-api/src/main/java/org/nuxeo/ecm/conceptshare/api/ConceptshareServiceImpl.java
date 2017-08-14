@@ -264,6 +264,11 @@ public class ConceptshareServiceImpl extends DefaultComponent implements Concept
     public ReviewItem addReviewItem(int reviewId, int assetId) throws Exception {
         return getOrCreateApiService().addReviewItem(getOrCreateApiContext(), reviewId, assetId);
     }
+    
+    @Override
+    public ReviewItem removeReviewItem(int reviewId, int assetId) throws Exception {
+        return getOrCreateApiService().removeReviewItem(getOrCreateApiContext(), reviewId, assetId);
+    }
 
     @Override
     public String getReviewURL(Integer reviewId, int userId) throws Exception {

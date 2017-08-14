@@ -114,6 +114,19 @@ public class ReviewAdapter {
 
     }
 
+    public void removeAssetFromCollection(AssetAdapter asset) {
+        String reviewId = this.getReviewId();
+
+        try {
+            getCSService().removeReviewItem(Integer.parseInt(reviewId), Integer.parseInt(asset.getAssetId()));
+            this.save();
+        } catch (Exception e) {
+            log.error("Conceptshare review update failed while processing webservices call for asset " + asset.getPath()
+                    + " and collection " + doc.getPathAsString(), e);
+        }
+
+    }
+
     public void createReview() {
         if (this.getReviewId() == null) {
 
