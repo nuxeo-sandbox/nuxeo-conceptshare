@@ -76,4 +76,6 @@ public interface ConceptshareService {
     public List<Status> getReviewStatusList();
 
     public int getReviewStatusId(String statusName);
+
+    public ReviewItem removeReviewItem(int reviewId, int assetId) throws Exception;
 }

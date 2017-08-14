@@ -101,6 +101,20 @@ public class TestConceptshareService {
         assertEquals(completedStatus, review.getStatusId().getValue());
 
     }
+    
+    @Test
+    public void itCanRemoveItemFromReview() throws Exception {
+        long timestamp = new Date().getTime();
+        String reviewTitle = "myReviewUnitTest - " + timestamp;
+        String name = "Unit test - " + timestamp;
+        String filename = name + ".png";
+        Review review = createReview(reviewTitle);
+
+        Asset asset = conceptshareservice.addAsset(name, filename, "https://www.nuxeo.com/assets/imgs/logo340x60.png");
+        ReviewItem ri = conceptshareservice.addReviewItem(review.getId(), asset.getId());
+        assertEquals(ri.getReviewId(), review.getId());
+        ri = conceptshareservice.removeReviewItem(review.getId(), ri.getAssetId());
+    }
 
     public Review createReview(String reviewTitle) throws Exception {
         Review review = conceptshareservice.createReview(reviewTitle, "myDescription", "12345");
