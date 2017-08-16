@@ -261,10 +261,16 @@ public class ConceptshareServiceImpl extends DefaultComponent implements Concept
     }
 
     @Override
+    public Asset addVersionedAsset(String assetName, Integer assetId, String fileName, String url) throws Exception {
+        return getOrCreateApiService().addVersionedAssetFromExternalUri(getOrCreateApiContext(), assetId, assetName,
+                fileName, url, false, new ArrayOfAssetUploadParameter());
+    }
+
+    @Override
     public ReviewItem addReviewItem(int reviewId, int assetId) throws Exception {
         return getOrCreateApiService().addReviewItem(getOrCreateApiContext(), reviewId, assetId);
     }
-    
+
     @Override
     public ReviewItem removeReviewItem(int reviewId, int assetId) throws Exception {
         return getOrCreateApiService().removeReviewItem(getOrCreateApiContext(), reviewId, assetId);
@@ -291,9 +297,9 @@ public class ConceptshareServiceImpl extends DefaultComponent implements Concept
     @Override
     public Review endReview(int reviewId, String title, String description, String code) throws Exception {
         int projectId = getDefaultProject().getId();
-        
+
         Integer completedStatus = getReviewStatusId(REVIEW_COMPLETED_STATUS);
-        
+
         return getOrCreateApiService().addUpdateReviewFull(getOrCreateApiContext(), reviewId, projectId, projectId,
                 ReferenceType.PROJECT, ReviewType.FEEDBACK, completedStatus, null, null, null, null, null, null, title,
                 description, code, new ArrayOfstring(), null, new ArrayOfReviewMember(), new ArrayOfReviewItem(), null,

@@ -10,7 +10,10 @@ import org.nuxeo.ecm.conceptshare.api.ConceptshareService;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentRef;
+import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.NuxeoException;
+import org.nuxeo.ecm.core.api.VersionModel;
+import org.nuxeo.ecm.core.api.VersioningOption;
 import org.nuxeo.ecm.core.blob.BlobManager;
 import org.nuxeo.ecm.core.blob.binary.BinaryBlob;
 import org.nuxeo.ecm.core.blob.binary.BinaryManager;
@@ -21,135 +24,182 @@ import org.nuxeo.runtime.api.Framework;
  *
  */
 public class AssetAdapter {
-	protected final DocumentModel doc;
+    protected final DocumentModel doc;
 
-	protected String titleXpath = "dc:title";
-	protected String descriptionXpath = "dc:description";
+    protected String titleXpath = "dc:title";
 
-	public static final String CS_FILE_SCHEMA_NAME = "CS-FileProperties";
-	public static final String CS_FILE_PROP_PREFIX = "CSFileProp";
-	public static final String ASSET_ID_PROP = CS_FILE_PROP_PREFIX + ":AssetId";
-	public static final String FILE_STATUS_PROP = CS_FILE_PROP_PREFIX + ":FileStatus";
+    protected String descriptionXpath = "dc:description";
 
-	private static Log log = LogFactory.getLog(AssetAdapter.class);
+    public static final String CS_FILE_SCHEMA_NAME = "CS-FileProperties";
 
-	public AssetAdapter(DocumentModel doc) {
-		this.doc = doc;
-	}
+    public static final String CS_FILE_PROP_PREFIX = "CSFileProp";
 
-	// Basic methods
-	//
-	// Note that we voluntarily expose only a subset of the DocumentModel API in
-	// this adapter.
-	// You may wish to complete it without exposing everything!
-	// For instance to avoid letting people change the document state using your
-	// adapter,
-	// because this would be handled through workflows / buttons / events in your
-	// application.
-	//
-	public void save() {
-		CoreSession session = doc.getCoreSession();
-		session.saveDocument(doc);
-	}
+    public static final String ASSET_ID_PROP = CS_FILE_PROP_PREFIX + ":AssetId";
 
-	public DocumentRef getParentRef() {
-		return doc.getParentRef();
-	}
+    public static final String FILE_STATUS_PROP = CS_FILE_PROP_PREFIX + ":FileStatus";
 
-	// Technical properties retrieval
-	public String getId() {
-		return doc.getId();
-	}
+    private static Log log = LogFactory.getLog(AssetAdapter.class);
 
-	public String getName() {
-		return doc.getName();
-	}
+    public AssetAdapter(DocumentModel doc) {
+        this.doc = doc;
+    }
 
-	public String getPath() {
-		return doc.getPathAsString();
-	}
+    // Basic methods
+    //
+    // Note that we voluntarily expose only a subset of the DocumentModel API in
+    // this adapter.
+    // You may wish to complete it without exposing everything!
+    // For instance to avoid letting people change the document state using your
+    // adapter,
+    // because this would be handled through workflows / buttons / events in your
+    // application.
+    //
+    public void save() {
+        CoreSession session = doc.getCoreSession();
+        session.saveDocument(doc);
+    }
 
-	public String getState() {
-		return doc.getCurrentLifeCycleState();
-	}
+    public DocumentRef getParentRef() {
+        return doc.getParentRef();
+    }
 
-	// Metadata get / set
-	public String getTitle() {
-		return doc.getTitle();
-	}
+    // Technical properties retrieval
+    public String getId() {
+        return doc.getId();
+    }
 
-	public void setTitle(String value) {
-		doc.setPropertyValue(titleXpath, value);
-	}
+    public String getName() {
+        return doc.getName();
+    }
 
-	public String getDescription() {
-		return (String) doc.getPropertyValue(descriptionXpath);
-	}
+    public String getPath() {
+        return doc.getPathAsString();
+    }
 
-	public void setDescription(String value) {
-		doc.setPropertyValue(descriptionXpath, value);
-	}
+    public String getState() {
+        return doc.getCurrentLifeCycleState();
+    }
 
-	public BinaryBlob getContent() {
-		return (BinaryBlob) doc.getPropertyValue("file:content");
-	}
+    // Metadata get / set
+    public String getTitle() {
+        return doc.getTitle();
+    }
 
-	public void setFileStatus(String status) {
-		doc.setPropertyValue(FILE_STATUS_PROP, status);
-	}
+    public void setTitle(String value) {
+        doc.setPropertyValue(titleXpath, value);
+    }
 
-	public void setAssetId(String assetId) {
-		doc.setPropertyValue(ASSET_ID_PROP, assetId);
-	}
+    public String getDescription() {
+        return (String) doc.getPropertyValue(descriptionXpath);
+    }
 
-	public String getAssetId() {
-		return (String) doc.getPropertyValue(ASSET_ID_PROP);
-	}
+    public void setDescription(String value) {
+        doc.setPropertyValue(descriptionXpath, value);
+    }
 
-	public void createAsset() {
-		if (this.getAssetId() == null) {
+    public BinaryBlob getContent() {
+        return (BinaryBlob) doc.getPropertyValue("file:content");
+    }
 
-			try {
-				String url = this.getS3Url().toString();
-				if (url != null) {
-					Asset asset = Framework.getService(ConceptshareService.class).addAsset(doc.getTitle(),
-							this.getContent().getFilename(), url);
-					this.setAssetId(asset.getId().toString());
-					this.setFileStatus("pending");
-					this.save();
-				}
+    public void setFileStatus(String status) {
+        doc.setPropertyValue(FILE_STATUS_PROP, status);
+    }
 
-			} catch (Exception e) {
-				log.error("Failed to create asset in conceptshare.", e);
-			}
-		} else {
-			log.warn("Can not create an asset once it has already been created");
-		}
-	}
+    public void setAssetId(String assetId) {
+        doc.setPropertyValue(ASSET_ID_PROP, assetId);
+    }
 
-	public URL getS3Url() throws Exception {
-		BlobManager blobManager = Framework.getService(org.nuxeo.ecm.core.blob.BlobManager.class);
-		BinaryBlob blob = this.getContent();
-		if (blob != null) {
-			BinaryManager binaryManager = blobManager.getBlobProvider(blob).getBinaryManager();
+    public String getAssetId() {
+        return (String) doc.getPropertyValue(ASSET_ID_PROP);
+    }
 
-			if (binaryManager instanceof S3BinaryManager) {
-				URI url = ((S3BinaryManager) binaryManager).getURI(blob, BlobManager.UsageHint.DOWNLOAD, null);
-				if (url == null) {
-					throw new NuxeoException(
-							"Could not process the S3 presigned URI. Please make sure you have enabled the property nuxeo.s3storage.directdownload in nuxeo.conf");
-				} else {
+    public void createAsset() {
+        if (this.getAssetId() == null) {
 
-					return url.toURL();
-				}
+            try {
+                String url = this.getS3Url().toString();
+                if (url != null) {
+                    Asset asset = Framework.getService(ConceptshareService.class).addAsset(doc.getTitle(),
+                            this.getContent().getFilename(), url);
+                    this.setAssetId(asset.getId().toString());
+                    this.setFileStatus("pending");
+                    this.save();
+                    doc.getCoreSession().checkIn(new IdRef(getId()), VersioningOption.MAJOR, "");
+                }
 
-			} else {
-				throw new NuxeoException("Asset " + doc.getPathAsString()
-						+ " not added to conceptshare: Conceptshare integration currently support only S3BinaryManager."
-						+ " You must install the S3 plugin to add asset into conceptshare.");
-			}
-		}
-		return null;
-	}
+            } catch (Exception e) {
+                log.error("Failed to create asset in conceptshare.", e);
+            }
+        } else {
+            log.warn("Can not create an asset once it has already been created");
+        }
+    }
+
+    public URL getS3Url() throws Exception {
+        BlobManager blobManager = Framework.getService(org.nuxeo.ecm.core.blob.BlobManager.class);
+        BinaryBlob blob = this.getContent();
+        if (blob != null) {
+            BinaryManager binaryManager = blobManager.getBlobProvider(blob).getBinaryManager();
+
+            if (binaryManager instanceof S3BinaryManager) {
+                URI url = ((S3BinaryManager) binaryManager).getURI(blob, BlobManager.UsageHint.DOWNLOAD, null);
+                if (url == null) {
+                    throw new NuxeoException(
+                            "Could not process the S3 presigned URI. Please make sure you have enabled the property nuxeo.s3storage.directdownload in nuxeo.conf");
+                } else {
+
+                    return url.toURL();
+                }
+
+            } else {
+                throw new NuxeoException("Asset " + doc.getPathAsString()
+                        + " not added to conceptshare: Conceptshare integration currently support only S3BinaryManager."
+                        + " You must install the S3 plugin to add asset into conceptshare.");
+            }
+        }
+        return null;
+    }
+
+    public void addVersion() {
+        createVersion(getAssetId());
+    }
+
+    protected void createVersion(String prevAssetId) {
+        try {
+            if (prevAssetId != null) {
+                Asset newAsset = Framework.getService(ConceptshareService.class).addVersionedAsset(getTitle(),
+                        Integer.parseInt(prevAssetId), this.getContent().getFilename(), getS3Url().toString());
+                this.setAssetId(newAsset.getId().toString());
+                this.save();
+            }
+        } catch (Exception e) {
+            throw new NuxeoException("Could not versioned asset " + doc.getPathAsString() + " in conceptshare", e);
+        }
+    }
+
+    public void restoreVersion() {
+        // Restore version must be trigger AFTER doc has been restored, we need to get latest assetID not the one from
+        // the version
+        DocumentModel lastVersion = findLatestVersion();
+        String lastAssetId = lastVersion.getAdapter(AssetAdapter.class).getAssetId();
+        createVersion(lastAssetId);
+    }
+    
+    protected DocumentModel findLatestVersion() {
+        // Works only with major version
+        int latest = Integer.parseInt(doc.getVersionLabel().split("\\.")[0]);
+        int currentVersion = -1;
+        DocumentModel higherVersionDoc = null;
+        for (VersionModel version : doc.getCoreSession().getVersionsForDocument(new IdRef(getId()))) {
+            currentVersion = Integer.parseInt(version.getLabel().split("\\.")[0]);
+            if(currentVersion > latest) {
+                higherVersionDoc = doc.getCoreSession().getDocumentWithVersion( new IdRef(getId()), version);
+            }
+        }
+        if(higherVersionDoc != null) {
+            return higherVersionDoc;
+        }
+        return doc;
+    }
 
 }

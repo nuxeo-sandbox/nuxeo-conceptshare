@@ -1,24 +1,28 @@
 <?xml version="1.0"?>
 <component name="org.nuxeo.ecm.conceptshare.listener">
 
-  <extension target="org.nuxeo.ecm.core.event.EventServiceComponent"
-             point="listener">
+  <extension target="org.nuxeo.ecm.core.event.EventServiceComponent" point="listener">
     <listener name="conceptshareCallback" postCommit="false" async="false"
-              class="org.nuxeo.ecm.conceptshare.ConceptshareCallbackListener">
-        <event>ASSET_CREATED</event>
-        <event>ASSET_ERROR</event>
+      class="org.nuxeo.ecm.conceptshare.ConceptshareCallbackListener">
+      <event>ASSET_CREATED</event>
+      <event>ASSET_ERROR</event>
     </listener>
     <listener name="conceptshareCollectionCreated" postCommit="false" async="false"
-              class="org.nuxeo.ecm.conceptshare.CollectionCreatedListener">
-        <event>documentCreated</event>
+      class="org.nuxeo.ecm.conceptshare.CollectionCreatedListener">
+      <event>documentCreated</event>
     </listener>
     <listener name="conceptshareAssetAddedToCollection" postCommit="false" async="false"
-              class="org.nuxeo.ecm.conceptshare.AssetAddedToCollectionListener">
-        <event>addedToCollection</event>
+      class="org.nuxeo.ecm.conceptshare.AssetAddedToCollectionListener">
+      <event>addedToCollection</event>
     </listener>
     <listener name="assetRemovedFromCollection" postCommit="false" async="false"
-              class="org.nuxeo.ecm.conceptshare.RemovedFromCollectionListener">
-        <event>removedFromCollection</event>
+      class="org.nuxeo.ecm.conceptshare.RemovedFromCollectionListener">
+      <event>removedFromCollection</event>
+    </listener>
+    <listener name="assetVersioned" postCommit="false" async="false"
+      class="org.nuxeo.ecm.conceptshare.AssetVersionedListener">
+      <event>aboutToCheckIn</event>
+      <event>documentRestored</event>
     </listener>
   </extension>
 

@@ -17,15 +17,12 @@
  */
 package org.nuxeo.ecm.conceptshare;
 
-import org.nuxeo.ecm.collections.api.CollectionConstants;
-import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.core.api.DocumentRef;
 import org.nuxeo.ecm.core.event.Event;
 import org.nuxeo.ecm.core.event.EventListener;
 import org.nuxeo.ecm.core.event.impl.DocumentEventContext;
 
-public class RemovedFromCollectionListener implements EventListener {
+public class AssetVersionedListener implements EventListener {
 
     @Override
     public void handleEvent(Event event) {
@@ -34,17 +31,14 @@ public class RemovedFromCollectionListener implements EventListener {
         }
         DocumentEventContext docCtx = (DocumentEventContext) event.getContext();
         DocumentModel doc = docCtx.getSourceDocument();
-        CoreSession session = doc.getCoreSession();
-
         AssetAdapter assetDoc = doc.getAdapter(AssetAdapter.class);
         if (assetDoc != null) {
-            {
-                DocumentRef collectionRef = (DocumentRef) docCtx.getProperties()
-                                                                .get(CollectionConstants.COLLECTION_REF_EVENT_CTX_PROP);
-                ReviewAdapter review = session.getDocument(collectionRef).getAdapter(ReviewAdapter.class);
-                review.removeAssetFromCollection(assetDoc);
+            // Skip first checkIn on V1. CS version at V1
+            if (event.getName().equals("aboutToCheckIn") && !doc.getVersionLabel().equals("0.0")) {
+                assetDoc.addVersion();
+            } else if (event.getName().equals("documentRestored")) {
+                assetDoc.restoreVersion();
             }
-
         }
     }
 }

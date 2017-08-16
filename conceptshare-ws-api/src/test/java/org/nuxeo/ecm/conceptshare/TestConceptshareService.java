@@ -101,7 +101,7 @@ public class TestConceptshareService {
         assertEquals(completedStatus, review.getStatusId().getValue());
 
     }
-    
+
     @Test
     public void itCanRemoveItemFromReview() throws Exception {
         long timestamp = new Date().getTime();
@@ -114,6 +114,33 @@ public class TestConceptshareService {
         ReviewItem ri = conceptshareservice.addReviewItem(review.getId(), asset.getId());
         assertEquals(ri.getReviewId(), review.getId());
         ri = conceptshareservice.removeReviewItem(review.getId(), ri.getAssetId());
+    }
+
+    @Test
+    public void itCanVersionAsset() throws Exception{
+        
+    long timestamp = new Date().getTime();
+    String reviewTitle = "myReviewUnitTest - " + timestamp;
+    String name = "Unit test - " + timestamp;
+    String filename = name + ".png";
+    Review review = createReview(reviewTitle);
+
+    Integer inProgressStatus = conceptshareservice.getReviewStatusId(ConceptshareService.REVIEW_IN_PROGRESS_STATUS);
+    assertEquals(inProgressStatus, review.getStatusId().getValue());
+    String assetV1 = "https://www.nuxeo.com/assets/imgs/logo340x60.png";
+    String assetV2 = "https://www.nuxeo.com/assets/imgs/backgrounds/ea-background.png";
+    
+    Asset asset = conceptshareservice.addAsset(name, filename, assetV1);
+    
+    ReviewItem ri = conceptshareservice.addReviewItem(review.getId(), asset.getId());
+    
+    Asset newAsset = conceptshareservice.addVersionedAsset(name, asset.getId(), filename, assetV2);
+    System.out.println(newAsset.getId());
+    
+    //Restore
+    newAsset = conceptshareservice.addVersionedAsset(name, newAsset.getId(), filename, assetV1);
+    //conceptshareservice.removeReviewItem(review.getId(), newAsset.getId());
+    //ri = conceptshareservice.addReviewItem(review.getId(), asset.getId());
     }
 
     public Review createReview(String reviewTitle) throws Exception {
