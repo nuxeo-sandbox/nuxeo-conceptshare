@@ -78,4 +78,6 @@ public interface ConceptshareService {
     public int getReviewStatusId(String statusName);
 
     public ReviewItem removeReviewItem(int reviewId, int assetId) throws Exception;
+
+    public Asset addVersionedAsset(String assetName, Integer assetId, String fileName, String url) throws Exception;
 }
