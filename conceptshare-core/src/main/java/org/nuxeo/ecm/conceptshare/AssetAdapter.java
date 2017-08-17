@@ -12,7 +12,6 @@ import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentRef;
 import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.NuxeoException;
-import org.nuxeo.ecm.core.api.VersionModel;
 import org.nuxeo.ecm.core.api.VersioningOption;
 import org.nuxeo.ecm.core.blob.BlobManager;
 import org.nuxeo.ecm.core.blob.binary.BinaryBlob;
@@ -37,6 +36,10 @@ public class AssetAdapter {
     public static final String ASSET_ID_PROP = CS_FILE_PROP_PREFIX + ":AssetId";
 
     public static final String FILE_STATUS_PROP = CS_FILE_PROP_PREFIX + ":FileStatus";
+
+    public static final String DOC_ASSET_ID_CONTAINER_PROP = CS_FILE_PROP_PREFIX + ":AssetIDContainer";
+
+    public static final String ASSET_ID_CONTAINER_PROP = "CS-AssetIdContainer:AssetId";
 
     private static Log log = LogFactory.getLog(AssetAdapter.class);
 
@@ -123,6 +126,17 @@ public class AssetAdapter {
                             this.getContent().getFilename(), url);
                     this.setAssetId(asset.getId().toString());
                     this.setFileStatus("pending");
+
+                    CoreSession session = doc.getCoreSession();
+
+                    String path = session.getDocument(doc.getParentRef()).getPathAsString();
+                    DocumentModel container = session.createDocumentModel(path, "asset-container-" + this.getId(),
+                            "CS-AssetIdContainer");
+                    container = session.createDocument(container);
+                    container.setPropertyValue(ASSET_ID_CONTAINER_PROP, asset.getId().toString());
+                    container = session.saveDocument(container);
+
+                    doc.setPropertyValue(DOC_ASSET_ID_CONTAINER_PROP, container.getId());
                     this.save();
                     doc.getCoreSession().checkIn(new IdRef(getId()), VersioningOption.MAJOR, "");
                 }
@@ -133,6 +147,22 @@ public class AssetAdapter {
         } else {
             log.warn("Can not create an asset once it has already been created");
         }
+    }
+
+    /*
+     * Required to store last assetId across versions. CS doesn't handle version restore
+     */
+    protected String getLastAssetId() {
+        String containerId = (String) doc.getPropertyValue(DOC_ASSET_ID_CONTAINER_PROP);
+        return (String) doc.getCoreSession().getDocument(new IdRef(containerId)).getPropertyValue(
+                ASSET_ID_CONTAINER_PROP);
+    }
+
+    protected void setLastAssetId(String newAssetId) {
+        String containerId = (String) doc.getPropertyValue(DOC_ASSET_ID_CONTAINER_PROP);
+        DocumentModel container = doc.getCoreSession().getDocument(new IdRef(containerId));
+        container.setPropertyValue(ASSET_ID_CONTAINER_PROP, newAssetId);
+        container.getCoreSession().saveDocument(container);
     }
 
     public URL getS3Url() throws Exception {
@@ -161,7 +191,7 @@ public class AssetAdapter {
     }
 
     public void addVersion() {
-        createVersion(getAssetId());
+        createVersion(getLastAssetId());
     }
 
     protected void createVersion(String prevAssetId) {
@@ -170,36 +200,12 @@ public class AssetAdapter {
                 Asset newAsset = Framework.getService(ConceptshareService.class).addVersionedAsset(getTitle(),
                         Integer.parseInt(prevAssetId), this.getContent().getFilename(), getS3Url().toString());
                 this.setAssetId(newAsset.getId().toString());
+                setLastAssetId(newAsset.getId().toString());
                 this.save();
             }
         } catch (Exception e) {
             throw new NuxeoException("Could not versioned asset " + doc.getPathAsString() + " in conceptshare", e);
         }
-    }
-
-    public void restoreVersion() {
-        // Restore version must be trigger AFTER doc has been restored, we need to get latest assetID not the one from
-        // the version
-        DocumentModel lastVersion = findLatestVersion();
-        String lastAssetId = lastVersion.getAdapter(AssetAdapter.class).getAssetId();
-        createVersion(lastAssetId);
-    }
-    
-    protected DocumentModel findLatestVersion() {
-        // Works only with major version
-        int latest = Integer.parseInt(doc.getVersionLabel().split("\\.")[0]);
-        int currentVersion = -1;
-        DocumentModel higherVersionDoc = null;
-        for (VersionModel version : doc.getCoreSession().getVersionsForDocument(new IdRef(getId()))) {
-            currentVersion = Integer.parseInt(version.getLabel().split("\\.")[0]);
-            if(currentVersion > latest) {
-                higherVersionDoc = doc.getCoreSession().getDocumentWithVersion( new IdRef(getId()), version);
-            }
-        }
-        if(higherVersionDoc != null) {
-            return higherVersionDoc;
-        }
-        return doc;
     }
 
 }

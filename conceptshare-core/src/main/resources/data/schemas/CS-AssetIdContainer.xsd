@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:nxs="http://www.nuxeo.org/ecm/project/schemas/conceptshare-integration/CS-FileProperties" xmlns:nxsv="http://www.nuxeo.org/ecm/schemas/core/validation/" xmlns:ref="http://www.nuxeo.org/ecm/schemas/core/external-references/" targetNamespace="http://www.nuxeo.org/ecm/project/schemas/conceptshare-integration/CS-FileProperties">  
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:nxs="http://www.nuxeo.org/ecm/project/schemas/conceptshare-integration/CS-AssetIdContainer" xmlns:nxsv="http://www.nuxeo.org/ecm/schemas/core/validation/" xmlns:ref="http://www.nuxeo.org/ecm/schemas/core/external-references/" targetNamespace="http://www.nuxeo.org/ecm/project/schemas/conceptshare-integration/CS-AssetIdContainer">  
   <!-- helper XSD definitions for list types -->  
   <xs:complexType name="content"> 
     <xs:sequence> 
@@ -33,11 +33,4 @@
     </xs:sequence> 
   </xs:complexType>  
   <xs:element name="AssetId" type="xs:string"/>
-  <xs:element name="AssetIDContainer" type="xs:string"/>
-  <xs:element name="FileName" type="xs:string"/>
-  <xs:element name="FileStatus" default="Not In Review">
-    <xs:simpleType>
-      <xs:restriction base="xs:string" ref:resolver="directoryResolver" ref:directory="cs-filestatus"/>
-    </xs:simpleType>
-  </xs:element>
 </xs:schema>
