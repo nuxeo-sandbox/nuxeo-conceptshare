@@ -104,7 +104,7 @@ public class ReviewAdapter {
         String reviewId = this.getReviewId();
 
         try {
-            getCSService().addReviewItem(Integer.parseInt(reviewId), Integer.parseInt(asset.getAssetId()));
+            getCSService().addReviewItem(Integer.parseInt(reviewId), Integer.parseInt(asset.getLastAssetId()));
             this.setReviewStatus("ready");
             this.save();
         } catch (Exception e) {
@@ -118,7 +118,7 @@ public class ReviewAdapter {
         String reviewId = this.getReviewId();
 
         try {
-            getCSService().removeReviewItem(Integer.parseInt(reviewId), Integer.parseInt(asset.getAssetId()));
+            getCSService().removeReviewItem(Integer.parseInt(reviewId), Integer.parseInt(asset.getLastAssetId()));
             this.save();
         } catch (Exception e) {
             log.error("Conceptshare review update failed while processing webservices call for asset " + asset.getPath()
