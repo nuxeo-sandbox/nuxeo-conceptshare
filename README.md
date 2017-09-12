@@ -1,21 +1,28 @@
 ## Principles & Concepts
 
 This package allows to edit, annotate and review assets in [conceptshare](https://www.conceptshare.com/) UI
+
 ### Create review
 `Collection` is actually `review` in conceptshare.
 Reviews are created in conceptshare when a collection is created in Nuxeo.
 
 ### Adding Asset
-When an asset is being added to a collection, it automatically uploads the files into conceptshare. Once conceptshare calls back nuxeo to confirm upload is done, the asset is added to the review. Asset are uploaded in conceptshare only one time and can be reused for other reviews. If the docuemnt added to the review in nuxeo doesn't have any binary, (like for folder or a file placeholder) asset creation won't be pushed to conceptshare.
+When an asset is being added to a collection, it automatically uploads the files into conceptshare. Once conceptshare calls back nuxeo to confirm upload is done, the asset is added to the review. Asset are uploaded in conceptshare only one time and can be reused for other reviews. If the document added to the review in nuxeo doesn't have any binary, (like for folder or a file placeholder) asset creation won't be pushed to conceptshare.
 
 ### Accessing to review
-When a collection contains at least one asset, its status change to `Ready`. A link `Access review` allows you to directly browse the asset contained in the review to directly edit them and share your ideas on the asset.
+When a collection contains at least one asset, its status change to `Ready`. A button `Access review` allows you to directly browse the asset contained in the review to directly edit them and share your ideas on the asset.
 
 ### Ending a review
 Once you've done your review you can close it and complete it from nuxeo by clicking on the end review button. Its status will change to `completed`
 
-### Get the PDF review
-TODO
+### Asset versioning
+
+Once you add an asset to a collection in Nuxeo, it automatically create and tag version `1.0` of the asset.
+
+Conceptshare allows only up versioning and not revert whereas Nuxeo support it. Which means everytime you revert to a given version in Nuxeo you actually create a new version in Conceptshare. Therefore it is normal that version label doesn't match in Nuxeo and Conceptshare. 
+
+From a technical point of view, since new version in Conceptshare triggers a new `assetId` as well, this is handled by creating a unique immutable `CS-AssetIdContainer` document for each asset allowing to update the latest `AssetId` of the given asset.
+
 
 ## How it works
 
@@ -41,6 +48,8 @@ Required packages.:
 - `nuxeo-dam`
 - `amazon-s3-online-storage`
 - `nuxeo-jsf-ui`
+- `nuxeo-web-ui`
+
 
 Those 3 pakcages will be automatically installed if not already present when you install the first time the nuxeo-conceptshare module.
 
@@ -70,6 +79,144 @@ Those 3 pakcages will be automatically installed if not already present when you
 `conceptshare.defaultProject=<YourDefaultProjectName>`
 
 5. Grant access nuxeo to S3 bucket by adding this [AWS policy](https://doc.nuxeo.com/nxdoc/amazon-s3-online-storage/#aws-configuration) 
+
+# Studio customization
+
+The conceptshare package embed a default UI config (JSF and WebUI) along with a set of predefined doc types, vocabularies, facets and schemas, all defined in the [Core module resources](https://github.com/nuxeo-sandbox/nuxeo-conceptshare/tree/master/conceptshare-core/src/main/resources). You may want to change layout or even extend the default schema, thus simply add the following snippet into your Nuxeo Studio's registries :
+
+**In `Document Types` registry:**
+
+```
+{
+  "doctypes": {
+  
+  ... Other doc types you may have added before ...
+  
+    "CS-AssetIdContainer": {
+		"parent": "Document",
+		"facets": [
+			"HiddenInNavigation"
+		],
+		"schemas": [
+			"uid",
+			"CS-AssetIdContainer"
+		]
+	}
+  }
+}
+```
+**In `Document Schemas` registry:**
+
+```
+{
+  "schemas": {
+  
+  ... Other schemas you may have added before ...
+    
+    
+    "CS-FileProperties": {
+		"@prefix": "CSFileProp",
+		"AssetId": "string",
+		"FileName": "string",
+	    "FileStatus": "string",
+	    "AssetIDContainer": "string"
+	},
+	"CS-ReviewProperties": {
+		"@prefix": "CSReviewProp",
+		"TypeOfReview": "string",
+		"ReviewCreator": "string",
+		"ReviewName": "string",
+		"ReviewEndDate": "date",
+		"ReviewId": "string",
+		"ReviewStatus": "string"
+	},
+	"CS-AssetIdContainer": {
+		"@prefix": "CSAssetIdContainer",
+		"AssetId": "string"
+	}
+  }
+}
+
+```
+
+**In `Document Facets` registry:**
+
+```
+{
+   "facets":[
+   
+  ... Other facets you may have added before ...
+     
+     
+      {
+         "id":"CS-File",
+         "description":"ConceptShare Asset",
+          "schemas":["CS-FileProperties"]
+      }
+      ,{
+         "id":"CS-Review",
+         "description":"ConceptShare Review",
+          "schemas":["CS-ReviewProperties"]
+      }
+   ]
+}
+```
+
+**In `Automation Operations` registry:**
+
+
+```
+{
+  "operations": [
+
+  ... Other operations you may have added before ...
+  
+  {
+    "id": "CS.GetReviewURL",
+    "label": "Get review URL",
+    "category": "Files",
+    "description": "Return the direct url to review in conceptshare.",
+    "url": "CS.GetReviewURL",
+    "signature": [
+      "void",
+      "string"
+    ],
+    "params": [
+      {
+        "name": "email",
+        "type": "string",
+        "required": true,
+        "order": 0,
+        "values": []
+      },
+      {
+        "name": "reviewId",
+        "type": "long",
+        "required": true,
+        "order": 1,
+        "values": []
+      }
+    ]
+  },
+  {
+    "id": "CS.EndReview",
+    "label": "End review",
+    "category": "Files",
+    "description": "Complete a review in conceptshare.",
+    "url": "CS.EndReview",
+    "signature": [
+      "document",
+      "void"
+    ],
+    "params": [
+    ]
+  }                
+]}
+```
+
+
+
+
 
 
 # Resources (Documentation and other links)
