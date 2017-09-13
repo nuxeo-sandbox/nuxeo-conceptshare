@@ -28,11 +28,29 @@ From a technical point of view, since new version in Conceptshare triggers a new
 
 ## Pre requisites
 Conceptshare is a cloud or on premise web appliaction. In order to integrate nuxeo you need the following:
+
 - a conceptshare account with an api user, api password, partnerKey and partnerPassword
+
 - a running conceptshare instance
+
 - a default conceptshare project where your api user has access too
+
 - each conceptshare user account must have a nuxeo user with the same email address 
+
 - an AWS S3 bucket. See more [here](https://doc.nuxeo.com/nxdoc/amazon-s3-online-storage/)
+
+- Currently users sync is not implemented. Make sure you have the following user account setup in your Nuxeo instance:
+
+Username | FirstName | LastName | Email
+--- | --- | --- | ---
+Administrator | Admin | Istrator | **nuxeo.demo.dam+administrator@gmail.com**
+Bob | Bob | Summit | **nuxeo.demo.dam+bob@gmail.com**
+Alice | Alice | Spring | **nuxeo.demo.dam+alice@gmail.com**
+Lisa | Lisa | Fall | **nuxeo.demo.dam+lisa@gmail.com**
+Josh | Josh | Strong | **nuxeo.demo.dam+josh@gmail.com**
+Julie | Julie | Winter | **nuxeo.demo.dam+julie@gmail.com**
+Uri | Uri | Sunny | **nuxeo.demo.dam+sunny@gmail.com**
+
 
 ## Build
 1. Update conceptshare webservices config in the [Core test contrib](https://github.com/nuxeo-sandbox/nuxeo-conceptshare/blob/master/conceptshare-core/src/test/resources/conceptshare-service-test-contrib.xml) and [WS test contrib](https://github.com/nuxeo-sandbox/nuxeo-conceptshare/blob/master/conceptshare-ws-api/src/test/resources/conceptshare-service-test-contrib.xml) to be able to run the unit test, otherwise add `-DskipTests` in the maven command if you prefer to skip this part
