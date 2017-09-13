@@ -115,6 +115,10 @@ public class AssetAdapter {
     public String getAssetId() {
         return (String) doc.getPropertyValue(ASSET_ID_PROP);
     }
+    
+    public String getFileStatus() {
+        return (String) doc.getPropertyValue(FILE_STATUS_PROP);
+    }
 
     public void createAsset() {
         if (this.getAssetId() == null) {
