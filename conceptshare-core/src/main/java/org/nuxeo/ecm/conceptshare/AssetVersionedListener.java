@@ -33,8 +33,9 @@ public class AssetVersionedListener implements EventListener {
         DocumentModel doc = docCtx.getSourceDocument();
         AssetAdapter assetDoc = doc.getAdapter(AssetAdapter.class);
         if (assetDoc != null) {
-            // Skip first checkIn on V1. CS version at V1
-            if ((event.getName().equals("documentRestored") || event.getName().equals("aboutToCheckIn")) && !doc.getVersionLabel().equals("0.0")) {
+            // Skip first checkIn on V1 when asset has not been already added. CS version start at V1
+            if ((event.getName().equals("documentRestored") || event.getName().equals("aboutToCheckIn"))
+                    && "available".equals(assetDoc.getFileStatus())) {
                 assetDoc.addVersion();
             }
         }
