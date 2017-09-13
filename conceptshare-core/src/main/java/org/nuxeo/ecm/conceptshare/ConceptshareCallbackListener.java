@@ -32,7 +32,7 @@ public class ConceptshareCallbackListener implements EventListener {
 			new UnrestrictedSessionRunner(session) {
 				@Override
 				public void run() {
-					String query = "SELECT * From Document WHERE " + AssetAdapter.ASSET_ID_PROP + " = '" + assetId
+					String query = "SELECT * From Document WHERE ecm:isCheckedInVersion = 0 AND " + AssetAdapter.ASSET_ID_PROP + " = '" + assetId
 							+ "'";
 					DocumentModelList assetList = session.query(query);
 
