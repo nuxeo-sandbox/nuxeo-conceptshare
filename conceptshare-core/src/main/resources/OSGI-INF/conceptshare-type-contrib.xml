@@ -4,6 +4,7 @@
             <schema name="dublincore"/>
             <schema name="common"/>
             <schema name="uid"/>
+            <facet name="collection"/>
             <facet name="CS-Review"/>
         </doctype>
         <facet name="CS-Review">
