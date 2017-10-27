@@ -1,0 +1,13 @@
+<component name="org.nuxeo.ecm.conceptshare.core.schema">
+    <extension target="org.nuxeo.ecm.core.schema.TypeService" point="schema">
+        <schema name="cs-reviewsummery" prefix="cs-reviewsummery" override="true"
+                src="data/schemas/cs-reviewsummery.xsd"/>
+        <schema name="cs-reviews" prefix="cs-reviews" override="true" src="data/schemas/cs-reviews.xsd"/>
+        <schema name="CS-FileProperties" prefix="CSFileProp" override="true" src="data/schemas/CS-FileProperties.xsd"/>
+        <schema name="CS-ReviewProperties" prefix="CSReviewProp" override="true"
+                src="data/schemas/CS-ReviewProperties.xsd"/>
+        <schema name="CS-AssetIdContainer" prefix="CSAssetIdContainer" override="true"
+                src="data/schemas/CS-AssetIdContainer.xsd"/>
+        <schema name="concep_as" prefix="concep_as" override="true" src="data/schemas/concep_as.xsd"/>
+    </extension>
+</component>
