@@ -9,6 +9,8 @@ Bundle-SymbolicName: org.nuxeo.ecm.conceptshare.core;singleton=true
 Nuxeo-Component: OSGI-INF/conceptshare-listener.xml,
  OSGI-INF/conceptshare-directory-contrib.xml,
  OSGI-INF/conceptshare-operation-contrib.xml,
+ OSGI-INF/conceptshare-schema-contrib.xml,
+ OSGI-INF/conceptshare-type-contrib.xml,
  OSGI-INF/org.nuxeo.ecm.conceptshareasset-adapter-contrib.xml,
  OSGI-INF/org.nuxeo.ecm.conceptsharereview-adapter-contrib.xml,
  OSGI-INF/extensions.xml
