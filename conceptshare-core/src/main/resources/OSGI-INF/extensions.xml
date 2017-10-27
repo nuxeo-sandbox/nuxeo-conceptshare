@@ -61,20 +61,6 @@
     <doctype name="concep_as" extends="DefaultSearch">
       <schema name="concep_as"/>
     </doctype>
- 
-    <facet name="CS-File">
-      
-      <schema name="CS-FileProperties"/>
-    
-    </facet>
-  
-    
-    <facet name="CS-Review">
-      
-      <schema name="CS-ReviewProperties"/>
-    
-    </facet>
-  
   </extension>  <extension target="org.nuxeo.ecm.core.lifecycle.LifeCycleService" point="types">    <types>      <type name="CS-ReviewSummary">default</type>
     </types>
     <types>

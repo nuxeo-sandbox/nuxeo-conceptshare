@@ -1,0 +1,16 @@
+<component name="org.nuxeo.ecm.conceptshare.core.types">
+    <extension target="org.nuxeo.ecm.core.schema.TypeService" point="doctype">
+        <doctype name="ConceptShareReview" extends="Document">
+            <schema name="dublincore"/>
+            <schema name="common"/>
+            <schema name="uid"/>
+            <facet name="CS-Review"/>
+        </doctype>
+        <facet name="CS-Review">
+            <schema name="CS-ReviewProperties"/>
+        </facet>
+        <facet name="CS-File">
+            <schema name="CS-FileProperties"/>
+        </facet>
+    </extension>
+</component>
