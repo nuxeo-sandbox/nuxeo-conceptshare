@@ -7,6 +7,23 @@
             <facet name="collection"/>
             <facet name="CS-Review"/>
         </doctype>
+        <doctype name="CS-ReviewSummary" extends="File">
+            <schema name="cs-reviewsummary"/>
+            <schema name="CS-ReviewProperties"/>
+            <facet name="Thumbnail"/>
+        </doctype>
+        <doctype name="CS-AssetIdContainer" extends="Document">
+            <schema name="uid"/>
+            <facet name="HiddenInNavigation"/>
+            <schema name="CS-AssetIdContainer"/>
+        </doctype>
+        <doctype name="CS-Reviews" extends="Folder">
+            <schema name="cs-reviews"/>
+            <schema name="uid"/>
+            <subtypes>
+                <type>CS-ReviewSummary</type>
+            </subtypes>
+        </doctype>
         <facet name="CS-Review">
             <schema name="CS-ReviewProperties"/>
         </facet>
