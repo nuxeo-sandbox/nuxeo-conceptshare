@@ -24,6 +24,11 @@
                 <type>CS-ReviewSummary</type>
             </subtypes>
         </doctype>
+        <doctype name="Folder" append="true">
+            <subtypes>
+                <type>ConceptShareReview</type>
+            </subtypes>
+        </doctype>
         <facet name="CS-Review">
             <schema name="CS-ReviewProperties"/>
         </facet>
