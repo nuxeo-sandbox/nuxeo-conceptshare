@@ -208,7 +208,7 @@ public class AssetAdapter {
                 this.save();
             }
         } catch (Exception e) {
-            throw new NuxeoException("Could not versioned asset " + doc.getPathAsString() + " in conceptshare", e);
+            throw new NuxeoException("Could not version asset " + doc.getPathAsString() + " in conceptshare", e);
         }
     }
 
