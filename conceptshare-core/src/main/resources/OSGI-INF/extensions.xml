@@ -47,46 +47,6 @@
         </types>
     </extension>
     <extension target="org.nuxeo.ecm.platform.types.TypeService" point="types">
-        <type id="CS-ReviewSummary">
-            <label>Review Summary</label>
-            <category>SimpleDocument</category>
-            <icon>/img/CS-Review.png</icon>
-            <bigIcon>/img/CS-Review-Big.png</bigIcon>
-            <description></description>
-            <default-view>view_documents</default-view>
-            <layouts mode="create">
-                <layout>layout@CS-ReviewSummary-create</layout>
-            </layouts>
-            <layouts mode="edit">
-                <layout>layout@CS-ReviewSummary-edit</layout>
-            </layouts>
-            <layouts mode="view">
-                <layout>layout@CS-ReviewSummary-view</layout>
-            </layouts>
-        </type>
-        <type id="CS-Reviews">
-            <label>Review Summaries</label>
-            <category>Collaborative</category>
-            <icon>/img/CS-ReviewsFolder.png</icon>
-            <bigIcon>/img/CS-ReviewsFolder-Big.png</bigIcon>
-            <description>All the past review summaries are initially stored here.</description>
-            <default-view>view_documents</default-view>
-            <layouts mode="create">
-                <layout>layout@CS-Reviews-create</layout>
-            </layouts>
-            <layouts mode="edit">
-                <layout>layout@CS-Reviews-edit</layout>
-            </layouts>
-            <layouts mode="view">
-                <layout>layout@CS-Reviews-view</layout>
-            </layouts>
-            <contentViews category="content">
-                <contentView showInExportView="false">document_content</contentView>
-            </contentViews>
-            <contentViews category="trash_content">
-                <contentView showInExportView="false">document_trash_content</contentView>
-            </contentViews>
-        </type>
         <type id="concep_as">
             <label>DefaultSearch</label>
             <icon>/icons/search.png</icon>
