@@ -49,23 +49,23 @@ public class ConceptshareCallbackListener implements EventListener {
 						assetDoc.setFileStatus(status);
 						assetDoc.save();
 
-						String collectionQuery = "SELECT * From Collection WHERE collection:documentIds = '"
+						String conceptShareReviewQuery = "SELECT * From ConceptShareReview WHERE collection:documentIds = '"
 								+ doc.getId() + "'";
-						DocumentModelList collections = session.query(collectionQuery);
+						DocumentModelList collections = session.query(conceptShareReviewQuery);
 
 						if (collections.size() == 0) {
-							log.warn("No collection have been found for assetId " + assetId
-									+ ". Possible cause the asset has been removed from the collection. No notifications sent to conceptshare to update the review.");
+							log.warn("No ConceptShareReviews have been found for assetId " + assetId
+									+ ". Possible because the asset has been removed from the ConceptShareReview. No notifications sent to conceptshare to update the review.");
 						}
 						for (DocumentModel collection : collections) {
 							ReviewAdapter reviewDoc = collection.getAdapter(ReviewAdapter.class);
-							reviewDoc.addAssetToCollection(assetDoc);
+							reviewDoc.addAssetToConceptShareReview(assetDoc);
 						}
 
 					}
 
 					if (assetList.size() == 0) {
-						log.warn("No asset have been found for asset ID " + assetId
+						log.warn("No assets have been found for asset ID " + assetId
 								+ ". Possible cause the asset has been deleted. No notifications sent to conceptshare to update the review.");
 					}
 

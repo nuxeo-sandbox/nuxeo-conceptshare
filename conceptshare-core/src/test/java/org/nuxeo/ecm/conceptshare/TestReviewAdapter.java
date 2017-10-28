@@ -60,7 +60,7 @@ public class TestReviewAdapter {
     }
     
     protected ReviewAdapter createReview() {
-        String doctype = "Collection";
+        String doctype = "ConceptShareReview";
         String testTitle = "My Adapter Title";
 
         DocumentModel doc = session.createDocumentModel("/", "test-adapter", doctype);

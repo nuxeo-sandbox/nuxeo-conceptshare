@@ -100,7 +100,7 @@ public class ReviewAdapter {
         return (String) doc.getPropertyValue(REVIEW_STATUS_PROP);
     }
 
-    public void addAssetToCollection(AssetAdapter asset) {
+    public void addAssetToConceptShareReview(AssetAdapter asset) {
         String reviewId = this.getReviewId();
 
         try {
@@ -114,7 +114,7 @@ public class ReviewAdapter {
 
     }
 
-    public void removeAssetFromCollection(AssetAdapter asset) {
+    public void removeAssetFromConceptShareReview(AssetAdapter asset) {
         String reviewId = this.getReviewId();
 
         try {

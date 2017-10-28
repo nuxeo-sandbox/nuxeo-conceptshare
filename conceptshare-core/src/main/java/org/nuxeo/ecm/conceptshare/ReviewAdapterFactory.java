@@ -7,7 +7,7 @@ public class ReviewAdapterFactory implements DocumentAdapterFactory {
 
     @Override
     public Object getAdapter(DocumentModel doc, Class<?> itf) {
-        if ("Collection".equals(doc.getType()) && doc.hasSchema("CS-ReviewProperties")){
+        if ("ConceptShareReview".equals(doc.getType()) && doc.hasSchema("CS-ReviewProperties")){
             return new ReviewAdapter(doc);
         }else{
             return null;

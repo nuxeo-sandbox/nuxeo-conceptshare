@@ -25,7 +25,7 @@ import org.nuxeo.ecm.core.event.Event;
 import org.nuxeo.ecm.core.event.EventListener;
 import org.nuxeo.ecm.core.event.impl.DocumentEventContext;
 
-public class RemovedFromCollectionListener implements EventListener {
+public class RemovedFromConceptShareReviewListener implements EventListener {
 
     @Override
     public void handleEvent(Event event) {
@@ -42,7 +42,7 @@ public class RemovedFromCollectionListener implements EventListener {
                 DocumentRef collectionRef = (DocumentRef) docCtx.getProperties()
                                                                 .get(CollectionConstants.COLLECTION_REF_EVENT_CTX_PROP);
                 ReviewAdapter review = session.getDocument(collectionRef).getAdapter(ReviewAdapter.class);
-                review.removeAssetFromCollection(assetDoc);
+                review.removeAssetFromConceptShareReview(assetDoc);
             }
 
         }

@@ -35,7 +35,7 @@ public class TestGetReviewURL {
     @Test
     public void shouldGetReviewUrl() throws OperationException {
 
-        DocumentModel doc = session.createDocumentModel("/", "test-adapter", "Collection");
+        DocumentModel doc = session.createDocumentModel("/", "test-adapter", "ConceptShareReview");
         doc = session.createDocument(doc);
         ReviewAdapter adapter = doc.getAdapter(ReviewAdapter.class);
         adapter.setTitle("unit test - getreview URL");

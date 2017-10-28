@@ -23,27 +23,30 @@ import org.nuxeo.ecm.core.event.Event;
 import org.nuxeo.ecm.core.event.EventListener;
 import org.nuxeo.ecm.core.event.impl.DocumentEventContext;
 
-public class CollectionCreatedListener implements EventListener {
+public class ConceptShareReviewCreatedListener implements EventListener {
 
-	@Override
-	public void handleEvent(Event event) {
+  @Override
+  public void handleEvent(Event event) {
 
-		if (!(event.getContext() instanceof DocumentEventContext)) {
-			return;
-		}
-		DocumentEventContext docCtx = (DocumentEventContext) event.getContext();
-		DocumentModel doc = docCtx.getSourceDocument();
-		CoreSession session = doc.getCoreSession();
-		
-		if("Collection".equals(doc.getType()) && !doc.hasFacet("CS-Review"))
-		{
-			doc.addFacet("CS-Review");
-			session.saveDocument(doc);
-		}
-		
-		ReviewAdapter reviewDoc = doc.getAdapter(ReviewAdapter.class);
-		if (reviewDoc != null) {
-			reviewDoc.createReview();
-		}
-	}
+    if (!(event.getContext() instanceof DocumentEventContext)) {
+      return;
+    }
+    DocumentEventContext docCtx = (DocumentEventContext) event.getContext();
+    DocumentModel doc = docCtx.getSourceDocument();
+    CoreSession session = doc.getCoreSession();
+
+    // Only applies to ConceptShareReview documents.
+    if ("ConceptShareReview".equals(doc.getType())) {
+
+      if ("ConceptShareReview".equals(doc.getType()) && !doc.hasFacet("CS-Review")) {
+        doc.addFacet("CS-Review");
+        session.saveDocument(doc);
+      }
+
+      ReviewAdapter reviewDoc = doc.getAdapter(ReviewAdapter.class);
+      if (reviewDoc != null) {
+        reviewDoc.createReview();
+      }
+    }
+  }
 }
