@@ -37,26 +37,33 @@ public class AssetAddedToConceptShareReviewListener implements EventListener {
     DocumentModel doc = docCtx.getSourceDocument();
     CoreSession session = doc.getCoreSession();
 
-    if (doc.getPropertyValue("file:content") != null && !doc.hasFacet("CS-File")) {
-      doc.addFacet("CS-File");
-      doc = session.saveDocument(doc);
-    }
+    // Check to make sure the "collection" is a ConceptShareReview...
+    DocumentRef collectionRef = (DocumentRef) docCtx.getProperties()
+        .get(CollectionConstants.COLLECTION_REF_EVENT_CTX_PROP);
+    DocumentModel collectionDoc = session.getDocument(collectionRef);
 
-    // TODO: 10/27/17 Do I need to test for ConceptShareReview docs here?
+    if ("ConceptShareReview".equals(collectionDoc.getType())) {
+      // Only applies to ConceptShareReview documents.
 
-    AssetAdapter assetDoc = doc.getAdapter(AssetAdapter.class);
-    if (assetDoc != null) {
-      if (assetDoc.getAssetId() == null) {
-        // If asset has not yet been uploaded already then upload it
-        assetDoc.createAsset();
-      } else {
-        // Simply add directly the asset into conceptshare
-        DocumentRef collectionRef = (DocumentRef) docCtx.getProperties()
-            .get(CollectionConstants.COLLECTION_REF_EVENT_CTX_PROP);
-        ReviewAdapter review = session.getDocument(collectionRef).getAdapter(ReviewAdapter.class);
-        review.addAssetToConceptShareReview(assetDoc);
+      if (doc.getPropertyValue("file:content") != null && !doc.hasFacet("CS-File")) {
+        doc.addFacet("CS-File");
+        doc = session.saveDocument(doc);
       }
 
+      AssetAdapter assetDoc = doc.getAdapter(AssetAdapter.class);
+      if (assetDoc != null) {
+        if (assetDoc.getAssetId() == null) {
+          // If asset has not yet been uploaded already then upload it
+          assetDoc.createAsset();
+        } else {
+          // Simply add directly the asset into conceptshare
+          DocumentRef conceptShareReviewRef = (DocumentRef) docCtx.getProperties()
+              .get(CollectionConstants.COLLECTION_REF_EVENT_CTX_PROP);
+          ReviewAdapter review = session.getDocument(conceptShareReviewRef).getAdapter(ReviewAdapter.class);
+          review.addAssetToConceptShareReview(assetDoc);
+        }
+
+      }
     }
   }
 }
