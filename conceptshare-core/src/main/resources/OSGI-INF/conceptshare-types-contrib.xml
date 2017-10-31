@@ -1,4 +1,5 @@
-<extension target="org.nuxeo.ecm.platform.types.TypeService" point="types">
+<component name="org.nuxeo.ecm.conceptshare.core.types">
+    <extension target="org.nuxeo.ecm.platform.types.TypeService" point="types">
     <type id="ConceptShareReview">
         <label>ConceptShare Review</label>
         <category>Collaborative</category>
@@ -20,3 +21,4 @@
         </contentViews>
     </type>
 </extension>
+</component>
