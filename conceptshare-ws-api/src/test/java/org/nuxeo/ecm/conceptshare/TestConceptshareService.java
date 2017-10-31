@@ -44,7 +44,7 @@ public class TestConceptshareService {
 
     @Test
     public void itCanGetProjects() throws Exception {
-        assertEquals(1, conceptshareservice.getProjects().size());
+        assertTrue(conceptshareservice.getProjects().size()>0);
     }
 
     @Test
@@ -118,7 +118,7 @@ public class TestConceptshareService {
 
     @Test
     public void itCanVersionAsset() throws Exception{
-        
+
     long timestamp = new Date().getTime();
     String reviewTitle = "myReviewUnitTest - " + timestamp;
     String name = "Unit test - " + timestamp;
@@ -129,14 +129,14 @@ public class TestConceptshareService {
     assertEquals(inProgressStatus, review.getStatusId().getValue());
     String assetV1 = "https://www.nuxeo.com/assets/imgs/logo340x60.png";
     String assetV2 = "https://www.nuxeo.com/assets/imgs/backgrounds/ea-background.png";
-    
+
     Asset asset = conceptshareservice.addAsset(name, filename, assetV1);
-    
+
     ReviewItem ri = conceptshareservice.addReviewItem(review.getId(), asset.getId());
-    
+
     Asset newAsset = conceptshareservice.addVersionedAsset(name, asset.getId(), filename, assetV2);
     System.out.println(newAsset.getId());
-    
+
     //Restore
     newAsset = conceptshareservice.addVersionedAsset(name, newAsset.getId(), filename, assetV1);
     //conceptshareservice.removeReviewItem(review.getId(), newAsset.getId());
