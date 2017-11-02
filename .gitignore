@@ -28,3 +28,7 @@ bin/
 *~bak
 *-bak
 *.bak
+
+conceptshare-core/src/test/resources/conceptshare-service-test-contrib.xml
+
+conceptshare-ws-api/src/test/resources/conceptshare-service-test-contrib.xml
