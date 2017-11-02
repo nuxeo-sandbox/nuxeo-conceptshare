@@ -907,9 +907,6 @@
             </widget>
         </layout>
     </extension>
-    <extension target="org.nuxeo.dam.DamService" point="allowedAssetTypes">
-        <allowedAssetType name="CS-ReviewSummary"/>
-    </extension>
     <extension target="org.nuxeo.ecm.platform.ui.web.ContentViewService" point="contentViews">
         <contentView name="CS-CollectionContent">
             <genericPageProvider class="org.nuxeo.elasticsearch.provider.ElasticSearchNxqlPageProvider">
