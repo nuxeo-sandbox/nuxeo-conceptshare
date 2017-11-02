@@ -1,0 +1,38 @@
+<!--
+`nuxeo-conceptsharereview-create-layout`
+@group Nuxeo UI
+@element nuxeo-conceptsharereview-create-layout
+-->
+<dom-module id="nuxeo-conceptsharereview-create-layout">
+  <template>
+    <style>
+      *[role=widget] {
+        padding: 5px;
+      }
+    </style>
+
+    <div role="widget">
+      <label>[[i18n('label.dublincore.title')]]</label>
+      <div name="title">[[document.properties.dc:title]]</div>
+    </div>
+
+    <div role="widget"
+         hidden$="[[!document.properties.dc:description]]">
+      <label>[[i18n('label.dublincore.description')]]</label>
+      <div name="description"
+           class="multiline">[[document.properties.dc:description]]</div>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'nuxeo-conceptsharereview-create-layout',
+      behaviors: [Nuxeo.LayoutBehavior],
+      properties: {
+        document: {
+          type: Object,
+        }
+      }
+    });
+  </script>
+</dom-module>
