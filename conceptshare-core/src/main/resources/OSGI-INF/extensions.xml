@@ -1071,18 +1071,6 @@
         <directory name="cs-reviewstatus" layout="vocabulary" sortField="label"/>
         <directory name="cs-typeofreview" layout="vocabulary" sortField="label"/>
     </extension>
-    <extension target="org.nuxeo.ecm.platform.WebResources" point="resources">
-        <resource name="nuxeo-conceptshare-integration-bundle.html" type="import" shrinkable="false">
-            <uri>/ui/nuxeo-conceptshare-integration-bundle.html</uri>
-        </resource>
-    </extension>
-    <extension target="org.nuxeo.ecm.platform.WebResources" point="bundles">
-        <bundle name="web-ui">
-            <resources append="true">
-                <resource>nuxeo-conceptshare-integration-bundle.html</resource>
-            </resources>
-        </bundle>
-    </extension>
     <extension target="org.nuxeo.ecm.platform.actions.ActionService" point="filters">
         <filter id="create" append="true">
             <rule grant="false">
