@@ -1,9 +1,20 @@
 <link rel="import" href="conceptshare-template/actions/nuxeo-conceptshare-access-review.html">
 <link rel="import" href="conceptshare-template/actions/nuxeo-conceptshare-end-review.html">
 <link rel="import" href="conceptshare-template/actions/nuxeo-conceptshare-new-review.html">
-
+<!-- Contribution of element 'nuxeo-document-page' for slot 'DOCUMENT_VIEWS_PAGES' -->
+<!-- I added this because some people (looking at you Mika) disable the default contrbution for document views. Also,
+     eventually, this could be a custom layout. -->
+<nuxeo-slot-content name="conceptShareReviewView" slot="DOCUMENT_VIEWS_PAGES">
+  <template>
+    <nuxeo-filter document="[[document]]" type="ConceptShareReview">
+      <template>
+        <nuxeo-document-page name="view" document="[[document]]"></nuxeo-document-page>
+      </template>
+    </nuxeo-filter>
+  </template>
+</nuxeo-slot-content>
 <!-- Contribution of element 'nuxeo-conceptshare-access-review' for slot 'DOCUMENT_ACTIONS' -->
-<nuxeo-slot-content name="accessReview" slot="DOCUMENT_ACTIONS" order="-10" >
+<nuxeo-slot-content name="accessReview" slot="DOCUMENT_ACTIONS" order="-10">
   <template>
     <nuxeo-filter document="[[document]]" facet="CS-Review">
       <template>
@@ -13,7 +24,7 @@
   </template>
 </nuxeo-slot-content>
 <!-- Contribution of element 'nuxeo-conceptshare-end-review' for slot 'DOCUMENT_ACTIONS' -->
-<nuxeo-slot-content name="endReview" slot="DOCUMENT_ACTIONS" order="-9" >
+<nuxeo-slot-content name="endReview" slot="DOCUMENT_ACTIONS" order="-9">
   <template>
     <nuxeo-filter document="[[document]]" facet="CS-Review">
       <template>
@@ -23,7 +34,7 @@
   </template>
 </nuxeo-slot-content>
 <!-- Contribution of element 'nuxeo-conceptshare-new-review' for slot 'DOCUMENT_ACTIONS' -->
-<nuxeo-slot-content name="newReview" slot="DOCUMENT_ACTIONS" order="-8" >
+<nuxeo-slot-content name="newReview" slot="DOCUMENT_ACTIONS" order="-8">
   <template>
     <nuxeo-filter document="[[document]]" facet="CS-Review">
       <template>
