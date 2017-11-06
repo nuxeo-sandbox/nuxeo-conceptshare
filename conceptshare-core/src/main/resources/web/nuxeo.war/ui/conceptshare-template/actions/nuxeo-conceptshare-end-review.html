@@ -49,11 +49,14 @@
       },
 
       _reviewReady: function(document) {
-        if (document && document.properties &&
-          document.properties["CSReviewProp:ReviewStatus"] &&
-          document.properties["CSReviewProp:ReviewStatus"].properties &&
-          document.properties["CSReviewProp:ReviewStatus"].properties.label) {
-          var reviewStatus = document.properties["CSReviewProp:ReviewStatus"].properties.id === 'ready';
+        if (document && document.properties && document.properties["CSReviewProp:ReviewStatus"]) {
+          if (document.properties["CSReviewProp:ReviewStatus"].properties &&
+            document.properties["CSReviewProp:ReviewStatus"].properties.label) {
+            var reviewStatus = document.properties["CSReviewProp:ReviewStatus"].properties.id === 'ready';
+          }
+          if (document.properties["CSReviewProp:ReviewStatus"] === 'ready') {
+            reviewStatus = true;
+          }
           return reviewStatus;
         }
       },
@@ -66,5 +69,3 @@
     });
   </script>
 </dom-module>
-
-
