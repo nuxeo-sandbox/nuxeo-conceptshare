@@ -1,18 +1,7 @@
 package org.nuxeo.ecm.conceptshare;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Date;
-import java.util.List;
-
-import org.datacontract.schemas._2004._07.conceptshare_v4_framework.Asset;
-import org.datacontract.schemas._2004._07.conceptshare_v4_framework.Review;
-import org.datacontract.schemas._2004._07.conceptshare_v4_framework.ReviewItem;
-import org.datacontract.schemas._2004._07.conceptshare_v4_framework.ReviewMember;
-import org.datacontract.schemas._2004._07.conceptshare_v4_framework.Status;
+import com.google.inject.Inject;
+import org.datacontract.schemas._2004._07.conceptshare_v4_framework.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.nuxeo.ecm.conceptshare.api.ConceptshareService;
@@ -22,12 +11,15 @@ import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 import org.nuxeo.runtime.test.runner.LocalDeploy;
 
-import com.google.inject.Inject;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 @RunWith(FeaturesRunner.class)
 @Features({PlatformFeature.class})
 @Deploy("org.nuxeo.ecm.conceptshare.ws.api")
-@LocalDeploy("org.nuxeo.ecm.conceptshare.ws.api:conceptshare-service-test-contrib.xml")
+@LocalDeploy("org.nuxeo.ecm.conceptshare.ws.api:sample-conceptshare-service-test-contrib.xml")
 public class TestConceptshareService {
 
   public static final String DEFAULT_PROJECT = "TestProject";
