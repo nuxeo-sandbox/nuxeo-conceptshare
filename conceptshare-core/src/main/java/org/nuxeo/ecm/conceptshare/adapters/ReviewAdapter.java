@@ -119,9 +119,6 @@ public class ReviewAdapter {
                 getCSService().addReviewMember("nuxeo.demo.dam+julie@gmail.com", Integer.parseInt(this.getReviewId()));
                 getCSService().addReviewMember("nuxeo.demo.dam+lisa@gmail.com", Integer.parseInt(this.getReviewId()));
                 getCSService().addReviewMember("nuxeo.demo.dam+sunny@gmail.com", Integer.parseInt(this.getReviewId()));
-                getCSService().addReviewMember("ngrant@nuxeo.com", Integer.parseInt(this.getReviewId()));
-                getCSService().addReviewMember("rrowles@nuxeo.com", Integer.parseInt(this.getReviewId()));
-
             } catch (Exception e) {
                 log.error("Failed to create review in conceptshare.", e);
             }
