@@ -53,19 +53,21 @@ public class AssetAddedToConceptShareReviewListener implements EventListener {
       }
 
       AssetAdapter assetDoc = doc.getAdapter(AssetAdapter.class);
-      if (assetDoc != null) {
-        if (assetDoc.getAssetId() == null) {
-          // If asset has not yet been uploaded already then upload it
-          assetDoc.createAsset();
-        } else {
-          // Simply add directly the asset into conceptshare
-          DocumentRef conceptShareReviewRef = (DocumentRef) docCtx.getProperties()
-              .get(CollectionConstants.COLLECTION_REF_EVENT_CTX_PROP);
-          ReviewAdapter review = session.getDocument(conceptShareReviewRef).getAdapter(ReviewAdapter.class);
-          review.addAssetToConceptShareReview(assetDoc);
-        }
-
+      if (assetDoc == null) {
+        return;
       }
+
+      if (assetDoc.getAssetId() == null) {
+        // If asset has not yet been uploaded already then upload it
+        assetDoc.createAsset();
+      }
+
+      // Simply add directly the asset into conceptshare
+      DocumentRef conceptShareReviewRef = (DocumentRef) docCtx.getProperties()
+          .get(CollectionConstants.COLLECTION_REF_EVENT_CTX_PROP);
+      ReviewAdapter review = session.getDocument(conceptShareReviewRef).getAdapter(ReviewAdapter.class);
+      review.addAssetToConceptShareReview(assetDoc);
+
     }
   }
 }

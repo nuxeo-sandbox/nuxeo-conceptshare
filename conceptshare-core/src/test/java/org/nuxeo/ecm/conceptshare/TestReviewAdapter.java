@@ -37,7 +37,7 @@ public class TestReviewAdapter {
     @Test
     public void itCanVersionAsset() throws Exception {
         AssetAdapter asset = createAsset();
-        DocumentRef assetV0 = new IdRef(asset.getId());
+        DocumentRef assetV0 = new IdRef(asset.getDocumentModel().getId());
         DocumentRef assetV1 = session.checkIn(assetV0, VersioningOption.MAJOR, "testversioning");
         session.checkOut(assetV0);
         session.restoreToVersion(assetV0, assetV1);

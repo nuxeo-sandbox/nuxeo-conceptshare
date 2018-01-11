@@ -6,13 +6,10 @@ import org.datacontract.schemas._2004._07.conceptshare_v4_framework.Review;
 import org.nuxeo.ecm.conceptshare.api.ConceptshareService;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.core.api.DocumentRef;
 import org.nuxeo.runtime.api.Framework;
 
-/**
- *
- */
 public class ReviewAdapter {
+
     protected final DocumentModel doc;
 
     protected String titleXpath = "dc:title";
@@ -31,43 +28,15 @@ public class ReviewAdapter {
         this.doc = doc;
     }
 
-    // Basic methods
-    //
-    // Note that we voluntarily expose only a subset of the DocumentModel API in
-    // this adapter.
-    // You may wish to complete it without exposing everything!
-    // For instance to avoid letting people change the document state using your
-    // adapter,
-    // because this would be handled through workflows / buttons / events in your
-    // application.
-    //
+    public DocumentModel getDocumentModel() {
+        return doc;
+    }
+
     public void save() {
         CoreSession session = doc.getCoreSession();
         session.saveDocument(doc);
     }
 
-    public DocumentRef getParentRef() {
-        return doc.getParentRef();
-    }
-
-    // Technical properties retrieval
-    public String getId() {
-        return doc.getId();
-    }
-
-    public String getName() {
-        return doc.getName();
-    }
-
-    public String getPath() {
-        return doc.getPathAsString();
-    }
-
-    public String getState() {
-        return doc.getCurrentLifeCycleState();
-    }
-
-    // Metadata get / set
     public String getTitle() {
         return doc.getTitle();
     }
@@ -108,7 +77,7 @@ public class ReviewAdapter {
             this.setReviewStatus("ready");
             this.save();
         } catch (Exception e) {
-            log.error("Conceptshare review update failed while processing webservices call for asset " + asset.getPath()
+            log.error("Conceptshare review update failed while processing webservices call for asset " + asset.getDocumentModel().getPath()
                     + " and collection " + doc.getPathAsString(), e);
         }
 
@@ -121,7 +90,7 @@ public class ReviewAdapter {
             getCSService().removeReviewItem(Integer.parseInt(reviewId), Integer.parseInt(asset.getLastAssetId()));
             this.save();
         } catch (Exception e) {
-            log.error("Conceptshare review update failed while processing webservices call for asset " + asset.getPath()
+            log.error("Conceptshare review update failed while processing webservices call for asset " + asset.getDocumentModel().getPath()
                     + " and collection " + doc.getPathAsString(), e);
         }
 
@@ -187,4 +156,5 @@ public class ReviewAdapter {
     protected ConceptshareService getCSService() {
         return Framework.getService(ConceptshareService.class);
     }
+
 }
