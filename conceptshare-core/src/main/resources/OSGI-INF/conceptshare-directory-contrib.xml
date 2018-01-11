@@ -1,26 +1,25 @@
 <?xml version="1.0"?>
+<component name="org.nuxeo.ecm.conceptshare.directory">
 
-<!-- This is a test setup for SQL directories that is similar to the
-  default-sql-directories-bundles.xml setup except that the datasource is set
-  to a in memory backend -->
-
-<component name="org.nuxeo.ecm.directory.sql.storage">
-
-  <implementation
-    class="org.nuxeo.ecm.directory.sql.SQLDirectoryDescriptor" />
-
-  <require>org.nuxeo.ecm.directory.sql.SQLDirectoryFactory</require>
-
-  <extension target="org.nuxeo.ecm.directory.sql.SQLDirectoryFactory"
-    point="directories">
+  <extension target="org.nuxeo.ecm.directory.sql.SQLDirectoryFactory" point="directories">
     
     <directory name="cs-filestatus" extends="template-vocabulary">
       <autoincrementIdField>false</autoincrementIdField>
       <createTablePolicy>always</createTablePolicy>
       <dataFile>data/vocabularies/cs-filestatus.csv</dataFile>
-      <cacheEntryName>vocab-cs-filestatus-cache</cacheEntryName>
-      <cacheEntryWithoutReferencesName>vocab-cs-filestatus-cache-without-references</cacheEntryWithoutReferencesName>
     </directory>
-    
+
+    <directory name="cs-reviewstatus" extends="template-vocabulary">
+      <autoincrementIdField>false</autoincrementIdField>
+      <createTablePolicy>always</createTablePolicy>
+      <dataFile>data/vocabularies/cs-reviewstatus.csv</dataFile>
+    </directory>
+
+    <directory name="cs-typeofreview" extends="template-vocabulary">
+      <autoincrementIdField>false</autoincrementIdField>
+      <createTablePolicy>always</createTablePolicy>
+      <dataFile>data/vocabularies/cs-typeofreview.csv</dataFile>
+    </directory>
+
   </extension>
 </component>

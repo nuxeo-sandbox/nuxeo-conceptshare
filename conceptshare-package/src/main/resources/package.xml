@@ -21,7 +21,6 @@
   </platforms>
   <!-- Dependencies on other packages -->
   <dependencies>
-    <package>nuxeo-jsf-ui</package>
     <package>nuxeo-web-ui</package>
     <package>amazon-s3-online-storage</package>
     <package>nuxeo-dam</package>

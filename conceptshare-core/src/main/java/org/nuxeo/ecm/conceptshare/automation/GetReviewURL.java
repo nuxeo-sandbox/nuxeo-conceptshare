@@ -15,7 +15,7 @@
  *     mhilaire
  *
  */
-package org.nuxeo.ecm.conceptshare;
+package org.nuxeo.ecm.conceptshare.automation;
 
 import org.nuxeo.ecm.automation.OperationContext;
 import org.nuxeo.ecm.automation.core.Constants;

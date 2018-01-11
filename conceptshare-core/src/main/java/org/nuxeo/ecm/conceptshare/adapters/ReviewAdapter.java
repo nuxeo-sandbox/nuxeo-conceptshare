@@ -1,4 +1,4 @@
-package org.nuxeo.ecm.conceptshare;
+package org.nuxeo.ecm.conceptshare.adapters;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

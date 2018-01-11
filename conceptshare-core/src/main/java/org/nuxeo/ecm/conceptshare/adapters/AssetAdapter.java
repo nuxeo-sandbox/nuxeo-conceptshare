@@ -1,23 +1,18 @@
-package org.nuxeo.ecm.conceptshare;
-
-import java.net.URI;
-import java.net.URL;
+package org.nuxeo.ecm.conceptshare.adapters;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.datacontract.schemas._2004._07.conceptshare_v4_framework.Asset;
 import org.nuxeo.ecm.conceptshare.api.ConceptshareService;
-import org.nuxeo.ecm.core.api.CoreSession;
-import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.core.api.DocumentRef;
-import org.nuxeo.ecm.core.api.IdRef;
-import org.nuxeo.ecm.core.api.NuxeoException;
-import org.nuxeo.ecm.core.api.VersioningOption;
+import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.blob.BlobManager;
 import org.nuxeo.ecm.core.blob.binary.BinaryBlob;
 import org.nuxeo.ecm.core.blob.binary.BinaryManager;
 import org.nuxeo.ecm.core.storage.sql.S3BinaryManager;
 import org.nuxeo.runtime.api.Framework;
+
+import java.net.URI;
+import java.net.URL;
 
 /**
  *

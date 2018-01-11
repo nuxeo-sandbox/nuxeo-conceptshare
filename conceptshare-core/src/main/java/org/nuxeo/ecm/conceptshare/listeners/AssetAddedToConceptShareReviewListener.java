@@ -15,9 +15,11 @@
  *     mhilaire
  *
  */
-package org.nuxeo.ecm.conceptshare;
+package org.nuxeo.ecm.conceptshare.listeners;
 
 import org.nuxeo.ecm.collections.api.CollectionConstants;
+import org.nuxeo.ecm.conceptshare.adapters.AssetAdapter;
+import org.nuxeo.ecm.conceptshare.adapters.ReviewAdapter;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentRef;

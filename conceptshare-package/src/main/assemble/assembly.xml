@@ -8,8 +8,8 @@
     <!-- Include your artifacts in the graph adding your groupId to groupPrefixes -->
     <artifact:nuxeo-expand includeTestScope="true" groupPrefixes="org.nuxeo,com.nuxeo"/>
     <!-- For Nuxeo IDE being able to use that distribution as a SDK -->
-    <artifact:print output="${outdir}/artifacts.properties" mode="sdk"/>
-    <artifact:print output="${outdir}/test-artifacts.properties" mode="sdk" scopes="test"/>
+    <artifact:print output="${outdir}/conceptshare-artifacts.properties" mode="sdk"/>
+    <artifact:print output="${outdir}/conceptshare-test-artifacts.properties" mode="sdk" scopes="test"/>
     <!-- Prints the graph for debugging purpose -->
     <artifact:print output="${outdir}/dependency-tree.log"/>
     <tstamp/>
@@ -25,12 +25,13 @@
         <filter token="DISTRIB_VERSION" value="${nuxeo.distribution.version}"/>
       </filterset>
     </copy>
-    <copy file="${outdir}/artifacts.properties" todir="${outdir}/marketplace/install"/>
-    <copy file="${outdir}/test-artifacts.properties" todir="${outdir}/marketplace/install"/>
+    <copy file="${outdir}/conceptshare-artifacts.properties" todir="${outdir}/marketplace/install"/>
+    <copy file="${outdir}/conceptshare-test-artifacts.properties" todir="${outdir}/marketplace/install"/>
 
     <!-- Base distribution NXR -->
     <copy todir="${outdir}">
       <artifact:file key="org.nuxeo.ecm.distribution:nuxeo-nxr-server::zip" />
+      <artifact:file key="org.nuxeo.marketplace.amazon-s3-online-storage:ear::zip" />
     </copy>
 
     <!-- Nuxeo bundles -->
@@ -70,6 +71,15 @@
       </artifact:set>
     </copy>
     <nx:rmdups dir="${outdir}/nxr/lib"/>
+
+    <!-- Optionally attach the NXR for later use by other modules -->
+    <unzip src="${outdir}/nuxeo-nxr-server-${nuxeo.distribution.version}.zip"
+           dest="${outdir}/nuxeo-nxr-all" />
+    <unzip src="${outdir}/ear-${nuxeo.amazon.s3.version}.zip"
+           dest="${outdir}/nuxeo-nxr-all" />
+    <zip destfile="${outdir}/nuxeo-nxr-server-${nuxeo.distribution.version}.zip"
+         basedir="${outdir}/nuxeo-nxr-all" />
+
     <!-- Temporary ZIP Nuxeo NXR to compare with base distribution NXR -->
     <zip destfile="${outdir}/nxr-${maven.project.version}.zip" basedir="${outdir}/nxr"/>
     <!-- Optionally attach the NXR for later use by other modules -->
@@ -112,9 +122,9 @@
     <var
       name="install.properties"
       value="${line.separator}
-  &lt;copy file=&quot;${package.root}/install/artifacts.properties&quot;${line.separator}
+  &lt;copy file=&quot;${package.root}/install/conceptshare-artifacts.properties&quot;${line.separator}
     todir=&quot;${env.server.home}/sdk&quot; overwrite=&quot;true&quot; /&gt;${line.separator}
-  &lt;copy file=&quot;${package.root}/install/test-artifacts.properties&quot;${line.separator}
+  &lt;copy file=&quot;${package.root}/install/conceptshare-test-artifacts.properties&quot;${line.separator}
     todir=&quot;${env.server.home}/sdk&quot; overwrite=&quot;true&quot; /&gt;"/>
 
     <var name="install.templates" value=""/>

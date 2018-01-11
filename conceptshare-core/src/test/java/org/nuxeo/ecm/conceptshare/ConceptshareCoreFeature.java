@@ -10,9 +10,11 @@ import org.nuxeo.runtime.test.runner.LocalDeploy;
 import org.nuxeo.runtime.test.runner.SimpleFeature;
 
 @Features({ CoreFeature.class, PlatformFeature.class, TransactionalFeature.class, SQLDirectoryFeature.class })
-@Deploy({ "org.nuxeo.ecm.conceptshare.core", "org.nuxeo.ecm.platform.collections.core",
-        "org.nuxeo.ecm.conceptshare.ws.api", "org.nuxeo.ecm.directory.api", "org.nuxeo.ecm.directory.sql" })
-@LocalDeploy({ "org.nuxeo.ecm.conceptshare.ws.api:conceptshare-service-test-contrib.xml" })
+@Deploy({
+    "org.nuxeo.ecm.platform.collections.core",
+    "org.nuxeo.ecm.conceptshare.ws.api",
+    "org.nuxeo.ecm.conceptshare.core"
+})
+@LocalDeploy({ "org.nuxeo.ecm.conceptshare.ws.api:sample-conceptshare-service-test-contrib.xml" })
 public class ConceptshareCoreFeature extends SimpleFeature {
-
 }

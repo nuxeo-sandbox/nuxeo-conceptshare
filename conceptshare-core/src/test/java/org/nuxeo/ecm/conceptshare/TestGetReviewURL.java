@@ -1,18 +1,13 @@
 package org.nuxeo.ecm.conceptshare;
 
-import static org.junit.Assert.assertFalse;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.inject.Inject;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.nuxeo.ecm.automation.AutomationService;
 import org.nuxeo.ecm.automation.OperationContext;
 import org.nuxeo.ecm.automation.OperationException;
 import org.nuxeo.ecm.automation.test.AutomationFeature;
+import org.nuxeo.ecm.conceptshare.adapters.ReviewAdapter;
+import org.nuxeo.ecm.conceptshare.automation.GetReviewURL;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.test.DefaultRepositoryInit;
@@ -21,8 +16,14 @@ import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 
+import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.assertFalse;
+
 @RunWith(FeaturesRunner.class)
-@Features({ ConceptshareCoreFeature.class, AutomationFeature.class })
+@Features({ConceptshareCoreFeature.class, AutomationFeature.class })
 @RepositoryConfig(init = DefaultRepositoryInit.class, cleanup = Granularity.METHOD)
 public class TestGetReviewURL {
 

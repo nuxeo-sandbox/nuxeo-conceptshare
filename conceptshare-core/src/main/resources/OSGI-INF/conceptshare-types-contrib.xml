@@ -1,24 +1,11 @@
 <component name="org.nuxeo.ecm.conceptshare.core.types">
     <extension target="org.nuxeo.ecm.platform.types.TypeService" point="types">
-    <type id="ConceptShareReview">
-        <label>ConceptShare Review</label>
-        <category>Collaborative</category>
-        <icon>/img/ConcepShareReview.png</icon>
-        <bigIcon>/img/ConcepShareReview.png</bigIcon>
-        <description>A ConceptShare Review.</description>
-        <default-view>view_documents</default-view>
-        <layouts mode="create">
-        </layouts>
-        <layouts mode="edit">
-        </layouts>
-        <layouts mode="view">
-        </layouts>
-        <contentViews category="content">
-            <contentView showInExportView="false">document_content</contentView>
-        </contentViews>
-        <contentViews category="trash_content">
-            <contentView showInExportView="false">document_trash_content</contentView>
-        </contentViews>
-    </type>
-</extension>
+        <type id="ConceptShareReview">
+            <label>ConceptShare Review</label>
+            <category>Collaborative</category>
+            <icon>/img/ConcepShareReview.png</icon>
+            <bigIcon>/img/ConcepShareReview.png</bigIcon>
+            <description>A ConceptShare Review.</description>
+        </type>
+    </extension>
 </component>

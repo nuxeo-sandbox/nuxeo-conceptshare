@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.ecm.conceptshare.core.adapters">
+
+  <extension target="org.nuxeo.ecm.core.api.DocumentAdapterService" point="adapters">
+    <adapter class="org.nuxeo.ecm.conceptshare.adapters.AssetAdapter" factory="org.nuxeo.ecm.conceptshare.adapters.AssetAdapterFactory"/>
+  </extension>
+
+  <extension target="org.nuxeo.ecm.core.api.DocumentAdapterService" point="adapters">
+    <adapter class="org.nuxeo.ecm.conceptshare.adapters.ReviewAdapter" factory="org.nuxeo.ecm.conceptshare.adapters.ReviewAdapterFactory"/>
+  </extension>
+
+</component>

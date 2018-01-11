@@ -15,13 +15,14 @@
  *     mhilaire
  *
  */
-package org.nuxeo.ecm.conceptshare;
+package org.nuxeo.ecm.conceptshare.automation;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.automation.core.Constants;
 import org.nuxeo.ecm.automation.core.annotations.Operation;
 import org.nuxeo.ecm.automation.core.annotations.OperationMethod;
+import org.nuxeo.ecm.conceptshare.adapters.ReviewAdapter;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.NuxeoException;
 

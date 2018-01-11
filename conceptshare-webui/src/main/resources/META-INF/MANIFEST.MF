@@ -1,0 +1,11 @@
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
+Manifest-Version: 1.0
+Bundle-Vendor: nuxeo
+Bundle-Version: 1.0.0
+Bundle-Name: conceptshare-webui
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: conceptshare-webui;singleton=true
+Nuxeo-Component: OSGI-INF/conceptshare-webresources-contrib.xml
+
+

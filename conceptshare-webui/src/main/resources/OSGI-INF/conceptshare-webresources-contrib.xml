@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<component name="org.nuxeo.ecm.conceptshare.core.resources.contrib">
+<component name="org.nuxeo.ecm.conceptshare.webui.resources.contrib">
 
   <require>org.nuxeo.web.ui.resources</require>
 

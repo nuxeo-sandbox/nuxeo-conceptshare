@@ -11,8 +11,6 @@ Nuxeo-Component: OSGI-INF/conceptshare-listener.xml,
  OSGI-INF/conceptshare-operation-contrib.xml,
  OSGI-INF/conceptshare-schema-contrib.xml,
  OSGI-INF/conceptshare-types-contrib.xml,
- OSGI-INF/conceptshare-webresources-contrib.xml,
  OSGI-INF/conceptshare-doctype-contrib.xml,
- OSGI-INF/org.nuxeo.ecm.conceptshareasset-adapter-contrib.xml,
- OSGI-INF/org.nuxeo.ecm.conceptsharereview-adapter-contrib.xml,
- OSGI-INF/extensions.xml
+ OSGI-INF/conceptshare-adapter-contrib.xml,
+ OSGI-INF/conceptshare-chains-contrib.xml

@@ -15,8 +15,9 @@
  *     mhilaire
  *
  */
-package org.nuxeo.ecm.conceptshare;
+package org.nuxeo.ecm.conceptshare.listeners;
 
+import org.nuxeo.ecm.conceptshare.adapters.AssetAdapter;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.event.Event;
 import org.nuxeo.ecm.core.event.EventListener;
